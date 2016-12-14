@@ -34,6 +34,28 @@ exports.getApi = (req, res) => {
 };
 
 /**
+ *
+ */
+exports.getQuotes = (req, res, next) => {
+  var BASE_URI = 'http://query.yahooapis.com/v1/public/yql';
+  var yql_query = `select * from yahoo.finance.quotes where symbol in ("YHOO","AAPL","GOOG","MSFT")`;
+  var url = BASE_URI + "?q=" + encodeURIComponent(yql_query) + "&format=json";
+  // const query = {
+  //   q: encodeURIComponent(yql_query),
+  //   format: "json"
+  // };
+  request.get({ url: url}, (err, request, body) => {
+    if (err) { return next(err); }
+    if (request.statusCode === 403) {
+      return next(new Error('Error when getting quotes'));
+    }
+    console.log(body);
+    const quotes = JSON.parse(body).results;
+    res.send(quotes);
+  });
+}
+
+/**
  * GET /api/foursquare
  * Foursquare API example.
  */
