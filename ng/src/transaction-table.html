@@ -1,0 +1,24 @@
+<template>
+    <table class="table" aurelia-table="data.bind: transactions; display-data.bind: $displayData">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>Commission</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr repeat.for="trsc of $displayData">
+                <td>${trsc.symbol}</td>
+                <td>${trsc.type}</td>
+                <td>${trsc.date.toDateString()}</td>
+                <td>${trsc.shares}</td>
+                <td>${trsc.price}</td>
+                <td>${trsc.commission}</td>
+            </tr>
+        </tbody>
+    </table>
+</template>

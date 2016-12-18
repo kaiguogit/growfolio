@@ -1,0 +1,9 @@
+<template>
+    <require from="./transaction-table"></require>
+    <require from="./performance-table"></require>
+
+    <h1>${name}</h1>
+    <a repeat.for="table of tables" click.delegate="$parent.selectTable(table)">${table}</a>
+    <transaction-table if.bind="currentTable === 'transactions'"></transaction-table>
+    <performance-table if.bind="currentTable === 'performance'"></performance-table>
+</template>

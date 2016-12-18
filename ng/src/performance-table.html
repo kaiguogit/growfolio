@@ -1,0 +1,16 @@
+<template>
+    <table class="table" aurelia-table="data.bind: holdings; display-data.bind: $displayData">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Cost Basis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr repeat.for="holding of $displayData">
+                <td>${holding.symbol}</td>
+                <td>${holding.cost}</td>
+            </tr>
+        </tbody>
+    </table>
+</template>
