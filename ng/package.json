@@ -15,8 +15,10 @@
     "bootstrap": "^3.3.7",
     "jquery": "^3.1.1",
     "nprogress": "^0.2.0",
+    "promise-polyfill": "^6.0.2",
     "requirejs": "^2.3.2",
-    "text": "github:requirejs/text#latest"
+    "text": "github:requirejs/text#latest",
+    "whatwg-fetch": "^2.0.1"
   },
   "peerDependencies": {},
   "devDependencies": {
