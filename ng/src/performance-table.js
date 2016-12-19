@@ -1,71 +1,27 @@
-import {WebAPI} from './web-api';
+import {HoldingService} from './services/holding-service';
+
+const REFRESH_INTERVAL = 10000;
+const UP = "up";
+const DOWN = "down";
 
 export class PerformanceTable {
-    static inject = [WebAPI];
+    static inject = [HoldingService];
 
-    constructor(api) {
-        this.api = api;
-        this.holdings = {};
-    }
-
-    _getTransactions() {
-        return this.api.getTransactionList()
-        .then(transactions => this.transactions = transactions);
-    }
-
-    created() {
-        this._loadData();
-    }
-
-    _loadData() {
-        this._getTransactions().then( () => {
-            let holdingMap = {};
-            //TODO sort by date
-            this.transactions.forEach((trsc) => {
-                if (!holdingMap[trsc.symbol]) {
-                    holdingMap[trsc.symbol] = {
-                        symbol: trsc.symbol,
-                        sellTransactions: [],
-                        buyTransactions: [],
-                        cost: 0
-                    };
-                }
-                if (trsc.type === 'buy') {
-                    holdingMap[trsc.symbol].buyTransactions.push(trsc)
-                } else {
-                    holdingMap[trsc.symbol].sellTransactions.push(trsc);
-                }
-            });
-
-            this._calcHoldingCost(holdingMap);
-            this.holdings = Object.values(holdingMap);
+    constructor(holdingService) {
+        this.holdingService = holdingService;
+        this.holdingService.init().then(() => {
+            this.holdings = this.holdingService.holdings;
         });
+        setInterval(() => this.holdingService.refresh(), REFRESH_INTERVAL);
+
     }
-
-    _calcHoldingCost(holdings) {
-        Object.keys(holdings).forEach((symbol) => {
-            let holding = holdings[symbol];
-            let soldShares = holding.sellTransactions.reduce((acc, cur) => {
-                    return acc + cur.shares;
-            }, 0);
-
-            // minus sold shares from each buy transaction until sold shares
-            // is empty. Calculate the buy cost based on left over shares on
-            // each transaction.
-            holding.cost = holding.buyTransactions.reduce((acc, trsc) => {
-                let leftShares, cost;
-
-                if (trsc.shares < soldShares) {
-                    leftShares = 0;
-                    soldShares -= trsc.shares;
-                } else {
-                    leftShares = trsc.shares - soldShares;
-                    soldShares = 0;
-                }
-                cost = (leftShares / trsc.shares) *
-                    (trsc.shares * trsc.price + trsc.commission);
-                return acc + cost;
-            }, 0);
-        });
+    numberColor(number) {
+        if (number > 0) {
+            return UP;
+        }
+        if (number < 0) {
+            return DOWN;
+        }
+        return '';
     }
 }

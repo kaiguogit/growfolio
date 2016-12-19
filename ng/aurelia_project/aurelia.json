@@ -158,7 +158,10 @@
             "resources": [
               "au-table-pagination.html"
             ]
-          }
+          },
+          "aurelia-fetch-client",
+          "whatwg-fetch",
+          "numeral"
         ]
       }
     ]

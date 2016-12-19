@@ -19,7 +19,7 @@ let transactions = [
     symbol: 'YHOO',
     type: 'buy',
     shares: 1000,
-    price: 1.00,
+    price: 40.00,
     commission: 50.00,
     date: new Date(2016, 11, 7)
   },
@@ -28,7 +28,7 @@ let transactions = [
     symbol: 'YHOO',
     type: 'buy',
     shares: 1000,
-    price: 1.10,
+    price: 40.10,
     commission: 30.00,
     date: new Date(2016, 11, 8)
   },
@@ -37,7 +37,7 @@ let transactions = [
     symbol: 'YHOO',
     type: 'sell',
     shares: 1500,
-    price: 1.20,
+    price: 41.20,
     commission: 0.00,
     date: new Date(2016, 11, 15)
   }

@@ -1,1 +1,8 @@
 body { padding-top: 70px; }
+
+.up {
+    color: #093;
+}
+.down {
+    color: #d14836;
+}

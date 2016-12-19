@@ -8,9 +8,9 @@ export class Portfolio {
 
     constructor(api) {
         this.api = api;
-        this.name = "p1";
-        this.currentTable = TRSC;
-        this.tables = [TRSC, PERF];
+        this.name = "Portfolio1";
+        this.currentTable = PERF;
+        this.tables = [PERF, TRSC];
     }
 
     selectTable(table) {

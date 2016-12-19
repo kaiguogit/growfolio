@@ -1,4 +1,6 @@
 <template>
+    <require from="./value-converters/capitalize"></require>
+
     <table class="table" aurelia-table="data.bind: transactions; display-data.bind: $displayData">
         <thead>
             <tr>
@@ -13,7 +15,7 @@
         <tbody>
             <tr repeat.for="trsc of $displayData">
                 <td>${trsc.symbol}</td>
-                <td>${trsc.type}</td>
+                <td>${trsc.type | capitalize}</td>
                 <td>${trsc.date.toDateString()}</td>
                 <td>${trsc.shares}</td>
                 <td>${trsc.price}</td>
