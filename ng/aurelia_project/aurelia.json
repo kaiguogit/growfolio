@@ -161,7 +161,8 @@
           },
           "aurelia-fetch-client",
           "whatwg-fetch",
-          "numeral"
+          "numeral",
+          "moment"
         ]
       }
     ]

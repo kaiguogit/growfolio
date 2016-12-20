@@ -76,21 +76,21 @@ export class WebAPI {
     });
   }
 
-  saveHolding(holding){
+  saveTransaction(transaction){
     this.isRequesting = true;
+    console.log("transaction is ", transaction);
     return new Promise(resolve => {
       setTimeout(() => {
-        let instance = JSON.parse(JSON.stringify(holding));
-        let found = holdings.filter(x => x.id == holding.id)[0];
+        let instance = JSON.parse(JSON.stringify(transaction));
+        let found = transactions.filter(x => x.id == transaction.id)[0];
 
         if(found){
-          let index = holdings.indexOf(found);
-          holdings[index] = instance;
+          let index = transactions.indexOf(found);
+          transactions[index] = instance;
         }else{
           instance.id = getId();
-          holdings.push(instance);
+          transactions.push(instance);
         }
-
         this.isRequesting = false;
         resolve(instance);
       }, latency);

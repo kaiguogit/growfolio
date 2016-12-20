@@ -1,7 +1,7 @@
 <template>
   <require from="bootstrap/css/bootstrap.css"></require>
   <require from="./styles.css"></require>
-  <require from="./portfolio"></require>
+  <require from="./portfolio/portfolio"></require>
 
   <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="navbar-header">
@@ -15,8 +15,6 @@
   <loading-indicator loading.bind="router.isNavigating || api.isRequesting"></loading-indicator>
 
   <div class="container">
-    <div class="row">
-      <portfolio class="col-md-10 col-md-offset-1 "></portfolio>
-    </div>
+    <portfolio></portfolio>
   </div>
 </template>

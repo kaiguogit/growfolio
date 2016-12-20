@@ -10,17 +10,20 @@ export class HoldingService {
         this.holdings = [];
     }
 
-    init() {
-        this.holdings = [];
+    /*
+     * Load transaction, quotes and calculate properties.
+     */
+    load() {
         return this._loadTransactionsToHolding().then(() => {
-            return this._loadQuotes();
-        }).then(() => {
-            this._calculate(this.holdings);
+            return this.refresh();
         });
     }
 
+    /*
+     * Refresh quotes and calculate properties.
+     */
     refresh() {
-        this._loadQuotes().then(() => this._calculate(this.holdings));
+        return this._loadQuotes().then(() => this._calculate(this.holdings));
     }
 
     _loadTransactionsToHolding() {
@@ -52,7 +55,6 @@ export class HoldingService {
         let symbols = this.holdings.map(x => x.symbol);
         // save quote into each symbol holding
         return this.realAPI.getQuotes(symbols).then(quotes => {
-            console.log("quotes is", quotes);
             quotes.forEach(quote => {
                 let holding = this.holdings.find(x => x.symbol === quote.symbol);
                 holding.quote = quote;

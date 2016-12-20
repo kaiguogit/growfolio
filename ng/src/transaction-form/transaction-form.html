@@ -1,0 +1,39 @@
+<template>
+    <require from="../value-converters/capitalize"></require>
+
+    <form class="form" role="form">
+        <div class="row row-sm-padding">
+            <div class="col-xs-1 form-group">
+                <label for="type">Type</label>
+                <select id="type" name="types" class="form-control" value.bind="transaction.type">
+                    <option repeat.for="type of types" value.bind="type">${type | capitalize}</option>
+                </select>
+            </div>
+            <div class="col-xs-1 form-group">
+                <label for="symbol">Symbol</label>
+                <input type="text" class="form-control" id="symbol" value.bind="transaction.symbol">
+            </div>
+            <div class="col-xs-2 form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" value.bind="transaction.date">
+            </div>
+            <div class="col-xs-1 form-group">
+                <label for="shares">Shares</label>
+                <input type="number" class="form-control" id="shares" value.bind="transaction.shares">
+            </div>
+            <div class="col-xs-1 form-group">
+                <label for="price">Price</label>
+                <input type="number" class="form-control" id="price" value.bind="transaction.price">
+            </div>
+            <div class="col-xs-1 form-group">
+                <label for="commission">Commission</label>
+                <input type="number" class="form-control" id="commission" value.bind="transaction.commission">
+            </div>
+            <div class="col-xs-1 form-group">
+                <label for="notes">Notes</label>
+                <input type="text" class="form-control" id="notes" value.bind="transaction.notes">
+            </div>
+        </div>
+        <button class="btn btn-primary" click.delegate="save()" disabled.bind="!canSave">Add to portfolio</button>
+    </form>
+</template>

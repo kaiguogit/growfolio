@@ -1,0 +1,23 @@
+<template>
+    <require from="../transaction-table/transaction-table"></require>
+    <require from="../performance-table/performance-table"></require>
+    <require from="../value-converters/capitalize"></require>
+    <require from="../transaction-form/transaction-form"></require>
+
+    <h1>${name}</h1>
+    <ul class="nav nav-tabs">
+        <li repeat.for="table of tables">
+            <a href="#" click.delegate="$parent.selectTable(table)">${table | capitalize}</a>
+        </li>
+    </ul>
+    <div class="btn-group">
+        <a type="button" class="btn btn-default" click.delegate="toggleTransactionForm()">
+            Add Transaction
+        </a>
+    </div>
+    <transaction-form if.bind="transactionFormOpened"></transaction-form>
+    <section>
+        <transaction-table if.bind="currentTable === 'transactions'"></transaction-table>
+        <performance-table if.bind="currentTable === 'performance'"></performance-table>
+    </section>
+</template>
