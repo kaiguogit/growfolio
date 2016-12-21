@@ -36,6 +36,7 @@ export class API {
         return this.client.fetch(makeUrl(url, params))
             .then(response => response.json())
             .then(data => {
+                console.log("quote is", data);
                 let result = data.query.results.quote;
                 //always return an Array.
                 return Array.isArray(result) ? result : [result];

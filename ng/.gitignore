@@ -1,3 +1,7 @@
 node_modules
 .idea
 .DS_STORE
+ng/scripts/app-bundle.js
+ng/scripts/app-bundle.js.map
+ng/scripts/vendor-bundle.js
+scripts/

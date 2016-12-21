@@ -76,9 +76,8 @@ export class WebAPI {
     });
   }
 
-  saveTransaction(transaction){
+  saveTransaction(transaction) {
     this.isRequesting = true;
-    console.log("transaction is ", transaction);
     return new Promise(resolve => {
       setTimeout(() => {
         let instance = JSON.parse(JSON.stringify(transaction));
@@ -95,5 +94,16 @@ export class WebAPI {
         resolve(instance);
       }, latency);
     });
+  }
+
+  deleteTransaction(transaction) {
+    this.isRequesting = true;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        transactions.splice(transactions.findIndex(x=> x.id === transaction.id), 1);
+        this.isRequesting = false;
+        resolve();
+      }, latency);
+    })
   }
 }

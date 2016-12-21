@@ -34,6 +34,7 @@ const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
+const transactionController = require('./controllers/transaction');
 
 /**
  * API keys and Passport configuration.
@@ -83,6 +84,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+app.route('/api/transactions')
+  .get(transactionController.getTransactions)
+  .post(transactionController.createTransactions);
+
+
 app.use((req, res, next) => {
   if (req.path === '/api/upload') {
     next();

@@ -1,6 +1,6 @@
 import {WebAPI} from '../web-api';
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {TransactionAdded} from '../messages';
+import {TransactionAdded, DeleteTransaction} from '../messages';
 
 export class TransactionTable {
     static inject = [WebAPI, EventAggregator];
@@ -23,5 +23,16 @@ export class TransactionTable {
 
     _subscriptEvents() {
         this.ea.subscribe(TransactionAdded, msg => this.load());
+        this.ea.subscribe(DeleteTransaction, msg => this.deleteTransaction());
+    }
+
+    rowSelected(trsc) {
+        this.transactions.forEach(x => x.isSelected = false);
+        trsc.isSelected = true;
+    }
+
+    deleteTransaction() {
+        let selectedTransaction = this.transactions.find(x => x.isSelected);
+        this.api.deleteTransaction(selectedTransaction).then(() => this.load());
     }
 }

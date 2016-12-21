@@ -14,7 +14,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr repeat.for="trsc of $displayData">
+            <tr repeat.for="trsc of $displayData"
+                class="${trsc.isSelected ? 'info' : ''}"
+                click.delegate="rowSelected(trsc)">
                 <td>${trsc.symbol}</td>
                 <td>${trsc.type | capitalize}</td>
                 <td>${trsc.date | dateFormat:'M/D/YYYY'}</td>

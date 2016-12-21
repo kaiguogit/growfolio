@@ -14,6 +14,9 @@
         <a type="button" class="btn btn-default" click.delegate="toggleTransactionForm()">
             Add Transaction
         </a>
+        <a type="button" class="btn btn-default" click.delegate="deleteTransaction()">
+            Delete Transaction
+        </a>
     </div>
     <transaction-form if.bind="transactionFormOpened"></transaction-form>
     <section>
