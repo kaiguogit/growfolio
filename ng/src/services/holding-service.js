@@ -1,12 +1,18 @@
-import {WebAPI} from '../web-api';
 import {API} from './api';
 
-export class HoldingService {
-    static inject = [WebAPI, API];
+function errorHandler(error) {
+    console.log(error);
+}
 
-    constructor(api, realAPI) {
+// Empty function for error handling
+// THere must be a better way like angular.noop
+const NOOP = function() {}
+
+export class HoldingService {
+    static inject = [API];
+
+    constructor(api) {
         this.api = api;
-        this.realAPI = realAPI;
         this.holdings = [];
     }
 
@@ -16,21 +22,24 @@ export class HoldingService {
     load() {
         return this._loadTransactionsToHolding().then(() => {
             return this.refresh();
-        });
+        }, errorHandler);
     }
 
     /*
      * Refresh quotes and calculate properties.
      */
     refresh() {
-        return this._loadQuotes().then(() => this._calculate(this.holdings));
+        return this._loadQuotes().then(() => this._calculate(this.holdings), NOOP);
     }
 
     _loadTransactionsToHolding() {
         // make it short
         let map = this.holdings;
-        return this.api.getTransactionList().then((transactions) => {
+        return this.api.getTransactions().then((transactions) => {
             //TODO sort by date
+            if (!(Array.isArray(transactions) && transactions.length)) {
+                return new Promise.reject(new Error("Transactions is empty or not array."));
+            }
             transactions.forEach((trsc) => {
                 let holding = map.find(x => x.symbol === trsc.symbol);
                 if (!holding) {
@@ -48,18 +57,22 @@ export class HoldingService {
                     holding.sellTransactions.push(trsc);
                 }
             });
-        });
+        }, errorHandler);
     }
 
     _loadQuotes() {
         let symbols = this.holdings.map(x => x.symbol);
+
+        if (symbols.length === 0 ) {
+            return new Promise.reject(new Error("no holdings"));
+        }
         // save quote into each symbol holding
-        return this.realAPI.getQuotes(symbols).then(quotes => {
+        return this.api.getQuotes(symbols).then(quotes => {
             quotes.forEach(quote => {
                 let holding = this.holdings.find(x => x.symbol === quote.symbol);
                 holding.quote = quote;
             })
-        });
+        }, errorHandler);
     }
 
     _calculate(holdings) {

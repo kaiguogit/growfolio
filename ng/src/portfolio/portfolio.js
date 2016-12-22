@@ -1,15 +1,13 @@
-import {WebAPI} from '../web-api';
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {TransactionAdded, DeleteTransaction} from '../messages';
+import {DeleteTransaction} from '../messages';
 
 const TRSC = "transactions";
 const PERF = "performance";
 
 export class Portfolio {
-    static inject = [WebAPI, EventAggregator];
+    static inject = [EventAggregator];
 
-    constructor(api, ea) {
-        this.api = api;
+    constructor(ea) {
         this.ea = ea;
         this._subscriptEvents();
         this.name = "Portfolio1";
@@ -27,7 +25,6 @@ export class Portfolio {
     }
 
     _subscriptEvents() {
-        this.ea.subscribe(TransactionAdded, () => this.transactionFormOpened = false);
     }
 
     deleteTransaction() {

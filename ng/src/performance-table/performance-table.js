@@ -1,6 +1,6 @@
 import {HoldingService} from '../services/holding-service';
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {TransactionAdded} from '../messages';
+import {Reload} from '../messages';
 
 const REFRESH_INTERVAL = 10000;
 const UP = "up";
@@ -30,6 +30,6 @@ export class PerformanceTable {
     }
 
     _subscriptEvents() {
-        this.ea.subscribe(TransactionAdded, msg => this.holdingService.load());
+        this.ea.subscribe(Reload, msg => this.holdingService.load());
     }
 }

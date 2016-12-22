@@ -18,7 +18,7 @@
             Delete Transaction
         </a>
     </div>
-    <transaction-form if.bind="transactionFormOpened"></transaction-form>
+    <transaction-form if.bind="transactionFormOpened" opened.bind="transactionFormOpened"></transaction-form>
     <section>
         <transaction-table if.bind="currentTable === 'transactions'"></transaction-table>
         <performance-table if.bind="currentTable === 'performance'"></performance-table>

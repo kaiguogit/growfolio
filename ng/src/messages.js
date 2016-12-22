@@ -1,8 +1,5 @@
-export class TransactionAdded {
-  constructor(transaction) {
-    this.transaction = transaction;
-  }
+export class DeleteTransaction {
 }
 
-export class DeleteTransaction {
+export class Reload {
 }

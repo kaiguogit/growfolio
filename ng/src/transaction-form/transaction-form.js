@@ -1,11 +1,13 @@
-import {WebAPI} from '../web-api';
+import {API} from '../services/api';
 import {EventAggregator} from 'aurelia-event-aggregator';
-import {TransactionAdded} from '../messages';
+import {Reload} from '../messages';
+import {bindable, bindingMode} from 'aurelia-framework';
 
 export class TransactionForm {
-    static inject = [WebAPI, EventAggregator];
+    static inject = [API, EventAggregator];
     types = ['buy', 'sell'];
 
+    @bindable({defaultBindingMode: bindingMode.twoWay}) opened;
     constructor(api, ea) {
         this.api = api;
         this.ea = ea;
@@ -23,8 +25,9 @@ export class TransactionForm {
     save() {
         let temp = JSON.parse(JSON.stringify(this.transaction))
         temp.date = new Date(temp.date);
-        this.api.saveTransaction(temp).then(transaction => {
-            this.ea.publish(new TransactionAdded(transaction));
+        this.api.createTransaction(temp).then(transaction => {
+            this.ea.publish(new Reload());
+            this.opened = false;
             this.transaction = {};
         });
     }

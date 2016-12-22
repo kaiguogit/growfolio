@@ -1,8 +1,13 @@
 // polyfills
 import 'whatwg-fetch';
-import {HttpClient} from 'aurelia-fetch-client';
+import {HttpClient, json} from 'aurelia-fetch-client';
 
 let client = new HttpClient();
+const BASE_URI = "http://localhost:3000/api/"
+
+function errorHandler(error) {
+    console.log(error);
+}
 
 function queryParams(params) {
     let esc = encodeURIComponent;
@@ -40,6 +45,42 @@ export class API {
                 let result = data.query.results.quote;
                 //always return an Array.
                 return Array.isArray(result) ? result : [result];
+            });
+    }
+
+    getTransactions() {
+        // Optional mode: no-cors
+        // return this.client.fetch(BASE_URI + "transactions", {mode: "no-cors"})
+        return this.client.fetch(BASE_URI + "transactions")
+            .then(response => response.json())
+            .then(data => {
+                return data.result;
             })
+            .catch(errorHandler);
+    }
+
+    createTransaction(trsc) {
+        return this.client.fetch(BASE_URI + "transactions", {
+                method: 'post',
+                body: json(trsc)
+            })
+            .then(response => response.json())
+            .then(data => {
+                return data.result;
+            })
+            .catch(errorHandler);
+    }
+
+    deleteTransaction(trsc) {
+        return this.client.fetch(BASE_URI + "transactions", {
+                method: 'delete',
+                body: json({id: trsc._id})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.result.message);
+                return data.result;
+            })
+            .catch(errorHandler);
     }
 }
