@@ -41,7 +41,8 @@ let transactions = [
     commission: 0.00,
     date: new Date(2016, 11, 15).toDateString()
   }
-]
+];
+export default transactions;
 
 export class WebAPI {
   isRequesting = false;
@@ -104,6 +105,6 @@ export class WebAPI {
         this.isRequesting = false;
         resolve();
       }, latency);
-    })
+    });
   }
 }
