@@ -6,9 +6,9 @@ import { bindActionCreators } from 'redux';
 import TscsTable from '../components/TscsTable.jsx';
 import TscsForm from '../components/TscsForm.jsx';
 
-class TrscsPage extends React.Component {
+class Trscs extends React.Component {
     static propTypes = {
-      tscs: PropTypes.array.isRequired,
+      items: PropTypes.array.isRequired,
       isFetching: PropTypes.bool.isRequired,
       lastUpdated: PropTypes.number,
       actions: PropTypes.object.isRequired
@@ -26,8 +26,8 @@ class TrscsPage extends React.Component {
     }
 
     render() {
-        const { isFetching, tscs, lastUpdated } = this.props;
-        const isEmpty = tscs.length === 0;
+        const { isFetching, items, lastUpdated } = this.props;
+        const isEmpty = items.length === 0;
         return (
             <div>
                 <TscsForm onSubmit={this.props.actions.createTscs}/>
@@ -49,21 +49,19 @@ class TrscsPage extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable tscs={tscs} removeTscs={this.props.actions.removeTscs}/>
+                      <TscsTable tscs={items} removeTscs={this.props.actions.removeTscs}/>
                     </div>
                 }
             </div>
         );
-
     }
 }
 
 const mapStateToProps = state => {
-    const { tscs: tscsState } = state;
-    const { isFetching, items: tscs, lastUpdated } = tscsState;
+    const { isFetching, items, lastUpdated } = state.tscs;
     return {
         isFetching,
-        tscs,
+        items,
         lastUpdated
     };
 };
@@ -77,4 +75,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TrscsPage);
+)(Trscs);

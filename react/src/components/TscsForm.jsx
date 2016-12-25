@@ -1,4 +1,6 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
+
+import { Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
 class TscsForm extends React.Component {
 
@@ -31,48 +33,55 @@ class TscsForm extends React.Component {
 
     render() {
         return (
-            <form className="form form-inline" role="form">
-                <div className="row row-sm-padding">
-                    <div className="form-group">
-                        <label htmlFor="type">Type</label>
-                        <input type="text" name="type" className="form-control" value={this.state.type}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="symbol">Symbol</label>
-                        <input type="text" name="symbol" className="form-control" value={this.state.symbol}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="date">Date</label>
-                        <input type="date" name="date" className="form-control" value={this.state.date}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="shares">Shares</label>
-                        <input type="number" name="shares" className="form-control" value={this.state.shares}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="price">Price</label>
-                        <input type="number" name="price" className="form-control" value={this.state.price}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="commission">Commission</label>
-                        <input type="number" name="commission" className="form-control" value={this.state.commission}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="notes">Notes</label>
-                        <input type="text" name="notes" className="form-control" value={this.state.notes}
-                            onChange={this.handleInputChange}/>
-                    </div>
-                </div>
+            <Form inline>
+                <FormGroup controlId="formControlsSelect">
+                    <ControlLabel>Select</ControlLabel>
+                    {' '}
+                    <FormControl componentClass="select" placeholder="select" name="type" value={this.state.type} onChange={this.handleInputChange}>
+                    <option value="buy">Buy</option>
+                    <option value="sell">Sell</option>
+                    </FormControl>
+                </FormGroup>
+                {' '}
+                <FormGroup controlId="formInlineSymbol">
+                    <ControlLabel>Symbol</ControlLabel>
+                    {' '}
+                    <FormControl type="text" placeholder="Symbol" name="symbol" value={this.state.symbol} onChange={this.handleInputChange}/>
+                </FormGroup>
+                {' '}
+                <FormGroup controlId="formInlineDate">
+                    <ControlLabel>Date</ControlLabel>
+                    {' '}
+                    <FormControl type="date" name="date" value={this.state.date} onChange={this.handleInputChange}/>
+                </FormGroup>
+                {' '}
+                <FormGroup controlId="formInlineShares">
+                    <ControlLabel>Shares</ControlLabel>
+                    {' '}
+                    <FormControl type="number" name="shares" value={this.state.shares} onChange={this.handleInputChange}/>
+                </FormGroup>
+                {' '}
+                <FormGroup controlId="formInlinePrice">
+                    <ControlLabel>Price</ControlLabel>
+                    {' '}
+                    <FormControl type="number" name="price" value={this.state.price} onChange={this.handleInputChange}/>
+                </FormGroup>
+                {' '}
+                <FormGroup controlId="formInlineCommission">
+                    <ControlLabel>Commission</ControlLabel>
+                    {' '}
+                    <FormControl type="number" name="commission" value={this.state.commission} onChange={this.handleInputChange}/>
+                </FormGroup>
+                {' '}
+                <FormGroup controlId="formInlineNotes">
+                    <ControlLabel>Notes</ControlLabel>
+                    {' '}
+                    <FormControl type="text" name="notes" value={this.state.notes} onChange={this.handleInputChange}/>
+                </FormGroup>
                 <button className="btn btn-primary" onClick={this.handleSubmit}>
                     Add Transaction
                 </button>
-            </form>
+            </Form>
         );
     }
 }

@@ -2,34 +2,34 @@
 // import WebAPI from '../services/web-api';
 // const api = new WebAPI();
 
+import * as types from '../constants/actionTypes';
+
 const BASE_URI = 'http://localhost:8000/api/';
-/*
- * Action Constants
- */
-export const REQUEST_TSCS = 'REQUEST_TSCS';
-export const RECEIVE_TSCS = 'RECEIVE_TSCS';
-export const ADD_TSCS = 'ADD_TSCS';
-export const DELETE_TSCS = 'DELETE_TSCS';
+
 /*
  * Actions
  */
 export const requestTscs = () => ({
-    type: REQUEST_TSCS
+    type: types.REQUEST_TSCS
 });
 export const receiveTscs = (data) => ({
-    type: RECEIVE_TSCS,
+    type: types.RECEIVE_TSCS,
     tscs: data,
     receivedAt: Date.now()
 });
 export const addTscs = (tsc) => ({
-    type: ADD_TSCS,
+    type: types.ADD_TSCS,
     tsc: tsc,
     receivedAt: Date.now()
 });
 export const deleteTscs = (id) => ({
-    type: DELETE_TSCS,
+    type: types.DELETE_TSCS,
     id: id,
     receivedAt: Date.now()
+});
+export const selectTab = (tab) => ({
+    type: types.SELECT_TAB,
+    tab
 });
 /*
  * Async Actions

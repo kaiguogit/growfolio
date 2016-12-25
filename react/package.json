@@ -29,6 +29,7 @@
   "author": "Kai GUo",
   "license": "MIT",
   "dependencies": {
+    "nprogress": "0.2.0",
     "object-assign": "4.1.0",
     "react": "15.4.1",
     "react-bootstrap": "0.30.7",

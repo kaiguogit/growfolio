@@ -23,6 +23,7 @@ class TscsTable extends React.Component {
                                 </th>
                             );
                         })}
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>

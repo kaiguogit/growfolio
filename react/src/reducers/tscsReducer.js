@@ -1,23 +1,23 @@
 import initialState from './initial-state';
-import {REQUEST_TSCS, RECEIVE_TSCS, ADD_TSCS, DELETE_TSCS} from '../actions';
+import * as types from '../constants/actionTypes';
 
 const tscs = (state = initialState.tscs, action) => {
     let newState = {};
 
     switch (action.type) {
-        case REQUEST_TSCS:
+        case types.REQUEST_TSCS:
             return {
                 ...state,
                 isFetching: true
             };
-        case RECEIVE_TSCS:
+        case types.RECEIVE_TSCS:
             return {
                 ...state,
                 isFetching: false,
                 items: action.tscs,
                 lastUpdated: action.receivedAt
             };
-        case ADD_TSCS:
+        case types.ADD_TSCS:
             return {
                 ...state,
                 isFetching: false,
@@ -27,7 +27,7 @@ const tscs = (state = initialState.tscs, action) => {
                 ],
                 lastUpdated: action.receivedAt
             };
-        case DELETE_TSCS:
+        case types.DELETE_TSCS:
             newState.isFetching = false;
             newState.lastUpdated = action.receivedAt;
             newState.items = state.items.filter((x) => x._id !== action.id);
