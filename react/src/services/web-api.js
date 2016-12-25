@@ -1,3 +1,5 @@
+'use strict';
+
 let latency = 200;
 let id = 0;
 
@@ -7,7 +9,7 @@ function getId(){
 
 let holdings = [
   {
-    id: getId(),
+    _id: getId(),
     symbol: 'YHOO',
     price: 123
   }
@@ -15,7 +17,7 @@ let holdings = [
 
 let transactions = [
   {
-    id: getId(),
+    _id: getId(),
     symbol: 'YHOO',
     type: 'buy',
     shares: 1000,
@@ -24,7 +26,7 @@ let transactions = [
     date: new Date(2016, 11, 7).toDateString()
   },
   {
-    id: getId(),
+    _id: getId(),
     symbol: 'YHOO',
     type: 'buy',
     shares: 1000,
@@ -33,7 +35,7 @@ let transactions = [
     date: new Date(2016, 11, 8).toDateString()
   },
   {
-    id: getId(),
+    _id: getId(),
     symbol: 'YHOO',
     type: 'sell',
     shares: 1500,
@@ -42,21 +44,19 @@ let transactions = [
     date: new Date(2016, 11, 15).toDateString()
   }
 ];
-export default transactions;
 
-export class WebAPI {
-  isRequesting = false;
+class WebAPI {
 
   getTransactionList() {
-    return this._sendArray(transactions);
+    return this._sendArray(transactions)
   }
 
   getHoldingList(){
-    return this._sendArray(holdings);
+    return this._sendArray(holdings)
   }
 
   _sendArray(data) {
-    this.isRequesting = true;
+    this.isRequesting = true
     return new Promise(resolve => {
       setTimeout(() => {
         // return a clone of data
@@ -108,3 +108,5 @@ export class WebAPI {
     });
   }
 }
+
+export default WebAPI;
