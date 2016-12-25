@@ -38,22 +38,22 @@ exports.getApi = (req, res) => {
  * Yahoo quotes
  */
 exports.getQuotes = (req, res, next) => {
-  var BASE_URI = 'https://query.yahooapis.com/v1/public/yql';
-  var qs = {
-    q: `select * from yahoo.finance.quotes where symbol in ("YHOO","AAPL","GOOG","MSFT")`,
-    format:'json',
+  const BASE_URI = 'https://query.yahooapis.com/v1/public/yql';
+  const qs = {
+    q: 'select * from yahoo.finance.quotes where symbol in ("YHOO","AAPL","GOOG","MSFT")',
+    format: 'json',
     diagnostics: 'true',
     env: 'store://datatables.org/alltableswithkeys',
     callback: ''
-  }
-  request.get({url: BASE_URI, qs: qs}, (err, request, body) => {
+  };
+  request.get({ url: BASE_URI, qs }, (err, request, body) => {
     if (err) { return next(err); }
     if (request.statusCode === 403) {
       return next(new Error('Error when getting quotes'));
     }
-    res.send({response: JSON.parse(body)});
+    res.send({ response: JSON.parse(body) });
   });
-}
+};
 
 /**
  * GET /api/foursquare
