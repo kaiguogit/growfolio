@@ -32,6 +32,16 @@ const tscs = (state = initialState.tscs, action) => {
             newState.lastUpdated = action.receivedAt;
             newState.items = state.items.filter((x) => x._id !== action.id);
             return newState;
+        case types.OPEN_TSCS_FORM:
+            return {
+                ...state,
+                formOpened: true
+            };
+        case types.CLOSE_TSCS_FORM:
+            return {
+                ...state,
+                formOpened: false
+            };
         default:
             return state;
     }

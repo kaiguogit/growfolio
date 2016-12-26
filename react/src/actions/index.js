@@ -31,6 +31,12 @@ export const selectTab = (tab) => ({
     type: types.SELECT_TAB,
     tab
 });
+export const openTscsForm = () => ({
+    type: types.OPEN_TSCS_FORM
+});
+export const closeTscsForm = () => ({
+    type: types.CLOSE_TSCS_FORM
+});
 /*
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware

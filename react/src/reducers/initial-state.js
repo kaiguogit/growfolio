@@ -1,6 +1,7 @@
 export default {
     tscs: {
         isFetching: false,
-        items: []
+        items: [],
+        formOpened: false
     }
 };

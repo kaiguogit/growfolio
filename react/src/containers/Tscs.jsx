@@ -3,14 +3,17 @@ import * as actions from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { Button } from 'react-bootstrap';
 import TscsTable from '../components/TscsTable.jsx';
 import TscsForm from '../components/TscsForm.jsx';
+
 
 class Trscs extends React.Component {
     static propTypes = {
       items: PropTypes.array.isRequired,
       isFetching: PropTypes.bool.isRequired,
       lastUpdated: PropTypes.number,
+      formOpened: PropTypes.bool.isRequired,
       actions: PropTypes.object.isRequired
     }
 
@@ -25,12 +28,23 @@ class Trscs extends React.Component {
         this.props.actions.fetchTscs();
     }
 
+    handleFormSubmit = tsc => {
+        this.props.actions.createTscs(tsc);
+        this.props.actions.closeTscsForm();
+    }
+
     render() {
         const { isFetching, items, lastUpdated } = this.props;
         const isEmpty = items.length === 0;
         return (
             <div>
-                <TscsForm onSubmit={this.props.actions.createTscs}/>
+                <Button bsStyle="info" onClick={this.props.formOpened ? this.props.actions.closeTscsForm : this.props.actions.openTscsForm}>
+                    Add Transaction
+                </Button>
+                {/* Formm stay opened during fetching */}
+                {(this.props.isFetching || this.props.formOpened) &&
+                    <TscsForm onSubmit={this.handleFormSubmit} isFetching={this.props.isFetching}/>
+                }
                 <p>
                     {lastUpdated &&
                         <span>
@@ -58,12 +72,7 @@ class Trscs extends React.Component {
 }
 
 const mapStateToProps = state => {
-    const { isFetching, items, lastUpdated } = state.tscs;
-    return {
-        isFetching,
-        items,
-        lastUpdated
-    };
+    return state.tscs;
 };
 
 const mapDispatchToProps = dispatch => {

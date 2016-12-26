@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 
-import { Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
 class TscsForm extends React.Component {
 
     static propTypes = {
-        onSubmit: PropTypes.func.isRequired
+        onSubmit: PropTypes.func.isRequired,
+        isFetching: PropTypes.bool.isRequired
     };
 
     state = {
@@ -78,9 +79,9 @@ class TscsForm extends React.Component {
                     {' '}
                     <FormControl type="text" name="notes" value={this.state.notes} onChange={this.handleInputChange}/>
                 </FormGroup>
-                <button className="btn btn-primary" onClick={this.handleSubmit}>
-                    Add Transaction
-                </button>
+                <Button bsStyle="primary" onClick={this.handleSubmit} disabled={this.props.isFetching}>
+                    Save
+                </Button>
             </Form>
         );
     }
