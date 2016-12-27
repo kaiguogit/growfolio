@@ -29,20 +29,20 @@ class TscsTable extends React.Component {
                 <tbody>
                     {tscs.map(tsc => {
                         return (
-                        <tr key={tsc._id}>
-                            {COLUMNS.map(columnName => {
-                                return (
-                                    <td key={columnName}>
-                                        {tsc[columnName]}
-                                    </td>
-                                );
-                            })}
-                            <td>
-                                <button className="btn" onClick={() => this.props.removeTscs(tsc._id)}>
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
+                            <tr key={tsc._id}>
+                                {COLUMNS.map(columnName => {
+                                    return (
+                                        <td key={columnName}>
+                                            {tsc[columnName]}
+                                        </td>
+                                    );
+                                })}
+                                <td>
+                                    <button className="btn" onClick={() => this.props.removeTscs(tsc._id)}>
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
                         );
                     })}
                 </tbody>

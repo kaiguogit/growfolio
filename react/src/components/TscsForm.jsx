@@ -10,7 +10,7 @@ class TscsForm extends React.Component {
     };
 
     state = {
-        type: '',
+        type: 'buy',
         symbol: '',
         date: '',
         shares: '',

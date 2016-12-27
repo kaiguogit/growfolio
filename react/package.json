@@ -29,6 +29,7 @@
   "author": "Kai GUo",
   "license": "MIT",
   "dependencies": {
+    "lodash.isequal": "4.4.0",
     "nprogress": "0.2.0",
     "object-assign": "4.1.0",
     "react": "15.4.1",
@@ -39,7 +40,8 @@
     "react-router-redux": "4.0.7",
     "redux": "3.6.0",
     "redux-logger": "2.7.4",
-    "redux-thunk": "2.1.0"
+    "redux-thunk": "2.1.0",
+    "reselect": "2.5.4"
   },
   "devDependencies": {
     "autoprefixer": "6.5.4",

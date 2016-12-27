@@ -31,7 +31,7 @@ class Portfolio extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        selectedTab: state.porfoltioTab,
+        selectedTab: state.portfolioTab,
         isFetching: state.tscs.isFetching
      };
 };

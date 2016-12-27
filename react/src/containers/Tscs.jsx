@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as actions from '../actions';
+import * as actions from '../actions/tscs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -8,7 +8,7 @@ import TscsTable from '../components/TscsTable.jsx';
 import TscsForm from '../components/TscsForm.jsx';
 
 
-class Trscs extends React.Component {
+class Tscs extends React.Component {
     static propTypes = {
       items: PropTypes.array.isRequired,
       isFetching: PropTypes.bool.isRequired,
@@ -59,7 +59,6 @@ class Trscs extends React.Component {
                       </a>
                     }
                 </p>
-
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
@@ -84,4 +83,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Trscs);
+)(Tscs);

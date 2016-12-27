@@ -1,9 +1,7 @@
-import initialState from './initial-state';
+import initialState from './initialState';
 import * as types from '../constants/actionTypes';
 
-const tscs = (state = initialState.tscs, action) => {
-    let newState = {};
-
+const tscsReducer = (state = initialState.tscs, action) => {
     switch (action.type) {
         case types.REQUEST_TSCS:
             return {
@@ -28,10 +26,12 @@ const tscs = (state = initialState.tscs, action) => {
                 lastUpdated: action.receivedAt
             };
         case types.DELETE_TSCS:
-            newState.isFetching = false;
-            newState.lastUpdated = action.receivedAt;
-            newState.items = state.items.filter((x) => x._id !== action.id);
-            return newState;
+            return {
+                ...state,
+                isFetching: false,
+                lastUpdated: action.receivedAt,
+                items: state.items.filter((x) => x._id !== action.id)
+            };
         case types.OPEN_TSCS_FORM:
             return {
                 ...state,
@@ -47,4 +47,4 @@ const tscs = (state = initialState.tscs, action) => {
     }
 };
 
-export default tscs;
+export default tscsReducer;
