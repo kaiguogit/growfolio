@@ -5,11 +5,14 @@ import * as types from '../constants/actionTypes';
 export const requestTscs = () => ({
     type: types.REQUEST_TSCS
 });
-export const receiveTscs = (data) => ({
-    type: types.RECEIVE_TSCS,
-    tscs: data,
-    receivedAt: Date.now()
-});
+export const receiveTscs = (data) => {
+    data.forEach(tsc=> tsc.symbol = tsc.symbol.toUpperCase());
+    return {
+        type: types.RECEIVE_TSCS,
+        tscs: data,
+        receivedAt: Date.now()
+    };
+};
 export const addTscs = (tsc) => ({
     type: types.ADD_TSCS,
     tsc: tsc,

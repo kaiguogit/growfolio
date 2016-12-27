@@ -43,11 +43,13 @@ export const makeGetHoldingPerformance = () => {
         if (quote &&
             typeof newHolding.shares === 'number' &&
             typeof newHolding.cost === 'number') {
-
-            newHolding.mkt_value = newHolding.shares * quote.LastTradePriceOnly;
+            newHolding.price = quote.current_price * 1;
+            newHolding.change = quote.change * 1;
+            newHolding.change_percent = quote.change_percent * 1;
+            newHolding.mkt_value = newHolding.shares * quote.current_price;
             newHolding.gain = newHolding.mkt_value - newHolding.cost;
             newHolding.gain_percent = newHolding.gain / newHolding.cost;
-            newHolding.days_gain = newHolding.shares * quote.Change;
+            newHolding.days_gain = newHolding.shares * quote.change;
         }
 
         /** TODO: another way to achieve this is to make a better getQuote selector

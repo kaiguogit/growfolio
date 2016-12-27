@@ -50,6 +50,7 @@ const createHoldingCalculator = () => {
         }, 0);
         holding.cost = 0;
         holding.shares = 0;
+        holding.average_cost = 0;
 
         // minus sold shares from each buy transaction until sold shares
         // is empty. Calculate the buy cost based on left over shares on
@@ -69,6 +70,7 @@ const createHoldingCalculator = () => {
                 (trsc.shares * trsc.price + trsc.commission);
             holding.shares += leftShares;
         });
+        holding.average_cost = holding.cost / holding.shares;
         return holding;
     };
 
