@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 
-import { PERFORMANCE_COLUMNS } from '../constants';
+import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import { Table } from 'react-bootstrap';
-import PerformanceTableRow from '../containers/PerformanceTableRow.jsx';
+import PerformanceTableRow from '../../containers/PerformanceTableRow.jsx';
 
 
 class PerformanceTable extends React.Component {
@@ -15,10 +15,10 @@ class PerformanceTable extends React.Component {
             <Table bordered hover>
                 <thead>
                     <tr>
-                        {PERFORMANCE_COLUMNS.map(columnName => {
+                        {Object.keys(PERFORMANCE_COLUMNS).map(key => {
                             return (
-                                <th key={columnName}>
-                                    {columnName}
+                                <th key={key}>
+                                    {PERFORMANCE_COLUMNS[key].title}
                                 </th>
                             );
                         })}

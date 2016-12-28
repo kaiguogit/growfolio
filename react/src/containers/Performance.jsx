@@ -6,7 +6,9 @@ import * as actions from '../actions/quotes';
 // Memoized selector
 import { getHoldings } from '../selectors';
 
-import PerformanceTable from '../components/PerformanceTable.jsx';
+import PerformanceTable from '../components/Performance/PerformanceTable.jsx';
+
+const REFRESH_QUOTES_INTERVAL = 60000;
 
 class Performance extends React.Component {
     static propTypes = {
@@ -15,7 +17,7 @@ class Performance extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(this.refreshQuotes, 10000);
+        setInterval(this.refreshQuotes, REFRESH_QUOTES_INTERVAL);
     }
 
     componentDidUpdate() {

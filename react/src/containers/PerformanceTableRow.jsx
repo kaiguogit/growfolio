@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { makeGetHoldingPerformance } from '../selectors';
 
-import PerformanceTableRow from '../components/PerformanceTableRow.jsx';
+import PerformanceTableRow from '../components/Performance/PerformanceTableRow.jsx';
 
 class PerformanceTableRowContainer extends React.Component {
     static propTypes = {
