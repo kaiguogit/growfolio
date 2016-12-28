@@ -10,4 +10,7 @@ export const PERFORMANCE_COLUMNS = [
     'change_percent',
     'gain',
     'gain_percent',
+    'gain_overall',
+    'realized_gain',
+    'cost_overall'
 ];

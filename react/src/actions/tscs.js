@@ -6,7 +6,11 @@ export const requestTscs = () => ({
     type: types.REQUEST_TSCS
 });
 export const receiveTscs = (data) => {
-    data.forEach(tsc=> tsc.symbol = tsc.symbol.toUpperCase());
+    // process tsc for consistency.
+    data.forEach(tsc=> {
+        tsc.symbol = tsc.symbol.toUpperCase();
+        tsc.type = tsc.type.toLowerCase();
+    });
     return {
         type: types.RECEIVE_TSCS,
         tscs: data,

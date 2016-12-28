@@ -48,15 +48,15 @@ let transactions = [
 class WebAPI {
 
   getTransactionList() {
-    return this._sendArray(transactions)
+    return this._sendArray(transactions);
   }
 
   getHoldingList(){
-    return this._sendArray(holdings)
+    return this._sendArray(holdings);
   }
 
   _sendArray(data) {
-    this.isRequesting = true
+    this.isRequesting = true;
     return new Promise(resolve => {
       setTimeout(() => {
         // return a clone of data

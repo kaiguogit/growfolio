@@ -126,7 +126,6 @@ const processQuotes = quotes => {
  */
 export const fetchQuotes = symbols => dispatch => {
     if (!(symbols && Array.isArray(symbols) && symbols.length)) {
-        // console.log("empty symbols, skip fetching");
         // empty symbols, skip fetching
         return;
     }
@@ -134,13 +133,11 @@ export const fetchQuotes = symbols => dispatch => {
     return fetch(makeQuotesUrl(symbols))
         .then(response => response.text())
         .then(jsonStr=>{
-            // Google returns string with // in the front
+            // Google returns string with //, chop it off.
             return JSON.parse(jsonStr.replace(/\/\//, ''));
         })
         .then(data => {
-            console.log("response is", data);
             let result = processQuotes(data);
-            console.log("quotes result is", result);
             dispatch(receiveQuotes(result));
         })
         .catch(errorHandler);

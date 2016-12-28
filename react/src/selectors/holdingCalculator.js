@@ -42,35 +42,63 @@ const createHoldingCalculator = () => {
      * Calculate the cost of holding for specified symbol based on transcations.
      * Add keys: shares, cost.
      * @param holding: The holding for specified symbol
-     * @return holding It will calculate cost and shares for the holding
+     * @return holding with calculated
+     *     cost,
+     *     cost_overall,
+     *     shares,
+     *     average_cost,
+     *     realized_gain for the holding
      */
     const _calcHoldingCost = holding => {
-        let soldShares = holding.sellTransactions.reduce((acc, cur) => {
-          return acc + cur.shares;
-        }, 0);
         holding.cost = 0;
+        holding.cost_overall = 0;
         holding.shares = 0;
         holding.average_cost = 0;
+        holding.realized_gain = 0;
+
+        holding.buyTransactions.forEach(buyTsc => {
+            buyTsc.leftShares = buyTsc.shares;
+            buyTsc.cost = buyTsc.shares * buyTsc.price + buyTsc.commission;
+        });
 
         // minus sold shares from each buy transaction until sold shares
-        // is empty. Calculate the buy cost based on left over shares on
-        // each transaction.
-        holding.buyTransactions.forEach((trsc) => {
-            //left share for this transaction
-            let leftShares;
+        // is empty.
+        holding.sellTransactions.forEach(sellTsc => {
+            let soldShares = sellTsc.shares;
+            sellTsc.realized_gain = 0;
+            sellTsc.total_sales = sellTsc.shares * sellTsc.price - sellTsc.commission;
 
-            if (trsc.shares < soldShares) {
-                leftShares = 0;
-                soldShares -= trsc.shares;
-            } else {
-                leftShares = trsc.shares - soldShares;
-                soldShares = 0;
+            for(let i = 0;i < holding.buyTransactions.length; ++i) {
+                if (soldShares === 0) {
+                    break;
+                }
+
+                let buyTsc = holding.buyTransactions[i];
+                let processingShares = Math.min(buyTsc.leftShares, soldShares);
+
+                let buyCost = (processingShares / buyTsc.shares) * buyTsc.cost;
+                let sellGain = (processingShares / sellTsc.shares) * sellTsc.total_sales;
+                sellTsc.realized_gain += sellGain - buyCost;
+
+                soldShares -= processingShares;
+                buyTsc.leftShares -= processingShares;
             }
-            holding.cost += (leftShares / trsc.shares) *
-                (trsc.shares * trsc.price + trsc.commission);
-            holding.shares += leftShares;
         });
+
+        // Calculate the buy cost based on left over shares on each buy transaction.
+        holding.buyTransactions.forEach(buyTsc => {
+            holding.cost += (buyTsc.leftShares / buyTsc.shares) * buyTsc.cost;
+            holding.cost_overall += buyTsc.cost;
+            holding.shares += buyTsc.leftShares;
+        });
+
+        // Calculate the realized gain based on left over shares on each buy transaction.
+        holding.sellTransactions.forEach(sellTsc=> {
+            holding.realized_gain += sellTsc.realized_gain;
+        });
+
         holding.average_cost = holding.cost / holding.shares;
+
         return holding;
     };
 
@@ -78,10 +106,8 @@ const createHoldingCalculator = () => {
      * calculate holdings based on transactions
      */
     const selector = (transactions) => {
-        console.log('calculating holdings');
         let holdings = _loadTransactionsToHolding(transactions);
         holdings.forEach(_calcHoldingCost);
-        console.log('holdings is', holdings);
         return holdings;
     };
 

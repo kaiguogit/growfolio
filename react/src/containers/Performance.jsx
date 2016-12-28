@@ -18,6 +18,10 @@ class Performance extends React.Component {
         setInterval(this.refreshQuotes, 10000);
     }
 
+    componentDidUpdate() {
+        this.refreshQuotes();
+    }
+
     refreshQuotes = e => {
         if (e) {
             e.preventDefault();

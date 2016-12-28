@@ -41,15 +41,17 @@ export const makeGetHoldingPerformance = () => {
     return createDeepEqualSelector([getHolding, getQuote], (holding, quote) => {
         let newHolding = Object.assign({}, holding);
         if (quote &&
-            typeof newHolding.shares === 'number' &&
-            typeof newHolding.cost === 'number') {
+            typeof newHolding.shares === 'number' && typeof newHolding.cost === 'number' &&
+            typeof newHolding.realized_gain === 'number' &&
+            typeof newHolding.cost_overall === 'number') {
             newHolding.price = quote.current_price * 1;
             newHolding.change = quote.change * 1;
             newHolding.change_percent = quote.change_percent * 1;
-            newHolding.mkt_value = newHolding.shares * quote.current_price;
+            newHolding.mkt_value = newHolding.shares * newHolding.price;
             newHolding.gain = newHolding.mkt_value - newHolding.cost;
             newHolding.gain_percent = newHolding.gain / newHolding.cost;
-            newHolding.days_gain = newHolding.shares * quote.change;
+            newHolding.days_gain = newHolding.shares * newHolding.change;
+            newHolding.gain_overall = (newHolding.gain + newHolding.realized_gain) / newHolding.cost_overall;
         }
 
         /** TODO: another way to achieve this is to make a better getQuote selector
