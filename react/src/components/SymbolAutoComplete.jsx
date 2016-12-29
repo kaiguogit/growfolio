@@ -24,10 +24,6 @@ const processSymbols = data => {
     let symbols = [];
     if (data.ResultSet && Array.isArray(data.ResultSet.Result)) {
         symbols = data.ResultSet.Result;
-        symbols.forEach(symbol => {
-            //Remove symbol suffix, e.g ZPR.TO -> ZPR
-            symbol.symbol = symbol.symbol.replace(/\..*/, '');
-        });
     }
     return symbols;
 };
@@ -76,7 +72,8 @@ class SymbolAutoComplete extends React.Component {
                     // name: "Alleghany Corporation"
                     // symbol: "Y"
                     return {
-                        value: symbol.symbol,
+                        //Remove symbol suffix, e.g ZPR.TO -> ZPR
+                        value: symbol.symbol.replace(/\..*/, ''),
                         label: `${symbol.symbol}     ${symbol.name}       ${symbol.exchDisp}`,
                         exchDisp: symbol.exchDisp,
                         name: symbol.name

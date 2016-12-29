@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { getHoldingsPerformance } from '../selectors';
+import { getTotalPerformance } from '../selectors';
 import styles from '../styles';
-import { percentage } from '../utils';
+import { currency, percentage } from '../utils';
 
 const localStyles = {
     total: {
         float: 'left',
-        marginRight: '10px'
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        borderRight: 'solid 1px',
     },
     number: {
         fontSize: '2em'
@@ -16,54 +18,77 @@ const localStyles = {
 
 class PerformanceTotal extends React.Component {
     static propTypes = {
-        holdings: PropTypes.array.isRequired
+        performance: PropTypes.object.isRequired
     }
 
-    coloredCell(value) {
+    upOrDown(value) {
         if (value > 0) {
-            return styles.up;
+            return {
+                style: styles.up,
+                iconClass: 'glyphicon glyphicon-arrow-up'
+            };
         } else if (value < 0) {
-            return styles.down;
+            return {
+                style: styles.down,
+                iconClass: 'glyphicon glyphicon-arrow-down'
+            };
         }
         return {};
     }
 
     totalValue() {
-        let value = this.props.holdings.reduce((acc, holding) =>
-            acc + holding.mkt_value, 0);
         return (
-            <p style={localStyles.number}>{value}</p>
+            <div style={localStyles.total}>
+                <p>Total Value</p>
+                <p style={localStyles.number}>{currency(this.props.performance.mkt_value)}</p>
+            </div>
+        );
+    }
+
+    totalChange() {
+        let gain = this.props.performance.gain;
+        let gain_percent = this.props.performance.gain_percent;
+        let style = Object.assign({}, this.upOrDown(gain).style, localStyles.number);
+        return (
+            <div style={localStyles.total}>
+                <p>Total Change</p>
+                <p style={style}>
+                    {currency(gain)}{'  '}
+                    <span className={this.upOrDown(gain).iconClass}></span>
+                    {percentage(gain_percent)}
+                </p>
+            </div>
         );
     }
 
     todayChange() {
-        let day_gain = this.props.holdings.reduce((acc, holding) =>
-            acc + holding.days_gain, 0);
-        let change_percent = this.props.holdings.reduce((acc, holding) =>
-            acc + holding.change_percent, 0);
-        let style = Object.assign({}, this.coloredCell(day_gain), localStyles.number);
+        let days_gain = this.props.performance.days_gain;
+        let days_change_percent = this.props.performance.days_change_percent;
+        let style = Object.assign({}, this.upOrDown(days_gain).style, localStyles.number);
         return (
-            <p style={style}>{day_gain}{' '}{percentage(change_percent)}</p>
+            <div style={localStyles.total}>
+                <p>Today's Change</p>
+                <p style={style}>
+                    {currency(days_gain)}{'  '}
+                    <span className={this.upOrDown(days_gain).iconClass}></span>
+                    {percentage(days_change_percent)}
+                </p>
+            </div>
         );
     }
     render() {
         return(
             <div>
-                <div style={localStyles.total}>
-                    <p>Total Value</p>
-                    {this.totalValue()}
-                </div>
-                <div style={localStyles.total}>
-                    <p>Today's Change</p>
-                    {this.todayChange()}
-                </div>
+                {this.totalValue()}
+                {this.totalChange()}
+                {this.todayChange()}
             </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    holdings: getHoldingsPerformance(state)
+    performance: getTotalPerformance(state)
 });
 
 export default connect(mapStateToProps)(PerformanceTotal);

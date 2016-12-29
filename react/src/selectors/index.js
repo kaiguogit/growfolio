@@ -76,3 +76,19 @@ export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQ
         return calculateHoldingPerformance(holding, quotes[holding.symbol]);
     });
 });
+
+export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerformance], holdings => {
+    let mkt_value = 0,
+        gain = 0,
+        gain_percent = 0,
+        days_gain = 0,
+        days_change_percent =0;
+    holdings.forEach(holding => {
+        mkt_value += holding.mkt_value;
+        gain += holding.gain;
+        gain_percent += holding.gain_percent;
+        days_gain += holding.days_gain;
+        days_change_percent += holding.change_percent;
+    });
+    return {mkt_value, gain, gain_percent, days_gain, days_change_percent};
+});

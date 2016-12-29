@@ -5,7 +5,6 @@ import * as actions from '../actions/quotes';
 
 // Memoized selector
 import { getHoldings } from '../selectors';
-import { Row, Col } from 'react-bootstrap';
 import PerformanceTable from '../components/Performance/PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
 
