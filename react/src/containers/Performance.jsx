@@ -36,6 +36,7 @@ class Performance extends React.Component {
         const isEmpty = holdings.length === 0;
         return(
             <div>
+                <a onClick={this.refreshQuotes}>Refresh Quote</a>
                 <PerformanceTotal/>
                 {isEmpty
                   ? (isEmpty ? <h2>Loading...</h2> : <h2>Empty.</h2>)

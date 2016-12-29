@@ -8,8 +8,7 @@ const localStyles = {
     total: {
         float: 'left',
         paddingLeft: '10px',
-        paddingRight: '10px',
-        borderRight: 'solid 1px',
+        paddingRight: '10px'
     },
     number: {
         fontSize: '2em'

@@ -15,10 +15,10 @@ class PerformanceTable extends React.Component {
             <Table bordered hover>
                 <thead>
                     <tr>
-                        {Object.keys(PERFORMANCE_COLUMNS).map(key => {
+                        {PERFORMANCE_COLUMNS.map(column => {
                             return (
-                                <th key={key}>
-                                    {PERFORMANCE_COLUMNS[key].title}
+                                <th key={column.selector}>
+                                    {column.title}
                                 </th>
                             );
                         })}

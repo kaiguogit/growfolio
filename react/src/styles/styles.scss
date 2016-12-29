@@ -1,1 +1,21 @@
 body { padding-top: 70px; }
+
+.background-green-fade-out-appear {
+  background-color: #093;
+
+}
+
+.background-green-fade-out-appear.background-green-fade-out-appear-active {
+  background-color: #FFF;
+  transition: background-color 1s ease-out;
+}
+
+.background-red-fade-out-appear {
+  background-color: #d14836;
+
+}
+
+.background-red-fade-out-appear.background-red-fade-out-appear-active {
+  background-color: #FFF;
+  transition: background-color 1s ease-out;
+}

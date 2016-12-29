@@ -79,16 +79,18 @@ export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQ
 
 export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerformance], holdings => {
     let mkt_value = 0,
+        cost = 0,
         gain = 0,
         gain_percent = 0,
         days_gain = 0,
         days_change_percent =0;
     holdings.forEach(holding => {
         mkt_value += holding.mkt_value;
+        cost += holding.cost;
         gain += holding.gain;
-        gain_percent += holding.gain_percent;
         days_gain += holding.days_gain;
-        days_change_percent += holding.change_percent;
     });
+    gain_percent = gain / cost;
+    days_change_percent = days_gain / cost;
     return {mkt_value, gain, gain_percent, days_gain, days_change_percent};
 });
