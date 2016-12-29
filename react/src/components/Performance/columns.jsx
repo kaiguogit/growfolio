@@ -1,14 +1,6 @@
 import React from 'react';
 import { percentage, currency } from '../../utils';
-
-const styles = {
-    up: {
-        color: '#093'
-    },
-    down: {
-        color: '#d14836'
-    }
-};
+import styles from '../../styles';
 
 const coloredCell = (entry, column) => {
     let value = entry[column.selector];

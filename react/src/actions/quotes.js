@@ -124,7 +124,6 @@ export const fetchQuotes = symbols => dispatch => {
             return JSON.parse(jsonStr.replace(/\/\//, ''));
         })
         .then(data => {
-            console.log(data);
             let result = processQuotes(data);
             dispatch(receiveQuotes(result));
         })

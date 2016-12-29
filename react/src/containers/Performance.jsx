@@ -5,8 +5,9 @@ import * as actions from '../actions/quotes';
 
 // Memoized selector
 import { getHoldings } from '../selectors';
-
+import { Row, Col } from 'react-bootstrap';
 import PerformanceTable from '../components/Performance/PerformanceTable.jsx';
+import PerformanceTotal from './PerformanceTotal.jsx';
 
 const REFRESH_QUOTES_INTERVAL = 60000;
 
@@ -36,12 +37,7 @@ class Performance extends React.Component {
         const isEmpty = holdings.length === 0;
         return(
             <div>
-                <p>
-                    <a href="#"
-                     onClick={this.refreshQuotes}>
-                    Refresh Quotes
-                    </a>
-                </p>
+                <PerformanceTotal/>
                 {isEmpty
                   ? (isEmpty ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isEmpty ? 0.5 : 1 }}>

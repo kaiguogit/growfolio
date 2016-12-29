@@ -4,6 +4,7 @@ import isEqual from 'lodash.isequal';
 
 // Input selectors
 const getTscs = state => state.tscs.items;
+const getQuotes = state => state.quotes.items;
 const getQuote = (state, props) => state.quotes.items[props.symbol];
 const getSymbolFromProps = (state, props) => props.symbol;
 // Memoized selector
@@ -22,23 +23,7 @@ export const getHolding = createDeepEqualSelector(
     (holdings, symbol) => holdings.find(x => x.symbol === symbol)
 );
 
-/** Nest selector to further calculate holding gains based on Real Time Quotes
- * If holding is not changed, holdings based on transaction won't have to be calculated.
- * This is a make function to generate unique selector for 1 holding.
- * Usage:
- * // props.symbol is required
- * const makeMapStateToProps = () => {
- *     const getHoldingPerformance = makeGetHoldingPerformance();
- *     const mapStateToProps = (state, props) => {
- *          return {
- *              holding: getHoldingPerformance(state, props)
- *          }
- *     }
- *     return mapStateToProps;
- * }
- */
-export const makeGetHoldingPerformance = () => {
-    return createDeepEqualSelector([getHolding, getQuote], (holding, quote) => {
+const calculateHoldingPerformance = (holding, quote) => {
         let newHolding = Object.assign({}, holding);
         if (quote &&
             typeof newHolding.shares === 'number' && typeof newHolding.cost === 'number' &&
@@ -65,5 +50,29 @@ export const makeGetHoldingPerformance = () => {
 
         // Return a new object if holding changed to trigger props update.
         return isEqual(holding, newHolding) ? holding : newHolding;
-    });
 };
+
+/** Nest selector to further calculate holding gains based on Real Time Quotes
+ * If holding is not changed, holdings based on transaction won't have to be calculated.
+ * This is a make function to generate unique selector for 1 holding.
+ * Usage:
+ * // props.symbol is required
+ * const makeMapStateToProps = () => {
+ *     const getHoldingPerformance = makeGetHoldingPerformance();
+ *     const mapStateToProps = (state, props) => {
+ *          return {
+ *              holding: getHoldingPerformance(state, props)
+ *          }
+ *     }
+ *     return mapStateToProps;
+ * }
+ */
+export const makeGetHoldingPerformance = () => {
+    return createDeepEqualSelector([getHolding, getQuote], calculateHoldingPerformance);
+};
+
+export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQuotes], (holdings, quotes) => {
+    return holdings.map(holding => {
+        return calculateHoldingPerformance(holding, quotes[holding.symbol]);
+    });
+});

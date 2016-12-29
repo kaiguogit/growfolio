@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { Form, FormGroup, ControlLabel, FormControl, Button, Row, Col, Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
 import SymbolAutoComplete from './SymbolAutoComplete.jsx';
 
