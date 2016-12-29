@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import { Table } from 'react-bootstrap';
 
-const COLUMNS = ['symbol', 'type', 'price', 'shares', 'commission', 'date'];
+const COLUMNS = ['name', 'symbol', 'type', 'price', 'shares', 'commission', 'date'];
 
 class TscsTable extends React.Component {
     static propTypes = {

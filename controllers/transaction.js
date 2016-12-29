@@ -18,6 +18,7 @@ exports.getTransactions = (req, res) => {
 exports.createTransactions = (req, res) => {
   const data = req.body;
   const trsc = new Transaction({
+    name: data.name,
     symbol: data.symbol,
     shares: data.shares,
     price: data.price,

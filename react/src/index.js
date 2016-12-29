@@ -14,6 +14,8 @@ require('./favicon.ico');
 import './styles/bootstrap/css/bootstrap.min.css';
 // NProgress
 import 'nprogress/nprogress.css';
+// React-select
+import 'react-select/dist/react-select.css';
 // Yep, that's right. You can import SASS/CSS files too! Webpack will run the associated loader and plug this into the page.
 import './styles/styles.scss';
 

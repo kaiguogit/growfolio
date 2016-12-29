@@ -1,4 +1,5 @@
 import * as types from '../constants/actionTypes';
+import { errorHandler } from '../utils';
 /*
  * Actions
  */
@@ -33,10 +34,6 @@ export const openTscsForm = () => ({
 export const closeTscsForm = () => ({
     type: types.CLOSE_TSCS_FORM
 });
-
-const errorHandler = error => {
-    console.log(error);
-};
 
 // Fake API version
 // export const fetchTscs = () => dispatch => {

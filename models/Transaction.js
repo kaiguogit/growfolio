@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
+  name: String,
   symbol: String,
   shares: Number,
   price: Number,

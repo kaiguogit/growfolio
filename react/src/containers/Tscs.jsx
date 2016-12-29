@@ -34,7 +34,7 @@ class Tscs extends React.Component {
     }
 
     render() {
-        const { isFetching, items, lastUpdated } = this.props;
+        const { isFetching, items } = this.props;
         const isEmpty = items.length === 0;
         return (
             <div>
@@ -45,20 +45,6 @@ class Tscs extends React.Component {
                 {(this.props.isFetching || this.props.formOpened) &&
                     <TscsForm onSubmit={this.handleFormSubmit} isFetching={this.props.isFetching}/>
                 }
-                <p>
-                    {lastUpdated &&
-                        <span>
-                            Last updated at {new Date(lastUpdated).toLocaleTimeString()}.
-                            {' '}
-                        </span>
-                    }
-                    {!isFetching &&
-                      <a href="#"
-                         onClick={this.handleRefreshClick}>
-                        Refresh
-                      </a>
-                    }
-                </p>
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>

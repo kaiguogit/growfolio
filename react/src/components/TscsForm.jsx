@@ -1,6 +1,26 @@
 import React, { PropTypes } from 'react';
 
-import { Form, FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, FormControl, Button, Row, Col, Table } from 'react-bootstrap';
+
+import SymbolAutoComplete from './SymbolAutoComplete.jsx';
+
+const styles = {
+    symbolWidth: {
+        width: '200px'
+    },
+    numberWidth: {
+        width: '100px'
+    },
+    dateWidth: {
+        width: '200px'
+    },
+    noteWidth: {
+        width: 'auto'
+    },
+    formWidth: {
+        width: '80%'
+    }
+};
 
 class TscsForm extends React.Component {
 
@@ -11,6 +31,7 @@ class TscsForm extends React.Component {
 
     state = {
         type: 'buy',
+        name: '',
         symbol: '',
         date: '',
         shares: '',
@@ -26,63 +47,68 @@ class TscsForm extends React.Component {
         this.props.onSubmit(temp);
     };
 
-
-
     handleInputChange = e => {
         this.setState({[e.target.name]: e.target.value});
     };
 
+    handleSymbolChange = data => {
+        this.setState({symbol: data.value, name: data.name});
+    }
+
     render() {
         return (
-            <Form inline>
-                <FormGroup controlId="formControlsSelect">
-                    <ControlLabel>Select</ControlLabel>
-                    {' '}
-                    <FormControl componentClass="select" placeholder="select" name="type" value={this.state.type} onChange={this.handleInputChange}>
-                    <option value="buy">Buy</option>
-                    <option value="sell">Sell</option>
-                    </FormControl>
-                </FormGroup>
-                {' '}
-                <FormGroup controlId="formInlineSymbol">
-                    <ControlLabel>Symbol</ControlLabel>
-                    {' '}
-                    <FormControl type="text" placeholder="Symbol" name="symbol" value={this.state.symbol} onChange={this.handleInputChange}/>
-                </FormGroup>
-                {' '}
-                <FormGroup controlId="formInlineDate">
-                    <ControlLabel>Date</ControlLabel>
-                    {' '}
-                    <FormControl type="date" name="date" value={this.state.date} onChange={this.handleInputChange}/>
-                </FormGroup>
-                {' '}
-                <FormGroup controlId="formInlineShares">
-                    <ControlLabel>Shares</ControlLabel>
-                    {' '}
-                    <FormControl type="number" name="shares" value={this.state.shares} onChange={this.handleInputChange}/>
-                </FormGroup>
-                {' '}
-                <FormGroup controlId="formInlinePrice">
-                    <ControlLabel>Price</ControlLabel>
-                    {' '}
-                    <FormControl type="number" name="price" value={this.state.price} onChange={this.handleInputChange}/>
-                </FormGroup>
-                {' '}
-                <FormGroup controlId="formInlineCommission">
-                    <ControlLabel>Commission</ControlLabel>
-                    {' '}
-                    <FormControl type="number" name="commission" value={this.state.commission} onChange={this.handleInputChange}/>
-                </FormGroup>
-                {' '}
-                <FormGroup controlId="formInlineNotes">
-                    <ControlLabel>Notes</ControlLabel>
-                    {' '}
-                    <FormControl type="text" name="notes" value={this.state.notes} onChange={this.handleInputChange}/>
-                </FormGroup>
+            <div>
+                <Table bordered style={styles.formWidth}>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Shares</th>
+                            <th>Price</th>
+                            <th>Commission</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td >
+                                <div style={styles.symbolWidth}>
+                                    <SymbolAutoComplete
+                                        value={this.state.symbol}
+                                        onChange={this.handleSymbolChange}
+                                    />
+                                </div>
+                            </td>
+                            <td >
+                                <select className="form-control" style={styles.numberWidth} placeholder="select" name="type" value={this.state.type} onChange={this.handleInputChange}>
+                                    <option value="buy">Buy</option>
+                                    <option value="sell">Sell</option>
+                                </select>
+                            </td>
+                            <td >
+                                <input className="form-control" style={styles.dateWidth} type="date" name="date" value={this.state.date} onChange={this.handleInputChange}/>
+                            </td>
+                            <td>
+                                <input className="form-control" style={styles.numberWidth} type="number" name="shares" value={this.state.shares} onChange={this.handleInputChange}/>
+                            </td>
+                            <td>
+                                <input className="form-control" style={styles.numberWidth} type="number" name="price" value={this.state.price} onChange={this.handleInputChange}/>
+                            </td>
+                            <td>
+                                <input className="form-control" style={styles.numberWidth} type="number" name="commission" value={this.state.commission} onChange={this.handleInputChange}/>
+                            </td>
+                            <td >
+                                <input className="form-control" style={styles.noteWidth} type="text" name="notes" value={this.state.notes} onChange={this.handleInputChange}/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </Table>
                 <Button bsStyle="primary" onClick={this.handleSubmit} disabled={this.props.isFetching}>
                     Save
                 </Button>
-            </Form>
+            </div>
+
         );
     }
 }

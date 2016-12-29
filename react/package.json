@@ -29,6 +29,7 @@
   "author": "Kai GUo",
   "license": "MIT",
   "dependencies": {
+    "jquery": "3.1.1",
     "lodash.isequal": "4.4.0",
     "nprogress": "0.2.0",
     "numeral": "2.0.4",
@@ -39,6 +40,7 @@
     "react-redux": "5.0.1",
     "react-router": "3.0.0",
     "react-router-redux": "4.0.7",
+    "react-select": "1.0.0-rc.2",
     "redux": "3.6.0",
     "redux-logger": "2.7.4",
     "redux-thunk": "2.1.0",

@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 
+import { makeUrl, errorHandler } from '../utils';
 export const requestQuotes = () => ({
     type: types.REQUEST_QUOTES
 });
@@ -9,21 +10,6 @@ export const receiveQuotes = (quotes) => ({
     receivedAt: Date.now(),
     quotes
 });
-
-const errorHandler = error => {
-    console.log(error);
-};
-
-const queryParams = (params) => {
-    let esc = encodeURIComponent;
-    return Object.keys(params)
-        .map(k => esc(k) + '=' + esc(params[k]))
-        .join('&');
-};
-
-const makeUrl = (url, params) => {
-    return url += (url.indexOf('?') === -1 ? '?' : '&') + queryParams(params);
-};
 
 /**
  * YAHOO Finance API version
@@ -87,7 +73,8 @@ const makeQuotesUrl = symbols => {
     let url = 'http://finance.google.com/finance/info';
     let params = {
         client: 'ig',
-        q: `NASDAQ:${symbolsStr}`
+        // q: `NASDAQ:${symbolsStr}`
+        q: `${symbolsStr}`
     };
     return makeUrl(url, params);
 };
@@ -115,7 +102,7 @@ const processQuotes = quotes => {
     let result = {};
     quotes.forEach(quote => {
         const { t: symbol, l: current_price, c: change, cp: change_percent} = quote;
-        result[symbol] = {symbol, current_price, change, change_percent};
+        result[symbol] = {symbol, current_price, change, change_percent: change_percent / 100};
     });
     return result;
 };
@@ -132,11 +119,12 @@ export const fetchQuotes = symbols => dispatch => {
     dispatch(requestQuotes());
     return fetch(makeQuotesUrl(symbols))
         .then(response => response.text())
-        .then(jsonStr=>{
+        .then(jsonStr => {
             // Google returns string with //, chop it off.
             return JSON.parse(jsonStr.replace(/\/\//, ''));
         })
         .then(data => {
+            console.log(data);
             let result = processQuotes(data);
             dispatch(receiveQuotes(result));
         })

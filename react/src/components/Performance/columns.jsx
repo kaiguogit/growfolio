@@ -61,17 +61,17 @@ export const PERFORMANCE_COLUMNS = {
         formatFunction: coloredCell,
         title: 'Change'
     },
-    'days_gain': {
-        selector: 'days_gain',
-        filter: currency,
-        formatFunction: coloredCell,
-        title: 'Day\'s Gain'
-    },
     'change_percent': {
         selector: 'change_percent',
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Change Percent'
+    },
+    'days_gain': {
+        selector: 'days_gain',
+        filter: currency,
+        formatFunction: coloredCell,
+        title: 'Day\'s Gain'
     },
     'gain': {
         selector: 'gain',

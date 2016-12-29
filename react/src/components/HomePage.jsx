@@ -5,7 +5,9 @@ import Portfolio from '../containers/Portfolio.jsx';
 
 const HomePage = () => {
   return (
-    <Portfolio/>
+    <div className="container">
+        <Portfolio/>
+    </div>
   );
 };
 
