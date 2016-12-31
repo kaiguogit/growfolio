@@ -8,19 +8,23 @@ export default {
     tscs: {
         isFetching: false,
         items: [],
-        formOpened: false
+        formOpened: false,
+        lastUpdated: Date.now()
     },
     quotes: {
         isFetching: false,
-        items: {}
+        items: {},
+        lastUpdated: Date.now()
     },
     currency: {
         isFetching: false,
-        rate: []
+        rate: [],
+        lastUpdated: Date.now()
     },
     symbols: {
         isFetching: false,
         items: [],
-        query: ''
+        query: '',
+        lastUpdated: Date.now()
     }
 };

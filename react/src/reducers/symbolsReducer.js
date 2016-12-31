@@ -13,7 +13,8 @@ const symbolsReducer = (state=initialState.symbols, action) => {
                 ...state,
                 isFetching: false,
                 items: action.symbols,
-                query: action.query
+                query: action.query,
+                lastUpdated: action.receivedAt
             };
         default:
             return state;
