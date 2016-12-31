@@ -124,5 +124,5 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
     });
     gain_percent = gain / cost;
     days_change_percent = days_gain / cost;
-    return {mkt_value, gain, gain_percent, days_gain, days_change_percent};
+    return {mkt_value, gain, gain_percent, days_gain, days_change_percent, holdings};
 });

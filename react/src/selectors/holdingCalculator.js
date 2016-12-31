@@ -31,11 +31,12 @@ const createHoldingCalculator = () => {
             let holding = holdings.find(x => x.symbol === trsc.symbol);
             if (!holding) {
                 holding = {
-                  symbol: trsc.symbol,
-                  currency: trsc.currency,
-                  exch: trsc.exch,
-                  sellTransactions: [],
-                  buyTransactions: []
+                    name: trsc.name,
+                    symbol: trsc.symbol,
+                    currency: trsc.currency,
+                    exch: trsc.exch,
+                    sellTransactions: [],
+                    buyTransactions: []
                 };
                 holdings.push(holding);
             }

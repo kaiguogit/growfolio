@@ -9,7 +9,9 @@ class BalancePieChart extends React.Component {
 
     static propTypes = {
         holdings: PropTypes.array.isRequired,
-        lastUpdated: PropTypes.number.isRequired
+        lastUpdated: PropTypes.number.isRequired,
+        container: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired
     }
 
     shouldComponentUpdate(nextProps) {
@@ -17,7 +19,7 @@ class BalancePieChart extends React.Component {
     }
 
     render() {
-        const { holdings, lastUpdated } = this.props;
+        const { holdings, lastUpdated, container, title } = this.props;
         const options = {
             chart: {
                 plotBackgroundColor: null,
@@ -26,7 +28,7 @@ class BalancePieChart extends React.Component {
                 type: 'pie'
             },
             title: {
-                text: 'Portfolio allocation'
+                text: title
             },
             tooltip: {
                 pointFormant: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -59,7 +61,7 @@ class BalancePieChart extends React.Component {
         return (
             <Chart
                 key={lastUpdated}
-                container="chart"
+                container={container}
                 options={options}
             />
         );

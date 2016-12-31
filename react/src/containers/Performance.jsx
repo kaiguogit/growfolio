@@ -10,7 +10,7 @@ import RefreshQuotesButton from './RefreshQuotesButton.jsx';
 import PerformanceTable from '../components/Performance/PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
 import CurrencySelector from './CurrencySelector.jsx';
-const REFRESH_QUOTES_INTERVAL = 60000;
+const REFRESH_QUOTES_INTERVAL = 600000;
 
 class Performance extends React.Component {
     static propTypes = {
@@ -27,7 +27,6 @@ class Performance extends React.Component {
         //Only refresh quotes when holdings or display currency changed
         if (!(isEqual(prevProps.holdings, this.props.holdings) &&
             prevProps.displayCurrency === this.props.displayCurrency)) {
-            console.log("refresh here");
             this.refreshQuotes();
         }
     }
