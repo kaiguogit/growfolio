@@ -1,11 +1,30 @@
+import * as navigation from '../constants/navigation';
+
 export default {
+    portfolio: {
+        tab: navigation.TAB_PERFORMANCE,
+        displayCurrency: 'CAD'
+    },
     tscs: {
         isFetching: false,
         items: [],
-        formOpened: false
+        formOpened: false,
+        lastUpdated: Date.now()
     },
     quotes: {
         isFetching: false,
-        items: {}
+        items: {},
+        lastUpdated: Date.now()
+    },
+    currency: {
+        isFetching: false,
+        rate: [],
+        lastUpdated: Date.now()
+    },
+    symbols: {
+        isFetching: false,
+        items: [],
+        query: '',
+        lastUpdated: Date.now()
     }
 };

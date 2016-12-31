@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import { Button, Table } from 'react-bootstrap';
 
-import SymbolAutoComplete from './SymbolAutoComplete.jsx';
+import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 
 const styles = {
     symbolWidth: {
@@ -33,6 +33,8 @@ class TscsForm extends React.Component {
         type: 'buy',
         name: '',
         symbol: '',
+        exch: '',
+        currency: 'CAD',
         date: '',
         shares: '',
         price: '',
@@ -52,8 +54,9 @@ class TscsForm extends React.Component {
     };
 
     handleSymbolChange = data => {
-        this.setState({symbol: data.value, name: data.name});
-    }
+        let {value: symbol, name, exch} = data;
+        this.setState({symbol, name, exch});
+    };
 
     render() {
         return (
@@ -62,8 +65,9 @@ class TscsForm extends React.Component {
                     <thead>
                         <tr>
                             <th>Symbol</th>
-                            <th>Type</th>
                             <th>Date</th>
+                            <th>Type</th>
+                            <th>Currency</th>
                             <th>Shares</th>
                             <th>Price</th>
                             <th>Commission</th>
@@ -72,7 +76,7 @@ class TscsForm extends React.Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <td >
+                            <td>
                                 <div style={styles.symbolWidth}>
                                     <SymbolAutoComplete
                                         value={this.state.symbol}
@@ -80,14 +84,20 @@ class TscsForm extends React.Component {
                                     />
                                 </div>
                             </td>
-                            <td >
-                                <select className="form-control" style={styles.numberWidth} placeholder="select" name="type" value={this.state.type} onChange={this.handleInputChange}>
+                            <td>
+                                <input className="form-control" style={styles.dateWidth} type="date" name="date" value={this.state.date} onChange={this.handleInputChange}/>
+                            </td>
+                            <td>
+                                <select className="form-control" style={styles.numberWidth} name="type" value={this.state.type} onChange={this.handleInputChange}>
                                     <option value="buy">Buy</option>
                                     <option value="sell">Sell</option>
                                 </select>
                             </td>
-                            <td >
-                                <input className="form-control" style={styles.dateWidth} type="date" name="date" value={this.state.date} onChange={this.handleInputChange}/>
+                            <td>
+                                <select className="form-control" style={styles.numberWidth} placeholder="select" name="currency" value={this.state.currency} onChange={this.handleInputChange}>
+                                    <option value="CAD">CAD</option>
+                                    <option value="USD">USD</option>
+                                </select>
                             </td>
                             <td>
                                 <input className="form-control" style={styles.numberWidth} type="number" name="shares" value={this.state.shares} onChange={this.handleInputChange}/>
@@ -98,7 +108,7 @@ class TscsForm extends React.Component {
                             <td>
                                 <input className="form-control" style={styles.numberWidth} type="number" name="commission" value={this.state.commission} onChange={this.handleInputChange}/>
                             </td>
-                            <td >
+                            <td>
                                 <input className="form-control" style={styles.noteWidth} type="text" name="notes" value={this.state.notes} onChange={this.handleInputChange}/>
                             </td>
                         </tr>

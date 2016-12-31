@@ -4,13 +4,35 @@ import numeral from 'numeral';
  * Filters
  */
 export const percentage = number => {
-    return numeral(number).format('0.00%');
+    try {
+        return numeral(number).format('0.00%');
+    }
+    catch(e) {
+        return number;
+    }
 };
 
 export const currency = number => {
-    return numeral(number).format('0,0[.]00');
+    try {
+        return numeral(number).format('0,0[.]00');
+    }
+    catch(e) {
+        return number;
+    }
 };
 
+export const date = dateStr => {
+    try {
+        return new Date(dateStr).toLocaleDateString();
+    }
+    catch(e) {
+        return dateStr;
+    }
+};
+
+export const capitalize = str => {
+    return str[0].toUpperCase() + str.slice(1);
+};
 /**
  * Utilities
  */

@@ -3,6 +3,13 @@
  * with shares and cost.
  */
 const createHoldingCalculator = () => {
+    const avoidNaN = (keys, obj) => {
+        keys.forEach(key => {
+            if (key in obj) {
+                obj[key] = +obj[key] || 0;
+            }
+        });
+    };
     /**
      * generate an array of holdings based on transactions
      * holdings map will be
@@ -20,12 +27,16 @@ const createHoldingCalculator = () => {
             return [];
         }
         transactions.forEach((trsc) => {
+            avoidNaN(['shares', 'price', 'commission'], trsc);
             let holding = holdings.find(x => x.symbol === trsc.symbol);
             if (!holding) {
                 holding = {
-                  symbol: trsc.symbol,
-                  sellTransactions: [],
-                  buyTransactions: []
+                    name: trsc.name,
+                    symbol: trsc.symbol,
+                    currency: trsc.currency,
+                    exch: trsc.exch,
+                    sellTransactions: [],
+                    buyTransactions: []
                 };
                 holdings.push(holding);
             }
@@ -98,7 +109,7 @@ const createHoldingCalculator = () => {
         });
 
         holding.average_cost = holding.cost / holding.shares;
-
+        avoidNaN(['cost', 'cost_overall', 'shares', 'average_cost', 'realized_gain'], holding);
         return holding;
     };
 

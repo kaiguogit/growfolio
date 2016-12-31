@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Button } from 'react-bootstrap';
-import TscsTable from '../components/TscsTable.jsx';
-import TscsForm from '../components/TscsForm.jsx';
+import TscsTable from '../components/Tscs/TscsTable.jsx';
+import TscsForm from '../components/Tscs/TscsForm.jsx';
 
 
 class Tscs extends React.Component {

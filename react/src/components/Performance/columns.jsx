@@ -24,18 +24,13 @@ export const PERFORMANCE_COLUMNS = [
         title: 'Symbol'
     },
     {
+        selector: 'currency',
+        title: 'Currency'
+    },
+    {
         selector: 'cost',
         filter: currency,
         title: 'Cost'
-    },
-    {
-        selector: 'average_cost',
-        filter: currency,
-        title: 'Average Cost'
-    },
-    {
-        selector: 'shares',
-        title: 'Shares'
     },
     {
         selector: 'mkt_value',
@@ -43,9 +38,18 @@ export const PERFORMANCE_COLUMNS = [
         title: 'Market Value'
     },
     {
+        selector: 'average_cost',
+        filter: currency,
+        title: 'Average Cost'
+    },
+    {
         selector: 'price',
         filter: currency,
         title: 'Price'
+    },
+    {
+        selector: 'shares',
+        title: 'Shares'
     },
     {
         selector: 'change',

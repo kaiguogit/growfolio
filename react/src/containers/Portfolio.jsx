@@ -10,6 +10,7 @@ import NProgress from 'nprogress';
 import { Tabs, Tab } from 'react-bootstrap';
 import Tscs from './Tscs.jsx';
 import Performance from './Performance.jsx';
+import Balance from './Balance.jsx';
 
 class Portfolio extends React.Component {
     static propTypes = {
@@ -24,6 +25,7 @@ class Portfolio extends React.Component {
             <Tabs activeKey={this.props.selectedTab} onSelect={this.props.actions.selectTab} id="portfolio-tabs">
                 <Tab eventKey={navigation.TAB_PERFORMANCE} title="Performance"><Performance/></Tab>
                 <Tab eventKey={navigation.TAB_TSCS} title="Transactions"><Tscs/></Tab>
+                <Tab eventKey={navigation.TAB_BALANCE} title="Balance"><Balance/></Tab>
             </Tabs>
         );
     }
@@ -31,7 +33,7 @@ class Portfolio extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        selectedTab: state.portfolioTab,
+        selectedTab: state.portfolio.tab,
         isFetching: state.tscs.isFetching || state.quotes.isFetching
      };
 };

@@ -3,12 +3,16 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import tscsReducer from './tscsReducer';
 import quotesReducer from './quotesReducer';
-import { portfolioTab } from './portfolioReducer';
+import currencyReducer from './currencyReducer';
+import symbolsReducer from './symbolsReducer';
+import portfolioReducer  from './portfolioReducer';
 
 const rootReducer = combineReducers({
     tscs: tscsReducer,
-    portfolioTab,
+    portfolio: portfolioReducer,
     quotes: quotesReducer,
+    currency: currencyReducer,
+    symbols: symbolsReducer,
     routing: routerReducer
 });
 
