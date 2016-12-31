@@ -33,23 +33,23 @@ export const PERFORMANCE_COLUMNS = [
         title: 'Cost'
     },
     {
-        selector: 'average_cost',
-        filter: currency,
-        title: 'Average Cost'
-    },
-    {
-        selector: 'shares',
-        title: 'Shares'
-    },
-    {
         selector: 'mkt_value',
         filter: currency,
         title: 'Market Value'
     },
     {
+        selector: 'average_cost',
+        filter: currency,
+        title: 'Average Cost'
+    },
+    {
         selector: 'price',
         filter: currency,
         title: 'Price'
+    },
+    {
+        selector: 'shares',
+        title: 'Shares'
     },
     {
         selector: 'change',
