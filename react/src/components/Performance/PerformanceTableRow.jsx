@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
-
+import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 class PerformanceTableRow extends React.Component {
     static propTypes = {
         holding: PropTypes.object.isRequired
@@ -29,23 +28,11 @@ class PerformanceTableRow extends React.Component {
                           */}
                     return (
                         <td key={`${column.selector}-${this.props.holding[column.selector]}`}>
-                            {/**
-                              * Because then transition group is within a map. The transition group
-                              * and children are rendered at same time. That's why we use 'Appear'.
-                              * Read React document.
-                              * https://facebook.github.io/react/docs/animation.html#animate-initial-mounting
-                              */}
-                            <ReactCSSTransitionGroup
-                                transitionName={this.transitionUpOrDown(this.props.holding[column.selector])}
-                                transitionEnter={false}
-                                transitionLeave={false}
-                                transitionAppear={true}
-                                transitionAppearTimeout={1000}
-                            >
+                            <NumberChangeTransition upOrDown={this.props.holding[column.selector] > 0}>
                                 <div>
                                     {this.renderCell(column)}
                                 </div>
-                            </ReactCSSTransitionGroup>
+                            </NumberChangeTransition>
                         </td>
                     );
                 })}

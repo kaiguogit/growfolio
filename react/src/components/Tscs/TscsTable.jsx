@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import { Table } from 'react-bootstrap';
+import { TSCS_COLUMNS } from './columns';
 
 const COLUMNS = ['name', 'symbol', 'type', 'price', 'shares', 'commission', 'date'];
 
@@ -10,16 +11,24 @@ class TscsTable extends React.Component {
         removeTscs: PropTypes.func.isRequired
     }
 
+    renderCell(entry, column) {
+        let value = entry[column.selector];
+        if (column.formatFunction) {
+            return column.formatFunction(entry, column);
+        }
+        return column.filter ? column.filter(value) : value;
+    }
+
     render() {
         const { tscs } = this.props;
         return (
             <Table bordered hover>
                 <thead>
                     <tr>
-                        {COLUMNS.map(columnName => {
+                        {TSCS_COLUMNS.map(column => {
                             return (
-                                <th key={columnName}>
-                                    {columnName}
+                                <th key={column.selector}>
+                                    {column.title}
                                 </th>
                             );
                         })}
@@ -30,10 +39,10 @@ class TscsTable extends React.Component {
                     {tscs.map(tsc => {
                         return (
                             <tr key={tsc._id}>
-                                {COLUMNS.map(columnName => {
+                                {TSCS_COLUMNS.map(column => {
                                     return (
-                                        <td key={columnName}>
-                                            {tsc[columnName]}
+                                        <td key={column.selector}>
+                                            {this.renderCell(tsc, column)}
                                         </td>
                                     );
                                 })}

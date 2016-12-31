@@ -24,6 +24,10 @@ export const PERFORMANCE_COLUMNS = [
         title: 'Symbol'
     },
     {
+        selector: 'currency',
+        title: 'Currency'
+    },
+    {
         selector: 'cost',
         filter: currency,
         title: 'Cost'

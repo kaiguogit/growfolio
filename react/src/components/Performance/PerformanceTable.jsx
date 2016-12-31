@@ -11,27 +11,33 @@ class PerformanceTable extends React.Component {
     };
 
     render() {
+        const { symbols } = this.props;
+        const isEmpty = symbols.length === 0;
         return (
-            <Table bordered hover>
-                <thead>
-                    <tr>
-                        {PERFORMANCE_COLUMNS.map(column => {
+            <div>
+            {isEmpty ? <h2>Empty.</h2>
+              : <Table bordered hover>
+                    <thead>
+                        <tr>
+                            {PERFORMANCE_COLUMNS.map(column => {
+                                return (
+                                    <th key={column.selector}>
+                                        {column.title}
+                                    </th>
+                                );
+                            })}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.props.symbols.map(symbol => {
                             return (
-                                <th key={column.selector}>
-                                    {column.title}
-                                </th>
+                                <PerformanceTableRow key={symbol} symbol={symbol} />
                             );
                         })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.props.symbols.map(symbol => {
-                        return (
-                            <PerformanceTableRow key={symbol} symbol={symbol} />
-                        );
-                    })}
-                </tbody>
-            </Table>
+                    </tbody>
+                </Table>
+            }
+            </div>
         );
     }
 }

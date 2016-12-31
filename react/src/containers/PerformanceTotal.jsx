@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { getTotalPerformance } from '../selectors';
 import styles from '../styles';
 import { currency, percentage } from '../utils';
+import NumberChangeTransition from '../components/Animation/NumberChangeTransition.jsx';
 
 const localStyles = {
     total: {
-        float: 'left',
+        display: 'inline-block',
         paddingLeft: '10px',
         paddingRight: '10px'
     },
@@ -15,9 +16,11 @@ const localStyles = {
     }
 };
 
-class PerformanceTotal extends React.Component {
+class Change extends React.Component {
     static propTypes = {
-        performance: PropTypes.object.isRequired
+        change: PropTypes.number.isRequired,
+        change_percent: PropTypes.number.isRequired,
+        title: PropTypes.string.isRequired
     }
 
     upOrDown(value) {
@@ -35,6 +38,29 @@ class PerformanceTotal extends React.Component {
         return {};
     }
 
+    render() {
+        const {change, change_percent, title} = this.props;
+        const numStyle = Object.assign({}, this.upOrDown(change).style, localStyles.number);
+        return (
+            <div style={localStyles.total} key={`${title}-${change}`}>
+                <p>{title}</p>
+                <NumberChangeTransition upOrDown={change > 0}>
+                    <p style={numStyle}>
+                        {currency(change)}{'  '}
+                        <span className={this.upOrDown(change).iconClass}></span>
+                        {percentage(change_percent)}
+                    </p>
+                </NumberChangeTransition>
+            </div>
+        );
+    }
+}
+
+class PerformanceTotal extends React.Component {
+    static propTypes = {
+        performance: PropTypes.object.isRequired
+    }
+
     totalValue() {
         return (
             <div style={localStyles.total}>
@@ -44,43 +70,16 @@ class PerformanceTotal extends React.Component {
         );
     }
 
-    totalChange() {
-        let gain = this.props.performance.gain;
-        let gain_percent = this.props.performance.gain_percent;
-        let style = Object.assign({}, this.upOrDown(gain).style, localStyles.number);
-        return (
-            <div style={localStyles.total}>
-                <p>Total Change</p>
-                <p style={style}>
-                    {currency(gain)}{'  '}
-                    <span className={this.upOrDown(gain).iconClass}></span>
-                    {percentage(gain_percent)}
-                </p>
-            </div>
-        );
-    }
-
-    todayChange() {
-        let days_gain = this.props.performance.days_gain;
-        let days_change_percent = this.props.performance.days_change_percent;
-        let style = Object.assign({}, this.upOrDown(days_gain).style, localStyles.number);
-        return (
-            <div style={localStyles.total}>
-                <p>Today's Change</p>
-                <p style={style}>
-                    {currency(days_gain)}{'  '}
-                    <span className={this.upOrDown(days_gain).iconClass}></span>
-                    {percentage(days_change_percent)}
-                </p>
-            </div>
-        );
-    }
     render() {
         return(
             <div>
                 {this.totalValue()}
-                {this.totalChange()}
-                {this.todayChange()}
+                <Change change={this.props.performance.gain}
+                    change_percent={this.props.performance.gain_percent}
+                    title="Total Change"/>
+                <Change change={this.props.performance.days_gain}
+                    change_percent={this.props.performance.days_change_percent}
+                    title="Today's Change"/>
             </div>
         );
     }

@@ -7,6 +7,8 @@ const getTscs = state => state.tscs.items;
 const getQuotes = state => state.quotes.items;
 const getQuote = (state, props) => state.quotes.items[props.symbol];
 const getSymbolFromProps = (state, props) => props.symbol;
+const getCurrency = state => state.currency.rate;
+const getDisplayCurrency = state => state.portfolio.displayCurrency;
 // Memoized selector
 // Read more from https://github.com/reactjs/reselect
 // Use lodash.isequal library to compare array of tscs to avoid recalculating
@@ -23,7 +25,29 @@ export const getHolding = createDeepEqualSelector(
     (holdings, symbol) => holdings.find(x => x.symbol === symbol)
 );
 
-const calculateHoldingPerformance = (holding, quote) => {
+const convertHoldingCurrency = (holding, currency, displayCurrency) => {
+    let rate = 1;
+    if (holding.currency !== displayCurrency) {
+        let pair = currency.find(x => x.id === holding.currency + displayCurrency);
+        if (pair) {
+            rate = pair.Rate;
+            // Properties before quote calculation
+            holding.cost *= rate;
+            holding.cost_overall *= rate;
+            holding.realized_gain *= rate;
+            holding.average_cost *= rate;
+            // Properties after quote calculation
+            holding.price *= rate;
+            holding.change *= rate;
+            holding.mkt_value *= rate;
+            holding.gain *= rate;
+            holding.days_gain *= rate;
+            holding.gain_overall *= rate;
+        }
+    }
+};
+
+const calculateHoldingPerformance = (holding, quote, currency, displayCurrency) => {
         let newHolding = Object.assign({}, holding);
         if (quote &&
             typeof newHolding.shares === 'number' && typeof newHolding.cost === 'number' &&
@@ -37,8 +61,17 @@ const calculateHoldingPerformance = (holding, quote) => {
             newHolding.gain_percent = newHolding.gain / newHolding.cost;
             newHolding.days_gain = newHolding.shares * newHolding.change;
             newHolding.gain_overall = (newHolding.gain + newHolding.realized_gain) / newHolding.cost_overall;
+        } else {
+            // If quote is not found, still make property available
+            // to avoid NaN in sum calculation.
+            newHolding.price = 0,
+            newHolding.mkt_value = 0,
+            newHolding.gain = 0,
+            newHolding.gain_percent = 0,
+            newHolding.days_gain = 0,
+            newHolding.days_change_percent =0;
         }
-
+        convertHoldingCurrency(newHolding, currency, displayCurrency);
         /** TODO: another way to achieve this is to make a better getQuote selector
          * Currently this calculation is triggered when anything in quote is new.
          * A better getQuote function should filter API response with only the
@@ -47,9 +80,8 @@ const calculateHoldingPerformance = (holding, quote) => {
          * is updated, and we can always return a new object instead of doing compare
          * like below.
          */
-
-        // Return a new object if holding changed to trigger props update.
-        return isEqual(holding, newHolding) ? holding : newHolding;
+        // Return a new object to trigger props update.
+        return newHolding;
 };
 
 /** Nest selector to further calculate holding gains based on Real Time Quotes
@@ -68,12 +100,12 @@ const calculateHoldingPerformance = (holding, quote) => {
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createDeepEqualSelector([getHolding, getQuote], calculateHoldingPerformance);
+    return createDeepEqualSelector([getHolding, getQuote, getCurrency, getDisplayCurrency], calculateHoldingPerformance);
 };
 
-export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQuotes], (holdings, quotes) => {
+export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQuotes, getCurrency, getDisplayCurrency], (holdings, quotes, currency, displayCurrency) => {
     return holdings.map(holding => {
-        return calculateHoldingPerformance(holding, quotes[holding.symbol]);
+        return calculateHoldingPerformance(holding, quotes[holding.symbol], currency, displayCurrency);
     });
 });
 

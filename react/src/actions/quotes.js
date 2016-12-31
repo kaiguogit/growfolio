@@ -67,8 +67,12 @@ export const receiveQuotes = (quotes) => ({
 /**
  * Google Finance API
  * makeQuotesUrl, processQuotes, fetchQuotes functions
+ * URL: http://finance.google.com/finance/info?client=ig&q=NASDAQ:YHOO,NASDAQ:GOOGL
  */
 const makeQuotesUrl = symbols => {
+    symbols = symbols.map(x => {
+        return x.exch ? `${x.exch}:${x.symbol}` : x.symbol;
+    });
     let symbolsStr = symbols.join(',');
     let url = 'http://finance.google.com/finance/info';
     let params = {
@@ -102,8 +106,15 @@ const processQuotes = quotes => {
     let result = {};
     quotes.forEach(quote => {
         const { t: symbol, l: current_price, c: change, cp: change_percent} = quote;
-        result[symbol] = {symbol, current_price, change, change_percent: change_percent / 100};
+        result[symbol] = {
+            symbol,
+            current_price,
+            change,
+            change_percent: change_percent / 100,
+            $original: quote
+        };
     });
+    // result["VEE"].current_price = Math.random();
     return result;
 };
 
