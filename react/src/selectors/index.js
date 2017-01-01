@@ -131,6 +131,6 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
 export const getBalanceArray = createDeepEqualSelector([getBalance], balance => {
     return Object.keys(balance).map(symbol => ({
         name: symbol,
-        y: balance[symbol]
+        y: balance[symbol].percentage
     }));
 });

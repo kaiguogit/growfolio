@@ -14,11 +14,34 @@ class BalanceForm extends React.Component {
         balance: PropTypes.object.isRequired,
     }
 
-    handleChange = e => {
-        this.props.actions.updateBalanceAllocation({
+    handlePercentageChange = e => {
+        this.props.actions.updateBalancePercentage({
             symbol: e.target.name,
             percentage: e.target.value
         });
+    }
+
+    handleLabelChange = e => {
+        this.props.actions.updateBalanceLabel({
+            symbol: e.target.name,
+            label: e.target.value
+        });
+    }
+
+    renderLabelSelector = (symbol) => {
+        return (
+            <select className="form-control" name={symbol} onChange={this.handleLabelChange}>
+                <option>US Equity</option>
+                <option>Canada Equity</option>
+                <option>Emerging Equity</option>
+                <option>International Equity</option>
+                <option>Bond</option>
+                <option>Preferred</option>
+                <option>Real Return</option>
+                <option>Fix Income</option>
+                <option>Growth</option>
+            </select>
+        );
     }
 
     render() {
@@ -28,6 +51,7 @@ class BalanceForm extends React.Component {
                 <thead>
                     <tr>
                         <th>Symbol</th>
+                        <th>Label</th>
                         <th>Current Percentage</th>
                         <th>Target Percentage</th>
                     </tr>
@@ -37,6 +61,7 @@ class BalanceForm extends React.Component {
                         return (
                             <tr key={holding.symbol}>
                                 <td>{holding.symbol}</td>
+                                <td>{this.renderLabelSelector(holding.symbol)}</td>
                                 <td>{percentage(holding.mkt_value / total.mkt_value)}</td>
                                 <td>
                                     <input
@@ -44,7 +69,7 @@ class BalanceForm extends React.Component {
                                         type="number"
                                         name={holding.symbol}
                                         placeholder="%"
-                                        onChange={this.handleChange}
+                                        onChange={this.handlePercentageChange}
                                     />
                                 </td>
                             </tr>
