@@ -26,5 +26,6 @@ export default {
         items: [],
         query: '',
         lastUpdated: Date.now()
-    }
+    },
+    balance: {}
 };
