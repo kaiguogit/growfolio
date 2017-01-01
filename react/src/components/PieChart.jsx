@@ -1,25 +1,24 @@
 import React, {PropTypes} from 'react';
-import { connect } from 'react-redux';
-import { getHoldingsPerformance } from '../selectors';
-import Chart from '../components/Chart.jsx';
+import Chart from './Chart.jsx';
 import Highcharts from 'highcharts';
 import isEqual from 'lodash.isequal';
 
-class BalancePieChart extends React.Component {
+class PieChart extends React.Component {
 
     static propTypes = {
-        holdings: PropTypes.array.isRequired,
-        lastUpdated: PropTypes.number.isRequired,
+        data: PropTypes.array.isRequired,
         container: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired
     }
 
     shouldComponentUpdate(nextProps) {
-        return !isEqual(nextProps.holdings, this.props.holdings);
+        // only update the chart when data is changed.
+        // The actual change rely on the key passed to Chart.
+        return !isEqual(nextProps.data, this.props.data);
     }
 
     render() {
-        const { holdings, lastUpdated, container, title } = this.props;
+        const { data, container, title } = this.props;
         const options = {
             chart: {
                 plotBackgroundColor: null,
@@ -49,18 +48,12 @@ class BalancePieChart extends React.Component {
             series: [{
                 name: 'Holdings',
                 colorByPoint: true,
-                data: holdings.map(holding => {
-                    // console.log("holding is ", holding);
-                    return {
-                    name: holding.symbol,
-                    y: holding.mkt_value
-                    };
-                })
+                data: data
             }]
         };
         return (
             <Chart
-                key={lastUpdated}
+                key={JSON.stringify(data)}
                 container={container}
                 options={options}
             />
@@ -68,9 +61,4 @@ class BalancePieChart extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({
-    holdings: getHoldingsPerformance(state),
-    lastUpdated: state.quotes.lastUpdated
-});
-
-export default connect(mapStateToProps)(BalancePieChart);
+export default PieChart;

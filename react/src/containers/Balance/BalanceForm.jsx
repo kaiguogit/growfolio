@@ -1,12 +1,24 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { getTotalPerformance } from '../selectors';
+import { bindActionCreators } from 'redux';
+import * as actions from '../../actions/balance';
+
+import { getTotalPerformance } from '../../selectors';
 import { Table } from 'react-bootstrap';
-import { percentage } from '../utils';
+import { percentage } from '../../utils';
 
 class BalanceForm extends React.Component {
     static propTypes = {
-        total: PropTypes.object.isRequired
+        total: PropTypes.object.isRequired,
+        actions: PropTypes.object.isRequired,
+        balance: PropTypes.object.isRequired,
+    }
+
+    handleChange = e => {
+        this.props.actions.updateBalanceAllocation({
+            symbol: e.target.name,
+            percentage: e.target.value
+        });
     }
 
     render() {
@@ -30,8 +42,9 @@ class BalanceForm extends React.Component {
                                     <input
                                         className="form-control"
                                         type="number"
-                                        name="target-percentage"
+                                        name={holding.symbol}
                                         placeholder="%"
+                                        onChange={this.handleChange}
                                     />
                                 </td>
                             </tr>
@@ -44,7 +57,12 @@ class BalanceForm extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    total: getTotalPerformance(state)
+    total: getTotalPerformance(state),
+    balance: state.balance
 });
 
-export default connect(mapStateToProps)(BalanceForm);
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(actions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BalanceForm);

@@ -5,6 +5,7 @@ import tscsReducer from './tscsReducer';
 import quotesReducer from './quotesReducer';
 import currencyReducer from './currencyReducer';
 import symbolsReducer from './symbolsReducer';
+import balanceReducer from './balanceReducer';
 import portfolioReducer  from './portfolioReducer';
 
 const rootReducer = combineReducers({
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     quotes: quotesReducer,
     currency: currencyReducer,
     symbols: symbolsReducer,
+    balance: balanceReducer,
     routing: routerReducer
 });
 

@@ -9,6 +9,7 @@ const getQuote = (state, props) => state.quotes.items[props.symbol];
 const getSymbolFromProps = (state, props) => props.symbol;
 const getCurrency = state => state.currency.rate;
 const getDisplayCurrency = state => state.portfolio.displayCurrency;
+const getBalance = state => state.balance;
 // Memoized selector
 // Read more from https://github.com/reactjs/reselect
 // Use lodash.isequal library to compare array of tscs to avoid recalculating
@@ -125,4 +126,11 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
     gain_percent = gain / cost;
     days_change_percent = days_gain / cost;
     return {mkt_value, gain, gain_percent, days_gain, days_change_percent, holdings};
+});
+
+export const getBalanceArray = createDeepEqualSelector([getBalance], balance => {
+    return Object.keys(balance).map(symbol => ({
+        name: symbol,
+        y: balance[symbol]
+    }));
 });

@@ -10,7 +10,7 @@ import NProgress from 'nprogress';
 import { Tabs, Tab } from 'react-bootstrap';
 import Tscs from './Tscs.jsx';
 import Performance from './Performance.jsx';
-import Balance from './Balance.jsx';
+import Balance from './Balance/Balance.jsx';
 
 class Portfolio extends React.Component {
     static propTypes = {
