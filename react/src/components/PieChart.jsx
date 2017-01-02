@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import Chart from './Chart.jsx';
 import Highcharts from 'highcharts';
+import drilldown from 'highcharts/modules/drilldown';
 import isEqual from 'lodash.isequal';
 
 class PieChart extends React.Component {
@@ -8,7 +9,9 @@ class PieChart extends React.Component {
     static propTypes = {
         data: PropTypes.array.isRequired,
         container: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired
+        title: PropTypes.string,
+        subtitle: PropTypes.string,
+        drilldownArray: PropTypes.array
     }
 
     shouldComponentUpdate(nextProps) {
@@ -18,7 +21,7 @@ class PieChart extends React.Component {
     }
 
     render() {
-        const { data, container, title } = this.props;
+        const { data, container, title, drilldownArray, subtitle } = this.props;
         const options = {
             chart: {
                 plotBackgroundColor: null,
@@ -29,19 +32,31 @@ class PieChart extends React.Component {
             title: {
                 text: title
             },
+            subtitle: {
+                text: subtitle
+            },
             tooltip: {
-                pointFormant: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                // pointFormant: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.percentage:.2f}%</b> of total<br/>\
+                              Value: {point.y:.2f}'
             },
             plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
+                // pie: {
+                //     allowPointSelect: true,
+                //     cursor: 'pointer',
+                //     dataLabels: {
+                //         enabled: true,
+                //         format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                //         style: {
+                //             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                //         }
+                //     }
+                // },
+                series: {
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        }
+                        format: '{point.name}: {point.percentage:.1f}%'
                     }
                 }
             },
@@ -49,13 +64,17 @@ class PieChart extends React.Component {
                 name: 'Holdings',
                 colorByPoint: true,
                 data: data
-            }]
+            }],
+            drilldown: {
+                series: drilldownArray
+            }
         };
         return (
             <Chart
                 key={JSON.stringify(data)}
                 container={container}
                 options={options}
+                modules={[drilldown]}
             />
         );
     }

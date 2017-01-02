@@ -3,17 +3,17 @@ import createHoldingCalculator from './holdingCalculator';
 import isEqual from 'lodash.isequal';
 
 // Input selectors
-const getTscs = state => state.tscs.items;
-const getQuotes = state => state.quotes.items;
-const getQuote = (state, props) => state.quotes.items[props.symbol];
-const getSymbolFromProps = (state, props) => props.symbol;
-const getCurrency = state => state.currency.rate;
-const getDisplayCurrency = state => state.portfolio.displayCurrency;
-const getBalance = state => state.balance;
+export const getTscs = state => state.tscs.items;
+export const getQuotes = state => state.quotes.items;
+export const getQuote = (state, props) => state.quotes.items[props.symbol];
+export const getSymbolFromProps = (state, props) => props.symbol;
+export const getCurrency = state => state.currency.rate;
+export const getDisplayCurrency = state => state.portfolio.displayCurrency;
+export const getBalance = state => state.balance;
 // Memoized selector
 // Read more from https://github.com/reactjs/reselect
 // Use lodash.isequal library to compare array of tscs to avoid recalculating
-const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
+export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
 // Use createHoldingCalculator selector to calculate holdings.
 // If tscs in state is not 'changed' (value-wise, the object is

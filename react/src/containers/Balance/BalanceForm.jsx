@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/balance';
 
 import { getTotalPerformance } from '../../selectors';
-import { Table } from 'react-bootstrap';
-import { percentage } from '../../utils';
+import { Table, Button } from 'react-bootstrap';
+import { percentage, currency } from '../../utils';
 
 class BalanceForm extends React.Component {
     static propTypes = {
@@ -28,9 +28,42 @@ class BalanceForm extends React.Component {
         });
     }
 
+    cloneAllPercentage = () => {
+        this.props.total.holdings.forEach(holding => {
+            this.props.actions.updateBalancePercentage({
+                symbol: holding.symbol,
+                percentage: holding.mkt_value / this.props.total.mkt_value * 100
+            });
+        });
+    }
+
+    resetAllLabel = () => {
+        this.props.total.holdings.forEach(holding => {
+            this.props.actions.updateBalanceLabel({
+                symbol: holding.symbol,
+                label: ''
+            });
+        });
+    }
+
+    resetAllPercentage = () => {
+        this.props.total.holdings.forEach(holding => {
+            this.props.actions.updateBalancePercentage({
+                symbol: holding.symbol,
+                percentage: 0
+            });
+        });
+    }
+
     renderLabelSelector = (symbol) => {
+        let label = '';
+        let holding = this.props.balance[symbol];
+        if (holding && holding.label) {
+            label = holding.label;
+        }
         return (
-            <select className="form-control" name={symbol} onChange={this.handleLabelChange}>
+            <select className="form-control" name={symbol} value={label} onChange={this.handleLabelChange}>
+                <option>{''}</option>
                 <option>US Equity</option>
                 <option>Canada Equity</option>
                 <option>Emerging Equity</option>
@@ -45,15 +78,27 @@ class BalanceForm extends React.Component {
     }
 
     render() {
-        const { total } = this.props;
+        const { total, balance } = this.props;
+        // Make bootstrap table fit content
+        // http://stackoverflow.com/questions/10687306/why-do-twitter-bootstrap-tables-always-have-100-width
         return (
-            <Table bordered hover>
+            <Table bordered hover style={{width: 'auto', font: '5px'}}>
                 <thead>
                     <tr>
                         <th>Symbol</th>
-                        <th>Label</th>
-                        <th>Current Percentage</th>
-                        <th>Target Percentage</th>
+                        <th>Label
+                            {' '}
+                            <Button onClick={this.resetAllLabel}>Reset</Button>
+                        </th>
+                        <th>Current
+                            {' '}
+                            <Button onClick={this.cloneAllPercentage}>Clone</Button>
+                        </th>
+                        <th>Target
+                            {' '}
+                            <Button onClick={this.resetAllPercentage}>Reset</Button>
+                        </th>
+                        <th>Difference</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,15 +107,25 @@ class BalanceForm extends React.Component {
                             <tr key={holding.symbol}>
                                 <td>{holding.symbol}</td>
                                 <td>{this.renderLabelSelector(holding.symbol)}</td>
-                                <td>{percentage(holding.mkt_value / total.mkt_value)}</td>
+                                <td>{percentage(holding.mkt_value / total.mkt_value)}
+                                    {' '}
+                                    <Button name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
+                                    Clone
+                                    </Button>
+                                </td>
                                 <td>
                                     <input
                                         className="form-control"
                                         type="number"
                                         name={holding.symbol}
+                                        value={balance[holding.symbol] && balance[holding.symbol].percentage || 0}
                                         placeholder="%"
                                         onChange={this.handlePercentageChange}
                                     />
+                                </td>
+                                <td>{balance[holding.symbol] && percentage((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value))}
+                                    {' '}
+                                    {balance[holding.symbol] && currency((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value) * total.mkt_value)}
                                 </td>
                             </tr>
                         );

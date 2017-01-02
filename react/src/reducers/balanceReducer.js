@@ -11,7 +11,7 @@ const updateHolding = (state, action) => {
         case types.UPDATE_BALANCE_PERCENTAGE:
             return {
                 ...state,
-                percentage: action.percentage
+                percentage: Math.round(action.percentage * 100) / 100
             };
         default:
             return state;
