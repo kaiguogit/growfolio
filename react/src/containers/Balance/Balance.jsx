@@ -1,8 +1,9 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { getHoldingsPerformance } from '../../selectors';
-import CurrentAllocationPieChart from './CurrentAllocationPieChart.jsx';
-import TargetAllocationPieChart from './TargetAllocationPieChart.jsx';
+// import CurrentAllocationPieChart from './CurrentAllocationPieChart.jsx';
+import TargetAllocationWithDrilldown from './TargetAllocationWithDrilldown.jsx';
+import CurrenAllocationWithDrilldown from './CurrenAllocationWithDrilldown.jsx';
 import BalanceForm from './BalanceForm.jsx';
 import { Row, Col } from 'react-bootstrap';
 
@@ -16,10 +17,10 @@ class Balance extends React.Component {
             <div>
                 <Row>
                     <Col md={6}>
-                                <CurrentAllocationPieChart/>
+                                <CurrenAllocationWithDrilldown/>
                     </Col>
                     <Col md={6}>
-                                <TargetAllocationPieChart/>
+                                <TargetAllocationWithDrilldown/>
                     </Col>
                 </Row>
                 <Row>
