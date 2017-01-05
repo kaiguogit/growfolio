@@ -35,6 +35,7 @@ const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 const transactionController = require('./controllers/transaction');
+const allocationController = require('./controllers/allocation');
 
 /**
  * API keys and Passport configuration.
@@ -94,12 +95,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-
-
 app.route('/api/transactions')
   .get(transactionController.getTransactions)
   .post(transactionController.createTransactions)
   .delete(transactionController.deleteTransactions);
+app.route('/api/allocations')
+  .get(allocationController.getAllocations)
+  .post(allocationController.createAllocations)
+  .delete(allocationController.deleteAllocations);
 
 
 app.use((req, res, next) => {

@@ -14,6 +14,10 @@ class BalanceForm extends React.Component {
         balance: PropTypes.object.isRequired,
     }
 
+    componentDidMount() {
+        this.props.actions.fetchAllocations();
+    }
+
     handlePercentageChange = e => {
         this.props.actions.updateBalancePercentage({
             symbol: e.target.name,
@@ -77,61 +81,68 @@ class BalanceForm extends React.Component {
         );
     }
 
+    saveBalance = () => {
+        this.props.actions.createAllocations(this.props.balance);
+    }
+
     render() {
         const { total, balance } = this.props;
         // Make bootstrap table fit content
         // http://stackoverflow.com/questions/10687306/why-do-twitter-bootstrap-tables-always-have-100-width
         return (
-            <Table bordered hover style={{width: 'auto', font: '5px'}}>
-                <thead>
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Label
-                            {' '}
-                            <Button onClick={this.resetAllLabel}>Reset</Button>
-                        </th>
-                        <th>Current
-                            {' '}
-                            <Button onClick={this.cloneAllPercentage}>Clone</Button>
-                        </th>
-                        <th>Target
-                            {' '}
-                            <Button onClick={this.resetAllPercentage}>Reset</Button>
-                        </th>
-                        <th>Difference</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {total.holdings.map(holding => {
-                        return (
-                            <tr key={holding.symbol}>
-                                <td>{holding.symbol}</td>
-                                <td>{this.renderLabelSelector(holding.symbol)}</td>
-                                <td>{percentage(holding.mkt_value / total.mkt_value)}
-                                    {' '}
-                                    <Button name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
-                                    Clone
-                                    </Button>
-                                </td>
-                                <td>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        name={holding.symbol}
-                                        value={balance[holding.symbol] && balance[holding.symbol].percentage || 0}
-                                        placeholder="%"
-                                        onChange={this.handlePercentageChange}
-                                    />
-                                </td>
-                                <td>{balance[holding.symbol] && percentage((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value))}
-                                    {' '}
-                                    {balance[holding.symbol] && currency((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value) * total.mkt_value)}
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </Table>
+            <div>
+                <Table bordered hover style={{width: 'auto', font: '5px'}}>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Label
+                                {' '}
+                                <Button onClick={this.resetAllLabel}>Reset</Button>
+                            </th>
+                            <th>Current
+                                {' '}
+                                <Button onClick={this.cloneAllPercentage}>Clone</Button>
+                            </th>
+                            <th>Target
+                                {' '}
+                                <Button onClick={this.resetAllPercentage}>Reset</Button>
+                            </th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {total.holdings.map(holding => {
+                            return (
+                                <tr key={holding.symbol}>
+                                    <td>{holding.symbol}</td>
+                                    <td>{this.renderLabelSelector(holding.symbol)}</td>
+                                    <td>{percentage(holding.mkt_value / total.mkt_value)}
+                                        {' '}
+                                        <Button name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
+                                        Clone
+                                        </Button>
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="form-control"
+                                            type="number"
+                                            name={holding.symbol}
+                                            value={balance[holding.symbol] && balance[holding.symbol].percentage || 0}
+                                            placeholder="%"
+                                            onChange={this.handlePercentageChange}
+                                        />
+                                    </td>
+                                    <td>{balance[holding.symbol] && percentage((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value))}
+                                        {' '}
+                                        {balance[holding.symbol] && currency((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value) * total.mkt_value)}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </Table>
+                <Button bsStyle="primary" onClick={this.saveBalance}>Save Balance</Button>
+            </div>
         );
     }
 }
