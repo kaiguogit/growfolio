@@ -83,9 +83,15 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gain_overall',
-        filter: percentage,
+        filter: currency,
         formatFunction: coloredCell,
         title: 'Overall Return'
+    },
+    {
+        selector: 'gain_overall_percent',
+        filter: percentage,
+        formatFunction: coloredCell,
+        title: 'Overall Return Percent'
     },
     {
         selector: 'realized_gain',

@@ -74,12 +74,15 @@ class PerformanceTotal extends React.Component {
         return(
             <div>
                 {this.totalValue()}
-                <Change change={this.props.performance.gain}
-                    change_percent={this.props.performance.gain_percent}
-                    title="Total Change"/>
                 <Change change={this.props.performance.days_gain}
                     change_percent={this.props.performance.days_change_percent}
                     title="Today's Change"/>
+                <Change change={this.props.performance.gain}
+                    change_percent={this.props.performance.gain_percent}
+                    title="Total Change"/>
+                <Change change={this.props.performance.gain_overall}
+                    change_percent={this.props.performance.gain_overall_percent}
+                    title="Overall Change"/>
             </div>
         );
     }

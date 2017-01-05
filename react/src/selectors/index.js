@@ -61,17 +61,17 @@ const calculateHoldingPerformance = (holding, quote, currency, displayCurrency) 
             newHolding.gain = newHolding.mkt_value - newHolding.cost;
             newHolding.gain_percent = newHolding.gain / newHolding.cost;
             newHolding.days_gain = newHolding.shares * newHolding.change;
-            newHolding.gain_overall = (newHolding.gain + newHolding.realized_gain) / newHolding.cost_overall;
         } else {
             // If quote is not found, still make property available
             // to avoid NaN in sum calculation.
-            newHolding.price = 0,
-            newHolding.mkt_value = 0,
-            newHolding.gain = 0,
-            newHolding.gain_percent = 0,
-            newHolding.days_gain = 0,
-            newHolding.days_change_percent =0;
+            newHolding.price = 0;
+            newHolding.mkt_value = 0;
+            newHolding.gain = 0;
+            newHolding.gain_percent = 0;
+            newHolding.days_gain = 0;
         }
+        newHolding.gain_overall = newHolding.gain + newHolding.realized_gain;
+        newHolding.gain_overall_percent = newHolding.gain_overall / newHolding.cost_overall;
         convertHoldingCurrency(newHolding, currency, displayCurrency);
         /** TODO: another way to achieve this is to make a better getQuote selector
          * Currently this calculation is triggered when anything in quote is new.
@@ -116,16 +116,32 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
         gain = 0,
         gain_percent = 0,
         days_gain = 0,
-        days_change_percent =0;
+        days_change_percent = 0,
+        gain_overall = 0,
+        cost_overall = 0,
+        gain_overall_percent = 0;
     holdings.forEach(holding => {
         mkt_value += holding.mkt_value;
         cost += holding.cost;
         gain += holding.gain;
         days_gain += holding.days_gain;
+        gain_overall += holding.gain_overall;
+        cost_overall += holding.cost_overall;
     });
     gain_percent = gain / cost;
     days_change_percent = days_gain / cost;
-    return {mkt_value, gain, gain_percent, days_gain, days_change_percent, holdings};
+    gain_overall_percent = gain_overall / cost_overall;
+    return {
+        mkt_value,
+        gain,
+        gain_percent,
+        days_gain,
+        days_change_percent,
+        holdings,
+        cost_overall,
+        gain_overall,
+        gain_overall_percent
+    };
 });
 
 export const getBalanceArray = createDeepEqualSelector([getBalance], balance => {
