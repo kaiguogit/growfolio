@@ -6,7 +6,6 @@ const updateHolding = (state, action) => {
         case types.UPDATE_BALANCE_LABEL:
         case types.RECEIVE_ALLOCATIONS:
         case types.UPDATE_BALANCE_PERCENTAGE:
-            debugger;
             return {
                 ...state,
                 symbol: action.symbol || (state && state.symbol),
@@ -28,7 +27,6 @@ const balanceReducer = (state=initialState.balance, action) => {
                 [action.symbol]: updateHolding(state[action.symbol], action)
             };
         case types.RECEIVE_ALLOCATIONS: {
-            debugger;
             let newState = {};
             action.allocations.forEach(allocation => {
                 newState[allocation.symbol] = updateHolding(
