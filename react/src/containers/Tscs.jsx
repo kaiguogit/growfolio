@@ -12,7 +12,6 @@ class Tscs extends React.Component {
     static propTypes = {
       items: PropTypes.array.isRequired,
       isFetching: PropTypes.bool.isRequired,
-      lastUpdated: PropTypes.number,
       formOpened: PropTypes.bool.isRequired,
       actions: PropTypes.object.isRequired
     }
@@ -36,6 +35,19 @@ class Tscs extends React.Component {
     render() {
         const { isFetching, items } = this.props;
         const isEmpty = items.length === 0;
+        const sortedItems = items.slice(0);
+
+        // Sort tscs by symbol then by date.
+        sortedItems.sort(function(a, b) {
+            const symbolA = a.symbol.toUpperCase();
+            const symbolB = b.symbol.toUpperCase();
+            const result = (symbolA < symbolB) ? -1 : (symbolA > symbolB) ? 1 : 0;
+            if (result !== 0) {
+                return result;
+            }
+            return new Date(a.date) - new Date(b.date);
+        });
+
         return (
             <div>
                 <Button bsStyle="info" onClick={this.props.formOpened ? this.props.actions.closeTscsForm : this.props.actions.openTscsForm}>
@@ -48,7 +60,7 @@ class Tscs extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable tscs={items} removeTscs={this.props.actions.removeTscs}/>
+                      <TscsTable tscs={sortedItems} removeTscs={this.props.actions.removeTscs}/>
                     </div>
                 }
             </div>

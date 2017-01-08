@@ -91,6 +91,7 @@ class TscsForm extends React.Component {
                                 <select className="form-control" style={styles.numberWidth} name="type" value={this.state.type} onChange={this.handleInputChange}>
                                     <option value="buy">Buy</option>
                                     <option value="sell">Sell</option>
+                                    <option value="dividend">Dividend</option>
                                 </select>
                             </td>
                             <td>
