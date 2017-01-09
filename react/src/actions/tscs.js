@@ -50,7 +50,8 @@ const headers = new Headers({
     'Content-Type': 'application/json',
     Accept: 'application/json',
 });
-const BASE_URI = 'http://localhost:8000/api/';
+// __MY_API__ is set in webpack globals
+const BASE_URI = __MY_API__;
 
 export const fetchTscs = () => dispatch => {
     dispatch(requestTscs());
