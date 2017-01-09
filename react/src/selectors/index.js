@@ -37,6 +37,7 @@ const convertHoldingCurrency = (holding, currency, displayCurrency) => {
             holding.cost_overall *= rate;
             holding.realized_gain *= rate;
             holding.average_cost *= rate;
+            holding.dividend *= rate;
             // Properties after quote calculation
             holding.price *= rate;
             holding.change *= rate;
@@ -116,10 +117,12 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
         gain = 0,
         gain_percent = 0,
         days_gain = 0,
-        days_change_percent = 0,
+        change_percent = 0,
         gain_overall = 0,
         cost_overall = 0,
-        gain_overall_percent = 0;
+        gain_overall_percent = 0,
+        realized_gain = 0,
+        dividend = 0;
     holdings.forEach(holding => {
         mkt_value += holding.mkt_value;
         cost += holding.cost;
@@ -127,20 +130,25 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
         days_gain += holding.days_gain;
         gain_overall += holding.gain_overall;
         cost_overall += holding.cost_overall;
+        realized_gain += holding.realized_gain;
+        dividend += holding.dividend;
     });
     gain_percent = gain / cost;
-    days_change_percent = days_gain / cost;
+    change_percent = days_gain / cost;
     gain_overall_percent = gain_overall / cost_overall;
     return {
         mkt_value,
+        cost,
         gain,
         gain_percent,
         days_gain,
-        days_change_percent,
+        change_percent,
         holdings,
         cost_overall,
         gain_overall,
-        gain_overall_percent
+        gain_overall_percent,
+        realized_gain,
+        dividend
     };
 });
 

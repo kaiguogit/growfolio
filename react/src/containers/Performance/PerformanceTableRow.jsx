@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
 
-import { makeGetHoldingPerformance } from '../selectors';
+import { makeGetHoldingPerformance } from '../../selectors';
 
-import PerformanceTableRow from '../components/Performance/PerformanceTableRow.jsx';
+import PerformanceTableRow from '../../components/Performance/PerformanceTableRow.jsx';
 
 class PerformanceTableRowContainer extends React.Component {
     static propTypes = {

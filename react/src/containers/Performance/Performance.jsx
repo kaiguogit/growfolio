@@ -1,15 +1,15 @@
 import React, {PropTypes} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as quotesActions from '../actions/quotes';
-import * as currencyActions from '../actions/currency';
-import * as rootActions from '../actions';
+import * as quotesActions from '../../actions/quotes';
+import * as currencyActions from '../../actions/currency';
+import * as rootActions from '../../actions';
 import isEqual from 'lodash.isequal';
-import { getHoldings } from '../selectors';
-import RefreshQuotesButton from './RefreshQuotesButton.jsx';
-import PerformanceTable from '../components/Performance/PerformanceTable.jsx';
+import { getHoldings } from '../../selectors';
+import RefreshQuotesButton from './../RefreshQuotesButton.jsx';
+import PerformanceTable from '../../components/Performance/PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
-import CurrencySelector from './CurrencySelector.jsx';
+import CurrencySelector from './../CurrencySelector.jsx';
 const REFRESH_QUOTES_INTERVAL = 600000;
 
 class Performance extends React.Component {
