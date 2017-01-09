@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import { Table } from 'react-bootstrap';
-import PerformanceTableRow from '../../containers/PerformanceTableRow.jsx';
-
+import PerformanceTableRow from '../../containers/Performance/PerformanceTableRow.jsx';
+import PerformanceTableRowTotal from '../../containers/Performance/PerformanceTableRowTotal.jsx';
 
 class PerformanceTable extends React.Component {
     static propTypes = {
@@ -29,6 +29,7 @@ class PerformanceTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
+                        <PerformanceTableRowTotal/>
                         {this.props.symbols.map(symbol => {
                             return (
                                 <PerformanceTableRow key={symbol} symbol={symbol} />

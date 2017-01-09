@@ -147,10 +147,15 @@ class BalanceForm extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({
-    total: getTotalPerformance(state),
-    balance: state.balance
-});
+const mapStateToProps = state => {
+    const total = getTotalPerformance(state);
+    const filteredHoldings = total.holdings.slice(0).filter(holding => holding.mkt_value > 0);
+    total.holdings = filteredHoldings;
+    return {
+        total: total,
+        balance: state.balance
+    };
+};
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(actions, dispatch)

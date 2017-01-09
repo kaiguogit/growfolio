@@ -100,6 +100,12 @@ export const PERFORMANCE_COLUMNS = [
         title: 'Realized Gain'
     },
     {
+        selector: 'dividend',
+        filter: currency,
+        formatFunction: coloredCell,
+        title: 'Dividend'
+    },
+    {
         selector: 'cost_overall',
         filter: currency,
         title: 'Overall Cost'

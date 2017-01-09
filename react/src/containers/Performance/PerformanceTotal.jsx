@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { getTotalPerformance } from '../selectors';
-import styles from '../styles';
-import { currency, percentage } from '../utils';
-import NumberChangeTransition from '../components/Animation/NumberChangeTransition.jsx';
+import { getTotalPerformance } from '../../selectors';
+import styles from '../../styles';
+import { currency, percentage } from '../../utils';
+import NumberChangeTransition from '../../components/Animation/NumberChangeTransition.jsx';
 
 const localStyles = {
     total: {
@@ -19,7 +19,7 @@ const localStyles = {
 class Change extends React.Component {
     static propTypes = {
         change: PropTypes.number.isRequired,
-        change_percent: PropTypes.number.isRequired,
+        change_percent: PropTypes.number,
         title: PropTypes.string.isRequired
     }
 
@@ -47,8 +47,10 @@ class Change extends React.Component {
                 <NumberChangeTransition upOrDown={change > 0}>
                     <p style={numStyle}>
                         {currency(change)}{'  '}
-                        <span className={this.upOrDown(change).iconClass}></span>
-                        {percentage(change_percent)}
+                        {change_percent !== undefined &&
+                            <span className={this.upOrDown(change).iconClass}></span>
+                        }
+                        {change_percent !== undefined && percentage(change_percent)}
                     </p>
                 </NumberChangeTransition>
             </div>
@@ -75,7 +77,7 @@ class PerformanceTotal extends React.Component {
             <div>
                 {this.totalValue()}
                 <Change change={this.props.performance.days_gain}
-                    change_percent={this.props.performance.days_change_percent}
+                    change_percent={this.props.performance.change_percent}
                     title="Today's Change"/>
                 <Change change={this.props.performance.gain}
                     change_percent={this.props.performance.gain_percent}

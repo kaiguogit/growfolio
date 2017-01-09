@@ -13,7 +13,7 @@ class CurrenAllocationWithDrilldown extends React.Component {
     render() {
         const { holdings, balance } = this.props;
 
-        let data = holdings.map(holding => ({
+        let data = holdings.filter(holding => holding.mkt_value > 0).map(holding => ({
             name: holding.symbol,
             y: holding.mkt_value,
             drilldown: null
@@ -51,6 +51,8 @@ class CurrenAllocationWithDrilldown extends React.Component {
             }
         });
         let drilldown = Object.keys(drillDownlabels).map(label => drillDownlabels[label]);
+
+        // data and drilldown example
         // let data = [{
         //     name: "US Equity",
         //     y: 15,

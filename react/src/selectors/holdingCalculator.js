@@ -22,7 +22,8 @@ const createHoldingCalculator = () => {
      */
     const _loadTransactionsToHolding = transactions => {
         let holdings = [];
-        //TODO sort by date
+        // TODO verify tscs by date. Such as whether there is enough shares to
+        // sell
         if (!Array.isArray(transactions)) {
             return [];
         }
@@ -36,15 +37,26 @@ const createHoldingCalculator = () => {
                     currency: trsc.currency,
                     exch: trsc.exch,
                     sellTransactions: [],
-                    buyTransactions: []
+                    buyTransactions: [],
+                    dividendTransactions: []
                 };
                 holdings.push(holding);
             }
             if (trsc.type === 'buy') {
                 holding.buyTransactions.push(trsc);
-            } else {
+            } else if (trsc.type === 'sell') {
                 holding.sellTransactions.push(trsc);
+            } else if (trsc.type === 'dividend') {
+                holding.dividendTransactions.push(trsc);
             }
+        });
+        const compareDate = (a, b) => {
+            return new Date(a.date) - new Date(b.date);
+        };
+        holdings.forEach(holding => {
+            holding.buyTransactions.sort(compareDate);
+            holding.sellTransactions.sort(compareDate);
+            holding.dividendTransactions.sort(compareDate);
         });
         return holdings;
     };
@@ -66,6 +78,7 @@ const createHoldingCalculator = () => {
         holding.shares = 0;
         holding.average_cost = 0;
         holding.realized_gain = 0;
+        holding.dividend = 0;
 
         holding.buyTransactions.forEach(buyTsc => {
             buyTsc.leftShares = buyTsc.shares;
@@ -106,6 +119,13 @@ const createHoldingCalculator = () => {
         // Calculate the realized gain based on left over shares on each buy transaction.
         holding.sellTransactions.forEach(sellTsc=> {
             holding.realized_gain += sellTsc.realized_gain;
+        });
+
+        // Add dividend to realized gain
+        holding.dividendTransactions.forEach(dvdTsc=> {
+            const dividend = dvdTsc.price * dvdTsc.shares;
+            holding.realized_gain += dividend;
+            holding.dividend += dividend;
         });
 
         holding.average_cost = holding.cost / holding.shares;

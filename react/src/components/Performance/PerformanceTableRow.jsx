@@ -14,10 +14,6 @@ class PerformanceTableRow extends React.Component {
         return column.filter ? column.filter(value) : value;
     }
 
-    transitionUpOrDown(value) {
-        return value > 0 ? "background-green-fade-out" : "background-red-fade-out";
-    }
-
     render() {
         return (
             <tr>
