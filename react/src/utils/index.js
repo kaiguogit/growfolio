@@ -1,3 +1,4 @@
+import React from 'react';
 import numeral from 'numeral';
 
 /**
@@ -49,4 +50,19 @@ const queryParams = (params) => {
 
 export const makeUrl = (url, params) => {
     return url += (url.indexOf('?') === -1 ? '?' : '&') + queryParams(params);
+};
+
+export const renderCell = (entry, column) => {
+    let value = entry[column.selector];
+    let content;
+    if (column.formatFunction) {
+        content = column.formatFunction(entry, column);
+    } else {
+        content = column.filter ? column.filter(value) : value;
+    }
+    return (
+        <div style={column.style}>
+            {content}
+        </div>
+    );
 };

@@ -7,6 +7,9 @@ const styles = {
     },
     floatLeft: {
         float: 'left'
+    },
+    bold: {
+        fontWeight: 'bold'
     }
 };
 

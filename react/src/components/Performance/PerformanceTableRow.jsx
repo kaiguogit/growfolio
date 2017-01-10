@@ -1,17 +1,10 @@
 import React, { PropTypes } from 'react';
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
+import { renderCell } from '../../utils';
 class PerformanceTableRow extends React.Component {
     static propTypes = {
         holding: PropTypes.object.isRequired
-    }
-
-    renderCell(column) {
-        let value = this.props.holding[column.selector];
-        if (column.formatFunction) {
-            return column.formatFunction(this.props.holding, column);
-        }
-        return column.filter ? column.filter(value) : value;
     }
 
     render() {
@@ -25,9 +18,7 @@ class PerformanceTableRow extends React.Component {
                     return (
                         <td key={`${column.selector}-${this.props.holding[column.selector]}`}>
                             <NumberChangeTransition upOrDown={this.props.holding[column.selector] > 0}>
-                                <div>
-                                    {this.renderCell(column)}
-                                </div>
+                                {renderCell(this.props.holding, column)}
                             </NumberChangeTransition>
                         </td>
                     );
