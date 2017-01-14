@@ -6,6 +6,10 @@ export const TSCS_COLUMNS = [
         title: 'Name'
     },
     {
+        selector: 'exch',
+        title: 'Exchange'
+    },
+    {
         selector: 'symbol',
         title: 'Symbol'
     },
