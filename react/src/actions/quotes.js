@@ -1,4 +1,5 @@
 import * as types from '../constants/actionTypes';
+import $ from 'jquery';
 
 import { makeUrl, errorHandler } from '../utils';
 export const requestQuotes = () => ({
@@ -128,15 +129,16 @@ export const fetchQuotes = symbols => dispatch => {
         return;
     }
     dispatch(requestQuotes());
-    return fetch(makeQuotesUrl(symbols))
-        .then(response => response.text())
-        .then(jsonStr => {
-            // Google returns string with //, chop it off.
-            return JSON.parse(jsonStr.replace(/\/\//, ''));
-        })
-        .then(data => {
-            let result = processQuotes(data);
-            dispatch(receiveQuotes(result));
-        })
-        .catch(errorHandler);
+    return $.ajax({
+        TYPE: 'GET',
+        url: makeQuotesUrl(symbols)
+    }).then(jsonStr => {
+        // Google returns string with //, chop it off.
+        return JSON.parse(jsonStr.replace(/\/\//, ''));
+    })
+    .then(data => {
+        let result = processQuotes(data);
+        dispatch(receiveQuotes(result));
+    })
+    .catch(errorHandler);
 };
