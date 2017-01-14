@@ -31,7 +31,7 @@ dotenv.load({ path: '.env' });
  */
 const homeController = require('./controllers/home');
 // const userController = require('./controllers/user');
-// const apiController = require('./controllers/api');
+const apiController = require('./controllers/api');
 // const contactController = require('./controllers/contact');
 const transactionController = require('./controllers/transaction');
 const allocationController = require('./controllers/allocation');
@@ -133,6 +133,8 @@ app.route('/api/allocations')
   .get(allocationController.getAllocations)
   .post(allocationController.createAllocations)
   .delete(allocationController.deleteAllocations);
+app.route('/api/quotes')
+  .get(apiController.getQuotes);
 
 app.get('*', homeController.index);
 // app.get('/login', userController.getLogin);

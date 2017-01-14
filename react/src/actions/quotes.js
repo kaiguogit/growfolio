@@ -65,6 +65,9 @@ export const receiveQuotes = (quotes) => ({
 //         .catch(errorHandler);
 // };
 
+// __MY_API__ is set in webpack globals
+const BASE_URI = __MY_API__;
+
 /**
  * Google Finance API
  * makeQuotesUrl, processQuotes, fetchQuotes functions
@@ -75,11 +78,9 @@ const makeQuotesUrl = symbols => {
         return x.exch ? `${x.exch}:${x.symbol}` : x.symbol;
     });
     let symbolsStr = symbols.join(',');
-    let url = 'http://finance.google.com/finance/info';
+    let url = BASE_URI + "quotes";
     let params = {
-        client: 'ig',
-        // q: `NASDAQ:${symbolsStr}`
-        q: `${symbolsStr}`
+        q: symbolsStr
     };
     return makeUrl(url, params);
 };
@@ -133,8 +134,7 @@ export const fetchQuotes = symbols => dispatch => {
         TYPE: 'GET',
         url: makeQuotesUrl(symbols)
     }).then(jsonStr => {
-        // Google returns string with //, chop it off.
-        return JSON.parse(jsonStr.replace(/\/\//, ''));
+        return JSON.parse(jsonStr.response);
     })
     .then(data => {
         let result = processQuotes(data);
