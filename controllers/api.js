@@ -25,7 +25,6 @@ exports.getQuotes = (req, res, next) => {
   };
   const baseUrl = 'http://finance.google.com/finance/info';
   const url = makeUrl(baseUrl, qs);
-  console.log(url);
   request(url, (error, response, body) => {
     if (error) { return next(error); }
     // if (request.statusCode === 403) {
@@ -33,7 +32,6 @@ exports.getQuotes = (req, res, next) => {
     // }
     // Google returns string with //, chop it off.
     const result = JSON.parse(body.replace(/\/\//, ''));
-    console.log(result);
     res.send({ response: JSON.stringify(result) });
   });
 };

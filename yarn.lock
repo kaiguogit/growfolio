@@ -593,17 +593,17 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-debug@2, debug@2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
-  dependencies:
-    ms "0.7.2"
-
-debug@2.2.0, debug@^2.1.1, debug@^2.2.0, debug@~2.2.0:
+debug@2, debug@2.2.0, debug@^2.1.1, debug@^2.2.0, debug@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
+
+debug@2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
+  dependencies:
+    ms "0.7.2"
 
 decamelize@^1.0.0:
   version "1.2.0"
@@ -996,8 +996,8 @@ express-session@^1.14.2:
     utils-merge "1.0.0"
 
 express-status-monitor@^0.1.5:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/express-status-monitor/-/express-status-monitor-0.1.7.tgz#b2c1406248f2786147315987ada3426f1201762c"
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/express-status-monitor/-/express-status-monitor-0.1.9.tgz#dd505c7ca4aba5022b633af1a21afc9fe4c52db5"
   dependencies:
     on-headers "^1.0.1"
     pidusage "^1.1.0"
@@ -1059,11 +1059,11 @@ fast-levenshtein@~2.0.4:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
 fbgraph@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/fbgraph/-/fbgraph-1.3.0.tgz#1b98252b13542bf714acf3f7e94367df283cf6d5"
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/fbgraph/-/fbgraph-1.4.0.tgz#174d0ffcf5fe6015ce9ef0660e9e941f20be8051"
   dependencies:
-    qs "1.2.x"
-    request "2.74.x"
+    qs "^1.2.2"
+    request "^2.79.0"
 
 figures@^1.3.5:
   version "1.7.0"
@@ -2413,13 +2413,13 @@ q@0.9.7:
   version "0.9.7"
   resolved "https://registry.yarnpkg.com/q/-/q-0.9.7.tgz#4de2e6cb3b29088c9e4cbc03bf9d42fb96ce2f75"
 
-qs@1.2.x:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-1.2.2.tgz#19b57ff24dc2a99ce1f8bdf6afcda59f8ef61f88"
-
 qs@6.2.0, qs@~6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.0.tgz#3b7848c03c2dece69a9522b0fae8c4126d745f3b"
+
+qs@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-1.2.2.tgz#19b57ff24dc2a99ce1f8bdf6afcda59f8ef61f88"
 
 qs@^2.4.2:
   version "2.4.2"
@@ -2548,7 +2548,7 @@ request@2.9.x:
   version "2.9.203"
   resolved "https://registry.yarnpkg.com/request/-/request-2.9.203.tgz#6c1711a5407fb94a114219563e44145bcbf4723a"
 
-request@>=2.33.0, request@^2.55.0, request@^2.61.0, request@^2.68.0, request@^2.74.0, request@^2.78.0:
+request@>=2.33.0, request@^2.55.0, request@^2.61.0, request@^2.68.0, request@^2.74.0, request@^2.78.0, request@^2.79.0:
   version "2.79.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.79.0.tgz#4dfe5bf6be8b8cdc37fcf93e04b65577722710de"
   dependencies:

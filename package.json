@@ -1,16 +1,15 @@
 {
-  "name": "hackathon-starter",
-  "version": "4.3.0",
-  "description": "A boilerplate for Node.js web applications",
+  "name": "Growfolio",
+  "version": "0.1.1",
+  "description": "A Portfolio Management App",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sahat/hackathon-starter.git"
+    "url": "https://github.com/kaiguogit/growfolio"
   },
-  "author": "Sahat Yalkabov",
+  "author": "Kai Guo",
   "license": "MIT",
   "scripts": {
-    //https://devcenter.heroku.com/articles/nodejs-support
-    "heroku-prebuild": "cd react && npm run build && cd ..",
+    "build": "cd react && npm install && npm run build",
     "start": "node app.js",
     "test": "mocha --reporter spec"
   },
