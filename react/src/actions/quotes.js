@@ -116,7 +116,6 @@ const processQuotes = quotes => {
             $original: quote
         };
     });
-    // result["VEE"].current_price = Math.random();
     return result;
 };
 
