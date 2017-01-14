@@ -33,7 +33,6 @@ exports.getQuotes = (req, res, next) => {
     // }
     // Google returns string with //, chop it off.
     const result = JSON.parse(body.replace(/\/\//, ''));
-    console.log(result);
     res.send({ response: JSON.stringify(result) });
   });
 };
