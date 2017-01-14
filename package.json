@@ -9,6 +9,8 @@
   "author": "Sahat Yalkabov",
   "license": "MIT",
   "scripts": {
+    //https://devcenter.heroku.com/articles/nodejs-support
+    "heroku-prebuild": "cd react && npm run build && cd ..",
     "start": "node app.js",
     "test": "mocha --reporter spec"
   },

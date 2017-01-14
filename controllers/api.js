@@ -27,12 +27,10 @@ exports.getQuotes = (req, res, next) => {
   const url = makeUrl(baseUrl, qs);
   console.log(url);
   request(url, (error, response, body) => {
-    // if (err) { return next(err); }
+    if (error) { return next(error); }
     // if (request.statusCode === 403) {
     //   return next(new Error('Error when getting quotes'));
     // }
-    // console.log(response);
-    console.log(body);
     // Google returns string with //, chop it off.
     const result = JSON.parse(body.replace(/\/\//, ''));
     console.log(result);
