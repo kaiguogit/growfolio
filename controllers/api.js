@@ -13,11 +13,24 @@ exports.getApi = (req, res) => {
   });
 };
 
+const BASE_URI = 'http://finance.google.com/finance/info';
 const makeQuotesUrl = (symbols) => {
-  const result = symbols.map(x => (
+  // test
+  symbols.forEach((symbol) => {
+    if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN') {
+      symbol.exch = 'TSE';
+    }
+  });
+  //
+  let symbolsStr = symbols.map(x => (
     x.exch ? `${x.exch}:${x.symbol}` : x.symbol
   ));
-  return result.join(',');
+  symbolsStr = symbolsStr.join(',');
+  const params = {
+    client: 'ig',
+    q: symbolsStr
+  };
+  return makeUrl(BASE_URI, params);
 };
 
 /**
@@ -27,13 +40,7 @@ const makeQuotesUrl = (symbols) => {
 exports.getQuotes = (req, res, next) => {
   const symbolsStr = req.query.symbols;
   console.log(symbolsStr);
-  const qs = {
-    client: 'ig',
-    q: makeQuotesUrl(JSON.parse(symbolsStr))
-  };
-  console.log(qs);
-  const baseUrl = 'http://finance.google.com/finance/info';
-  const url = makeUrl(baseUrl, qs);
+  const url = makeQuotesUrl(JSON.parse(symbolsStr));
   console.log(url);
   request(url, (error, response, body) => {
     if (error) { return next(error); }
@@ -41,7 +48,7 @@ exports.getQuotes = (req, res, next) => {
     //   return next(new Error('Error when getting quotes'));
     // }
     // Google returns string with //, chop it off.
-    console.log("body", body);
+    console.log('body', body);
     const result = JSON.parse(body.replace(/\/\//, ''));
     res.send({ response: JSON.stringify(result) });
   });
