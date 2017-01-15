@@ -128,10 +128,11 @@ export const fetchQuotes = symbols => dispatch => {
         // empty symbols, skip fetching
         return;
     }
+    console.log(symbols);
     dispatch(requestQuotes());
     return $.ajax({
         TYPE: 'GET',
-        url: makeQuotesUrl(symbols)
+        url: BASE_URI + "quotes?symbols=" + JSON.stringify(symbols)
     }).then(jsonStr => {
         return JSON.parse(jsonStr.response);
     })
