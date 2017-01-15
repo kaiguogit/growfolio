@@ -17,7 +17,7 @@ const BASE_URI = 'http://finance.google.com/finance/info';
 const makeQuotesUrl = (symbols) => {
   // test
   symbols.forEach((symbol) => {
-    if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN') {
+    if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN' || symbol.symbol === 'CPD') {
       symbol.exch = 'TSE';
     }
   });
@@ -50,6 +50,6 @@ exports.getQuotes = (req, res, next) => {
     // Google returns string with //, chop it off.
     console.log('body', body);
     const result = JSON.parse(body.replace(/\/\//, ''));
-    res.send({ response: JSON.stringify(result) });
+    res.json({ result });
   });
 };

@@ -16,7 +16,7 @@ class PerformanceTable extends React.Component {
         return (
             <div>
             {isEmpty ? <h2>Empty.</h2>
-              : <Table bordered hover>
+              : <Table bordered striped hover>
                     <thead>
                         <tr>
                             {PERFORMANCE_COLUMNS.map(column => {

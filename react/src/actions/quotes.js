@@ -1,7 +1,7 @@
 import * as types from '../constants/actionTypes';
 import $ from 'jquery';
 
-import { makeUrl, errorHandler } from '../utils';
+import { errorHandler } from '../utils';
 export const requestQuotes = () => ({
     type: types.REQUEST_QUOTES
 });
@@ -73,17 +73,19 @@ const BASE_URI = __MY_API__;
  * makeQuotesUrl, processQuotes, fetchQuotes functions
  * URL: http://finance.google.com/finance/info?client=ig&q=NASDAQ:YHOO,NASDAQ:GOOGL
  */
-const makeQuotesUrl = symbols => {
-    symbols = symbols.map(x => {
-        return x.exch ? `${x.exch}:${x.symbol}` : x.symbol;
-    });
-    let symbolsStr = symbols.join(',');
-    let url = BASE_URI + "quotes";
-    let params = {
-        q: symbolsStr
-    };
-    return makeUrl(url, params);
-};
+
+// Moved to backend
+// const makeQuotesUrl = symbols => {
+//     symbols = symbols.map(x => {
+//         return x.exch ? `${x.exch}:${x.symbol}` : x.symbol;
+//     });
+//     let symbolsStr = symbols.join(',');
+//     let url = BASE_URI + "quotes";
+//     let params = {
+//         q: symbolsStr
+//     };
+//     return makeUrl(url, params);
+// };
 
 /**
  * Google API properties http://www.jarloo.com/real-time-google-stock-api/
@@ -128,16 +130,15 @@ export const fetchQuotes = symbols => dispatch => {
         // empty symbols, skip fetching
         return;
     }
-    console.log(symbols);
     dispatch(requestQuotes());
     return $.ajax({
-        TYPE: 'GET',
-        url: BASE_URI + "quotes?symbols=" + JSON.stringify(symbols)
-    }).then(jsonStr => {
-        return JSON.parse(jsonStr.response);
+        type: 'GET',
+        dataType: "json",
+        url: BASE_URI + "quotes",
+        data: {symbols: JSON.stringify(symbols)}
     })
     .then(data => {
-        let result = processQuotes(data);
+        let result = processQuotes(data.result);
         dispatch(receiveQuotes(result));
     })
     .catch(errorHandler);
