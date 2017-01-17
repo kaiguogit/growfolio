@@ -20,6 +20,7 @@ const makeQuotesUrl = (symbols) => {
     if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN' || symbol.symbol === 'CPD') {
       symbol.exch = 'TSE';
     }
+    console.log('total symbols are ', symbols.length);
   });
   //
   let symbolsStr = symbols.map(x => (
@@ -37,19 +38,29 @@ const makeQuotesUrl = (symbols) => {
  * GET /api/quotes
  * Yahoo quotes
  */
-exports.getQuotes = (req, res, next) => {
+exports.getQuotes = (req, res) => {
   const symbolsStr = req.query.symbols;
   console.log(symbolsStr);
   const url = makeQuotesUrl(JSON.parse(symbolsStr));
   console.log(url);
   request(url, (error, response, body) => {
-    if (error) { return next(error); }
+    const errorReponse = {
+      statuscode: request.statusCode,
+      error,
+      message: 'Error when getting quotes',
+      success: false
+    };
+    if (error) { res.json(errorReponse); }
     // if (request.statusCode === 403) {
     //   return next(new Error('Error when getting quotes'));
     // }
     // Google returns string with //, chop it off.
     console.log('body', body);
-    const result = JSON.parse(body.replace(/\/\//, ''));
-    res.json({ result });
+    try {
+      const result = JSON.parse(body.replace(/\/\//, ''));
+      res.json({ success: true, result });
+    } catch (err) {
+      res.json(errorReponse);
+    }
   });
 };

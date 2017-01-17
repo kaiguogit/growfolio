@@ -138,6 +138,9 @@ export const fetchQuotes = symbols => dispatch => {
         data: {symbols: JSON.stringify(symbols)}
     })
     .then(data => {
+        if (!data.success) {
+            return Promise.reject(data);
+        }
         let result = processQuotes(data.result);
         dispatch(receiveQuotes(result));
     })
