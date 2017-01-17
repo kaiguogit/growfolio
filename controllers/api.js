@@ -40,12 +40,10 @@ const makeQuotesUrl = (symbols) => {
  */
 exports.getQuotes = (req, res) => {
   const symbolsStr = req.query.symbols;
-  console.log(symbolsStr);
   const url = makeQuotesUrl(JSON.parse(symbolsStr));
-  console.log(url);
   request(url, (error, response, body) => {
     const errorReponse = {
-      statuscode: request.statusCode,
+      status_code: request.statusCode,
       error,
       message: 'Error when getting quotes',
       success: false
@@ -55,7 +53,6 @@ exports.getQuotes = (req, res) => {
     //   return next(new Error('Error when getting quotes'));
     // }
     // Google returns string with //, chop it off.
-    console.log('body', body);
     try {
       const result = JSON.parse(body.replace(/\/\//, ''));
       res.json({ success: true, result });
