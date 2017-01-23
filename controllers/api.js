@@ -15,12 +15,11 @@ exports.getApi = (req, res) => {
 
 const BASE_URI = 'http://finance.google.com/finance/info';
 const makeQuotesUrl = (symbols) => {
-  // test
+  // Accommodate bug in production,that Toronto exch can't get qutoes properly.
   symbols.forEach((symbol) => {
     if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN' || symbol.symbol === 'CPD') {
       symbol.exch = 'TSE';
     }
-    console.log('total symbols are ', symbols.length);
   });
   //
   let symbolsStr = symbols.map(x => (
