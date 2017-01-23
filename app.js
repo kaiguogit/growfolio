@@ -29,7 +29,7 @@ dotenv.load({ path: '.env' });
 /**
  * Controllers (route handlers).
  */
-// const homeController = require('./controllers/home');
+const homeController = require('./controllers/home');
 // const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 // const contactController = require('./controllers/contact');
@@ -138,7 +138,8 @@ app.route('/api/allocations')
 app.route('/api/quotes')
   .get(apiController.getQuotes);
 
-// app.get('*', homeController.index);
+app.get('*', homeController.index);
+
 // app.get('/login', userController.getLogin);
 // app.post('/login', userController.postLogin);
 // app.get('/logout', userController.logout);

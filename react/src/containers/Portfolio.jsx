@@ -14,10 +14,18 @@ import Balance from '../components/Balance/Balance.jsx';
 
 class Portfolio extends React.Component {
     static propTypes = {
+        params: PropTypes.object.isRequired,
         selectedTab: PropTypes.string.isRequired,
         actions: PropTypes.object.isRequired,
         isFetching: PropTypes.bool.isRequired
     };
+
+    componentDidMount() {
+        // Keep browser URL sync with redux store.
+        if (this.props.params.tab !== this.props.selectedTab) {
+            this.props.actions.selectTab(this.props.params.tab);
+        }
+    }
 
     render() {
         this.props.isFetching ? NProgress.start() : NProgress.done();

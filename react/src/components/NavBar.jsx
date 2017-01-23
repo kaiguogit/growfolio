@@ -5,9 +5,11 @@ class NavBar extends React.Component {
     render() {
         return (
             <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
-              <div className="navbar-header">
-                <IndexLink to="/">Home</IndexLink>
-              </div>
+                <div className="container">
+                    <div className="navbar-header">
+                    <IndexLink to="/">Home</IndexLink>
+                    </div>
+                </div>
             </nav>
         );
     }

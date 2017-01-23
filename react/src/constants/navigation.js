@@ -1,3 +1,3 @@
-export const TAB_TSCS = 'TAB_TSCS';
-export const TAB_PERFORMANCE = 'TAB_PERFORMANCE';
-export const TAB_BALANCE = 'TAB_BALANCE';
+export const TAB_TSCS = 'transactions';
+export const TAB_PERFORMANCE = 'performance';
+export const TAB_BALANCE = 'balance';
