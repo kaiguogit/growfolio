@@ -14,7 +14,6 @@ import Balance from '../components/Balance/Balance.jsx';
 
 class Portfolio extends React.Component {
     static propTypes = {
-        params: PropTypes.object.isRequired,
         selectedTab: PropTypes.string.isRequired,
         actions: PropTypes.object.isRequired,
         isFetching: PropTypes.bool.isRequired
