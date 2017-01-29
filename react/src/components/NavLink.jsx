@@ -13,7 +13,7 @@ class NavLink extends React.Component {
 
     render() {
         const {to, children, indexOnly} = this.props;
-        let isActive = this.context.router.isActive(to, indexOnly);
+        let isActive = this.context.router.isActive(to, indexOnly === undefined ? true : indexOnly);
         return (
             <li className={isActive ?  'active' : ''}>
                 <Link to={to}>

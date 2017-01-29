@@ -33,7 +33,7 @@ const allocationController = require('./controllers/allocation');
 /**
  * API keys and Passport configuration.
  */
-// const passportConfig = require('./config/passport');
+const passportConfig = require('./config/passport');
 
 /**
  * Create Express server.

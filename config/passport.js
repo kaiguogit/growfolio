@@ -44,6 +44,32 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
 }));
 
 /**
+ * Sign Up strategy
+ */
+/**
+ * Return the Passport Local Strategy object.
+ */
+passport.use('local-signup', new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+  session: false,
+  passReqToCallback: true
+}, (req, email, password, done) => {
+  const userData = {
+    email: email.trim(),
+    password: password.trim(),
+    name: req.body.name.trim()
+  };
+
+  const newUser = new User(userData);
+  newUser.save((err) => {
+    if (err) { return done(err); }
+
+    return done(null);
+  });
+}));
+
+/**
  * OAuth Strategy Overview
  *
  * - User is already logged in.

@@ -50,12 +50,10 @@ const headers = new Headers({
     'Content-Type': 'application/json',
     Accept: 'application/json',
 });
-// __MY_API__ is set in webpack globals
-const BASE_URI = __MY_API__;
 
 export const fetchTscs = () => dispatch => {
     dispatch(requestTscs());
-    return fetch(BASE_URI + 'transactions')
+    return fetch(__MY_API__ + 'transactions')
         .then(response => response.json())
         .then(data => dispatch(receiveTscs(data.result)))
         .catch(errorHandler);
@@ -63,7 +61,7 @@ export const fetchTscs = () => dispatch => {
 
 export const createTscs = (tsc) => dispatch => {
     dispatch(requestTscs());
-    return fetch(BASE_URI + "transactions", {
+    return fetch(__MY_API__ + "transactions", {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(tsc)
@@ -75,7 +73,7 @@ export const createTscs = (tsc) => dispatch => {
 
 export const removeTscs = (id) => dispatch => {
     dispatch(requestTscs());
-    return fetch(BASE_URI + "transactions", {
+    return fetch(__MY_API__ + "transactions", {
         method: 'DELETE',
         headers: headers,
         body: JSON.stringify({'id': id}),

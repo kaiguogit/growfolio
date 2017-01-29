@@ -2,13 +2,14 @@ import App from './components/App.jsx';
 import HomePage from './components/HomePage.jsx';
 import Portfolio from './containers/Portfolio.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
+import Tscs from './containers/Tscs.jsx';
+import Performance from './containers/Performance/Performance.jsx';
+import Balance from './containers/Balance/Balance.jsx';
+import SignUpPage from './containers/SignUpPage.jsx';
 
 import * as navigation from './constants/navigation';
 
 //componets
-import Tscs from './containers/Tscs.jsx';
-import Performance from './containers/Performance/Performance.jsx';
-import Balance from './containers/Balance/Balance.jsx';
 
 const routes = (/*store*/) => {
     return {
@@ -34,6 +35,10 @@ const routes = (/*store*/) => {
                         component: Balance
                     },
                 ]
+            },
+            {
+                path: 'signup',
+                component: SignUpPage
             },
             {
                 path: 'error',

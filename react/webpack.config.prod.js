@@ -10,7 +10,8 @@ import path from 'path';
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production'),
   __DEV__: false,
-  __MY_API__: JSON.stringify('/api/')
+  __MY_API__: JSON.stringify('/api/'),
+  __HOST_URL__: JSON.stringify('/')
 };
 
 export default {

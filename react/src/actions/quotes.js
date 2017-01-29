@@ -71,9 +71,6 @@ export const receiveQuotes = (quotes) => ({
 //         .catch(errorHandler);
 // };
 
-// __MY_API__ is set in webpack globals
-const BASE_URI = __MY_API__;
-
 /**
  * Google Finance API
  * makeQuotesUrl, processQuotes, fetchQuotes functions
@@ -140,7 +137,7 @@ export const fetchQuotes = symbols => dispatch => {
     return $.ajax({
         type: 'GET',
         dataType: "json",
-        url: BASE_URI + "quotes",
+        url: __MY_API__ + "quotes",
         data: {symbols: JSON.stringify(symbols)}
     })
     .then(data => {

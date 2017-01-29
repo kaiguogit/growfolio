@@ -14,10 +14,11 @@ export const updateBalanceLabel = holding => ({
 });
 
 
-export const requestAllocations = () => ({
+const requestAllocations = () => ({
     type: types.REQUEST_ALLOCATIONS
 });
-export const receiveAllocations = (data) => {
+
+const receiveAllocations = (data) => {
     // process allocation for consistency.
     data.forEach(allocation=> {
         allocation.symbol = allocation.symbol.toUpperCase();
@@ -28,12 +29,14 @@ export const receiveAllocations = (data) => {
         receivedAt: Date.now()
     };
 };
-export const addAllocations = (allocation) => ({
+
+const addAllocations = (allocation) => ({
     type: types.ADD_ALLOCATIONS,
     allocation,
     receivedAt: Date.now()
 });
-export const deleteAllocations = (id) => ({
+
+const deleteAllocations = (id) => ({
     type: types.DELETE_ALLOCATIONS,
     id: id,
     receivedAt: Date.now()
@@ -47,12 +50,11 @@ const headers = new Headers({
     'Content-Type': 'application/json',
     Accept: 'application/json',
 });
-// __MY_API__ is set in webpack globals
-const BASE_URI = __MY_API__;
 
+// __MY_API__ is set in webpack globals
 export const fetchAllocations = () => dispatch => {
     dispatch(requestAllocations());
-    return fetch(BASE_URI + 'allocations')
+    return fetch(__MY_API__ + 'allocations')
         .then(response => response.json())
         .then(data => dispatch(receiveAllocations(data.result)))
         .catch(errorHandler);
@@ -62,7 +64,7 @@ export const createAllocations = (allocations) => dispatch => {
     dispatch(requestAllocations());
     let allocationsArray = [];
     allocationsArray = Object.keys(allocations).map(key => allocations[key]);
-    return fetch(BASE_URI + "allocations", {
+    return fetch(__MY_API__ + "allocations", {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(allocationsArray)
@@ -74,7 +76,7 @@ export const createAllocations = (allocations) => dispatch => {
 
 export const removeAllocations = (id) => dispatch => {
     dispatch(requestAllocations());
-    return fetch(BASE_URI + "allocations", {
+    return fetch(__MY_API__ + "allocations", {
         method: 'DELETE',
         headers: headers,
         body: JSON.stringify({'id': id}),

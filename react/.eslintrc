@@ -69,6 +69,7 @@
     "react/jsx-wrap-multilines": 1
   },
   "globals": {
-    "__MY_API__": true
+    "__MY_API__": true,
+    "__HOST_URL__": true
   }
 }

@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';
 import Chart from './Chart.jsx';
-import Highcharts from 'highcharts';
 import drilldown from 'highcharts/modules/drilldown';
 import isEqual from 'lodash.isequal';
 
