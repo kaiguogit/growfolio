@@ -4,34 +4,36 @@ import Portfolio from './containers/Portfolio.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
 
 import * as navigation from './constants/navigation';
-import * as actions from './actions';
 
-const routes = (store) => {
-    const onEnterPortfolio = (nextState, replace) => {
-        const tab = nextState.params.tab;
-        if (!tab) {
-            replace('/portfolio/' + navigation.TAB_PERFORMANCE);
-        }
-        const selectedTab = store.getState().portfolio.tab;
-        const isValid = Object.values(navigation).some(value => value === tab);
-        // keep state and url params in sync.
-        if (isValid && tab !== selectedTab) {
-            store.dispatch(actions.selectTab(tab));
-        }
-        if (!isValid && tab) {
-            replace('/error');
-        }
-    };
+//componets
+import Tscs from './containers/Tscs.jsx';
+import Performance from './containers/Performance/Performance.jsx';
+import Balance from './containers/Balance/Balance.jsx';
 
+const routes = (/*store*/) => {
     return {
         path: '/',
         component: App,
         indexRoute: {component: HomePage},
-        childRoutes:[
+        childRoutes: [
             {
-                path: 'portfolio(/:tab)',
+                path: 'portfolio',
                 component: Portfolio,
-                onEnter: onEnterPortfolio
+                indexRoute: {component: Performance},
+                childRoutes: [
+                    {
+                        path: navigation.TAB_PERFORMANCE,
+                        component: Performance
+                    },
+                    {
+                        path: navigation.TAB_TSCS,
+                        component: Tscs
+                    },
+                    {
+                        path: navigation.TAB_BALANCE,
+                        component: Balance
+                    },
+                ]
             },
             {
                 path: 'error',

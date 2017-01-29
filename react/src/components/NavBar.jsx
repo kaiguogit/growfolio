@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, IndexLink } from 'react-router';
+import NavLink from './NavLink.jsx';
 
 class NavBar extends React.Component {
     render() {
@@ -10,8 +10,8 @@ class NavBar extends React.Component {
                 </div>
                 <div className="collapse navbar-collapse">
                     <ul className="nav navbar-nav">
-                        <li><IndexLink to="/">Home</IndexLink></li>
-                        <li><Link to="/portfolio">Portfolio</Link></li>
+                        <NavLink to="/" indexOnly={true}><span>Home</span></NavLink>
+                        <NavLink to="/portfolio" indexOnly={false}><span>Portfolio</span></NavLink>
                     </ul>
                 </div>
             </nav>

@@ -16,10 +16,6 @@ class Tscs extends React.Component {
       actions: PropTypes.object.isRequired
     }
 
-    componentDidMount() {
-        this.handleRefreshClick();
-    }
-
     handleRefreshClick = e => {
         if (e) {
             e.preventDefault();
@@ -78,7 +74,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Tscs);
+export default connect(mapStateToProps, mapDispatchToProps)(Tscs);

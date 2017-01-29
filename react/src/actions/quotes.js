@@ -1,7 +1,13 @@
 import * as types from '../constants/actionTypes';
 import $ from 'jquery';
 
+import * as currencyActions from './currency';
+import { getHoldings } from '../selectors';
+
 import { errorHandler } from '../utils';
+
+const REFRESH_QUOTES_INTERVAL = 600000;
+
 export const requestQuotes = () => ({
     type: types.REQUEST_QUOTES
 });
@@ -145,4 +151,26 @@ export const fetchQuotes = symbols => dispatch => {
         dispatch(receiveQuotes(result));
     })
     .catch(errorHandler);
+};
+
+export const refreshQuotes = () => (dispatch, getState) => {
+    const state = getState();
+    const holdings = getHoldings(state);
+    const displayCurrency = state.portfolio.displayCurrency;
+    dispatch(fetchQuotes(holdings.map(x => ({
+        symbol: x.symbol,
+        exch: x.exch
+    }))));
+    let currencyPairs = [];
+    holdings.forEach(x => {
+        let pair = x.currency + displayCurrency;
+        if (x.currency !== displayCurrency && currencyPairs.indexOf(pair) === -1) {
+            currencyPairs.push(pair);
+        }
+    });
+    dispatch(currencyActions.fetchCurrency(currencyPairs));
+};
+
+export const setIntervalRefreshQuotes = () => (dispatch, getState) => {
+    setInterval(refreshQuotes().bind(null, dispatch, getState), REFRESH_QUOTES_INTERVAL);
 };

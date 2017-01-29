@@ -2,15 +2,12 @@ import React, {PropTypes} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as quotesActions from '../../actions/quotes';
-import * as currencyActions from '../../actions/currency';
-import * as rootActions from '../../actions';
 import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
 import RefreshQuotesButton from './../RefreshQuotesButton.jsx';
 import PerformanceTable from '../../components/Performance/PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
 import CurrencySelector from './../CurrencySelector.jsx';
-const REFRESH_QUOTES_INTERVAL = 600000;
 
 class Performance extends React.Component {
     static propTypes = {
@@ -20,7 +17,7 @@ class Performance extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(this.refreshQuotes, REFRESH_QUOTES_INTERVAL);
+        this.props.actions.setIntervalRefreshQuotes();
     }
 
     componentDidUpdate(prevProps) {
@@ -35,19 +32,7 @@ class Performance extends React.Component {
         if (e) {
             e.preventDefault();
         }
-        this.props.actions.fetchQuotes(this.props.holdings.map(x => ({
-            symbol: x.symbol,
-            exch: x.exch
-        })));
-        let currencyPairs = [];
-
-        this.props.holdings.forEach(x => {
-            let pair = x.currency + this.props.displayCurrency;
-            if (x.currency !== this.props.displayCurrency && currencyPairs.indexOf(pair) === -1) {
-                currencyPairs.push(pair);
-            }
-        });
-        this.props.actions.fetchCurrency(currencyPairs);
+        this.props.actions.refreshQuotes();
     }
 
     render() {
@@ -74,8 +59,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        actions: bindActionCreators(
-            Object.assign(rootActions, quotesActions, currencyActions), dispatch)
+        actions: bindActionCreators(quotesActions, dispatch)
     };
 };
 

@@ -1,32 +1,43 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions';
+import * as rootActions from '../actions';
+import * as tscsActions from '../actions/tscs';
+
 import * as navigation from '../constants/navigation';
 
 import NProgress from 'nprogress';
 
 //Components
 import { Tabs, Tab } from 'react-bootstrap';
-import Tscs from './Tscs.jsx';
-import Performance from './Performance/Performance.jsx';
-import Balance from '../components/Balance/Balance.jsx';
 
 class Portfolio extends React.Component {
     static propTypes = {
         selectedTab: PropTypes.string.isRequired,
         actions: PropTypes.object.isRequired,
-        isFetching: PropTypes.bool.isRequired
+        tscs: PropTypes.array,
+        isFetching: PropTypes.bool.isRequired,
+        children: PropTypes.element
     };
+
+    componentDidMount() {
+        const tscs = this.props.tscs;
+        if (Array.isArray(tscs) && tscs.length === 0) {
+            this.props.actions.fetchTscs();
+        }
+    }
 
     render() {
         this.props.isFetching ? NProgress.start() : NProgress.done();
         return (
-            <Tabs activeKey={this.props.selectedTab} onSelect={this.props.actions.selectTab} id="portfolio-tabs">
-                <Tab eventKey={navigation.TAB_PERFORMANCE} title="Performance"><Performance/></Tab>
-                <Tab eventKey={navigation.TAB_TSCS} title="Transactions"><Tscs/></Tab>
-                <Tab eventKey={navigation.TAB_BALANCE} title="Balance"><Balance/></Tab>
-            </Tabs>
+            <div>
+                <Tabs activeKey={this.props.selectedTab} onSelect={this.props.actions.selectTab} id="portfolio-tabs">
+                    <Tab eventKey={navigation.TAB_PERFORMANCE} title="Performance"/>
+                    <Tab eventKey={navigation.TAB_TSCS} title="Transactions"/>
+                    <Tab eventKey={navigation.TAB_BALANCE} title="Balance"/>
+                </Tabs>
+                {this.props.children}
+            </div>
         );
     }
 }
@@ -34,13 +45,14 @@ class Portfolio extends React.Component {
 const mapStateToProps = state => {
     return {
         selectedTab: state.portfolio.tab,
-        isFetching: state.tscs.isFetching || state.quotes.isFetching
+        isFetching: state.tscs.isFetching || state.quotes.isFetching,
+        tscs: state.tscs.items
      };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        actions: bindActionCreators(actions, dispatch)
+        actions: bindActionCreators(Object.assign(rootActions, tscsActions), dispatch)
     };
 };
 
