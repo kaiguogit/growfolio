@@ -22,15 +22,15 @@ const routes = (/*store*/) => {
                 indexRoute: {component: Performance},
                 childRoutes: [
                     {
-                        path: navigation.TAB_PERFORMANCE,
+                        path: navigation.PERFORMANCE,
                         component: Performance
                     },
                     {
-                        path: navigation.TAB_TSCS,
+                        path: navigation.TSCS,
                         component: Tscs
                     },
                     {
-                        path: navigation.TAB_BALANCE,
+                        path: navigation.BALANCE,
                         component: Balance
                     },
                 ]

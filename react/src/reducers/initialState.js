@@ -2,7 +2,7 @@ import * as navigation from '../constants/navigation';
 
 export default {
     portfolio: {
-        tab: navigation.TAB_PERFORMANCE,
+        tab: navigation.PERFORMANCE,
         displayCurrency: 'CAD'
     },
     tscs: {

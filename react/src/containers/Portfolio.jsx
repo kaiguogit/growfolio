@@ -32,9 +32,9 @@ class Portfolio extends React.Component {
         return (
             <div>
                 <Tabs activeKey={this.props.selectedTab} onSelect={this.props.actions.selectTab} id="portfolio-tabs">
-                    <Tab eventKey={navigation.TAB_PERFORMANCE} title="Performance"/>
-                    <Tab eventKey={navigation.TAB_TSCS} title="Transactions"/>
-                    <Tab eventKey={navigation.TAB_BALANCE} title="Balance"/>
+                    <Tab eventKey={navigation.PERFORMANCE} title="Performance"/>
+                    <Tab eventKey={navigation.TSCS} title="Transactions"/>
+                    <Tab eventKey={navigation.BALANCE} title="Balance"/>
                 </Tabs>
                 {this.props.children}
             </div>
