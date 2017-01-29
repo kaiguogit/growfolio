@@ -12,7 +12,7 @@ const validator = require('validator');
  * @returns {object} The result of validation. Object contains a boolean validation result,
  *                   errors tips, and a global message for the whole form.
  */
-function validateSignupForm(payload) {
+const validateSignupForm = (payload) => {
   const errors = {};
   let isFormValid = true;
   let message = '';
@@ -41,34 +41,76 @@ function validateSignupForm(payload) {
     message,
     errors
   };
-}
+};
+
+/**
+ * Validate the login form
+ *
+ * @param {object} payload - the HTTP body message
+ * @returns {object} The result of validation. Object contains a boolean validation result,
+ *                   errors tips, and a global message for the whole form.
+ */
+const validateLoginForm = (payload) => {
+  const errors = {};
+  let isFormValid = true;
+  let message = '';
+
+  if (!payload || typeof payload.email !== 'string' || payload.email.trim().length === 0) {
+    isFormValid = false;
+    errors.email = 'Please provide your email address.';
+  }
+
+  if (!payload || typeof payload.password !== 'string' || payload.password.trim().length === 0) {
+    isFormValid = false;
+    errors.password = 'Please provide your password.';
+  }
+
+  if (!isFormValid) {
+    message = 'Check the form for errors.';
+  }
+
+  return {
+    success: isFormValid,
+    message,
+    errors
+  };
+};
 
 /**
  * POST /login
  * Sign in using email and password.
  */
 exports.postLogin = (req, res, next) => {
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({ remove_dots: false });
-
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/login');
+  const validationResult = validateLoginForm(req.body);
+  if (!validationResult.success) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.message,
+      errors: validationResult.errors
+    });
   }
 
-  passport.authenticate('local', (err, user, info) => {
-    if (err) { return next(err); }
-    if (!user) {
-      req.flash('errors', info);
-      return res.redirect('/login');
+  return passport.authenticate('local-login', (err, token, userData) => {
+    if (err) {
+      if (err.name === 'IncorrectCredentialsError') {
+        return res.status(400).json({
+          success: false,
+          message: err.message
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: 'Could not process the form.'
+      });
     }
-    req.logIn(user, (err) => {
-      if (err) { return next(err); }
-      req.flash('success', { msg: 'Success! You are logged in.' });
-      res.redirect(req.session.returnTo || '/');
+
+
+    return res.json({
+      success: true,
+      message: 'You have successfully logged in!',
+      token,
+      user: userData
     });
   })(req, res, next);
 };

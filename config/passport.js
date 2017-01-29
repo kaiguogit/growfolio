@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const request = require('request');
 const InstagramStrategy = require('passport-instagram').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
@@ -27,18 +28,69 @@ passport.deserializeUser((id, done) => {
 /**
  * Sign in using Email and Password.
  */
-passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-  User.findOne({ email: email.toLowerCase() }, (err, user) => {
+// passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+//   User.findOne({ email: email.toLowerCase() }, (err, user) => {
+//     if (err) { return done(err); }
+//     if (!user) {
+//       return done(null, false, { msg: `Email ${email} not found.` });
+//     }
+//     user.comparePassword(password, (err, isMatch) => {
+//       if (err) { return done(err); }
+//       if (isMatch) {
+//         return done(null, user);
+//       }
+//       return done(null, false, { msg: 'Invalid email or password.' });
+//     });
+//   });
+// }));
+
+/**
+ * Return the Passport Local Strategy object.
+ */
+passport.use('local-login', new LocalStrategy({
+  usernameField: 'email',
+  passwordField: 'password',
+  session: false,
+  passReqToCallback: true
+}, (req, email, password, done) => {
+  const userData = {
+    email: email.trim(),
+    password: password.trim()
+  };
+
+  // find a user by email address
+  return User.findOne({ email: userData.email }, (err, user) => {
     if (err) { return done(err); }
+
     if (!user) {
-      return done(null, false, { msg: `Email ${email} not found.` });
+      const error = new Error('Incorrect email or password');
+      error.name = 'IncorrectCredentialsError';
+
+      return done(error);
     }
-    user.comparePassword(password, (err, isMatch) => {
+
+    // check if a hashed user's password is equal to a value saved in the database
+    return user.comparePassword(userData.password, (passwordErr, isMatch) => {
       if (err) { return done(err); }
-      if (isMatch) {
-        return done(null, user);
+
+      if (!isMatch) {
+        const error = new Error('Incorrect email or password');
+        error.name = 'IncorrectCredentialsError';
+
+        return done(error);
       }
-      return done(null, false, { msg: 'Invalid email or password.' });
+
+      const payload = {
+        sub: user._id
+      };
+
+      // create a token string
+      const token = jwt.sign(payload, process.env.JWT_SECRET);
+      const data = {
+        name: user.name
+      };
+
+      return done(null, token, data);
     });
   });
 }));

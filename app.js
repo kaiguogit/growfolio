@@ -79,6 +79,7 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
  * Primary app routes.
  */
 app.post('/signup', userController.postSignup);
+app.post('/login', userController.postLogin);
 
 app.route('/api/transactions')
   .get(transactionController.getTransactions)

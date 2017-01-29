@@ -6,6 +6,7 @@ import Tscs from './containers/Tscs.jsx';
 import Performance from './containers/Performance/Performance.jsx';
 import Balance from './containers/Balance/Balance.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
+import LoginPage from './containers/LoginPage.jsx';
 
 import * as navigation from './constants/navigation';
 
@@ -39,6 +40,10 @@ const routes = (/*store*/) => {
             {
                 path: 'signup',
                 component: SignUpPage
+            },
+            {
+                path: 'login',
+                component: LoginPage
             },
             {
                 path: 'error',
