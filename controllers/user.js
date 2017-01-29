@@ -3,6 +3,45 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const passport = require('passport');
 const User = require('../models/User');
+const validator = require('validator');
+
+/**
+ * Validate the sign up form
+ *
+ * @param {object} payload - the HTTP body message
+ * @returns {object} The result of validation. Object contains a boolean validation result,
+ *                   errors tips, and a global message for the whole form.
+ */
+function validateSignupForm(payload) {
+  const errors = {};
+  let isFormValid = true;
+  let message = '';
+
+  if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
+    isFormValid = false;
+    errors.email = 'Please provide a correct email address.';
+  }
+
+  if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
+    isFormValid = false;
+    errors.password = 'Password must have at least 8 characters.';
+  }
+
+  if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
+    isFormValid = false;
+    errors.name = 'Please provide your name.';
+  }
+
+  if (!isFormValid) {
+    message = 'Check the form for errors.';
+  }
+
+  return {
+    success: isFormValid,
+    message,
+    errors
+  };
+}
 
 /**
  * POST /login
@@ -48,39 +87,40 @@ exports.logout = (req, res) => {
  * Create a new local account.
  */
 exports.postSignup = (req, res, next) => {
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
-  req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
-  req.sanitize('email').normalizeEmail({ remove_dots: false });
-
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/signup');
+  const validationResult = validateSignupForm(req.body);
+  if (!validationResult.success) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.message,
+      errors: validationResult.errors
+    });
   }
 
-  const user = new User({
-    email: req.body.email,
-    password: req.body.password
-  });
+  // return passport.authenticate('local-signup', (err) => {
+  //   if (err) {
+  //     if (err.name === 'MongoError' && err.code === 11000) {
+  //       // the 11000 Mongo code is for a duplication email error
+  //       // the 409 HTTP status code is for conflict error
+  //       return res.status(409).json({
+  //         success: false,
+  //         message: 'Check the form for errors.',
+  //         errors: {
+  //           email: 'This email is already taken.'
+  //         }
+  //       });
+  //     }
 
-  User.findOne({ email: req.body.email }, (err, existingUser) => {
-    if (err) { return next(err); }
-    if (existingUser) {
-      req.flash('errors', { msg: 'Account with that email address already exists.' });
-      return res.redirect('/signup');
-    }
-    user.save((err) => {
-      if (err) { return next(err); }
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-        res.redirect('/');
-      });
-    });
+  //     return res.status(400).json({
+  //       success: false,
+  //       message: 'Could not process the form.'
+  //     });
+  //   }
+
+  return res.status(200).json({
+    success: true,
+    message: 'You have successfully signed up! Now you should be able to log in.'
   });
+  // })(req, res, next);
 };
 
 /**
