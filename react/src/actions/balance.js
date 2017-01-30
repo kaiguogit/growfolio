@@ -1,5 +1,5 @@
 import * as types from '../constants/actionTypes';
-import { errorHandler } from '../utils';
+import { errorHandler, getHeaders } from '../utils';
 import Auth from '../services/Auth';
 
 export const updateBalancePercentage = holding => ({
@@ -47,17 +47,12 @@ const deleteAllocations = (id) => ({
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
  */
-const headers = new Headers({
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${Auth.getToken()}`
-});
 
 // __MY_API__ is set in webpack globals
 export const fetchAllocations = () => dispatch => {
     dispatch(requestAllocations());
     return fetch(__MY_API__ + 'allocations', {
-        headers: headers
+        headers: getHeaders()
     })
     .then(response => response.json())
     .then(data => dispatch(receiveAllocations(data.result)))
@@ -70,7 +65,7 @@ export const createAllocations = (allocations) => dispatch => {
     allocationsArray = Object.keys(allocations).map(key => allocations[key]);
     return fetch(__MY_API__ + "allocations", {
         method: 'POST',
-        headers: headers,
+        headers: getHeaders(),
         body: JSON.stringify(allocationsArray)
     })
     .then(response => response.json())
@@ -82,7 +77,7 @@ export const removeAllocations = (id) => dispatch => {
     dispatch(requestAllocations());
     return fetch(__MY_API__ + "allocations", {
         method: 'DELETE',
-        headers: headers,
+        headers: getHeaders(),
         body: JSON.stringify({'id': id}),
     })
     .then(response => response.json())

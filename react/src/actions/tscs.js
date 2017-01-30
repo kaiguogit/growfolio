@@ -1,6 +1,5 @@
 import * as types from '../constants/actionTypes';
-import { errorHandler } from '../utils';
-import Auth from '../services/Auth';
+import { errorHandler, getHeaders } from '../utils';
 
 /*
  * Actions
@@ -48,16 +47,11 @@ export const closeTscsForm = () => ({
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
  */
-const headers = new Headers({
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${Auth.getToken()}`
-});
 
 export const fetchTscs = () => dispatch => {
     dispatch(requestTscs());
     return fetch(__MY_API__ + 'transactions', {
-        headers: headers
+        headers: getHeaders()
     })
     .then(response => response.json())
     .then(data => dispatch(receiveTscs(data.result)))
@@ -68,7 +62,7 @@ export const createTscs = (tsc) => dispatch => {
     dispatch(requestTscs());
     return fetch(__MY_API__ + "transactions", {
         method: 'POST',
-        headers: headers,
+        headers: getHeaders(),
         body: JSON.stringify(tsc)
     })
     .then(response => response.json())
@@ -80,7 +74,7 @@ export const removeTscs = (id) => dispatch => {
     dispatch(requestTscs());
     return fetch(__MY_API__ + "transactions", {
         method: 'DELETE',
-        headers: headers,
+        headers: getHeaders(),
         body: JSON.stringify({'id': id}),
     })
     .then(response => response.json())

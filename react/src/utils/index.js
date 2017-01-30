@@ -1,5 +1,6 @@
 import React from 'react';
 import numeral from 'numeral';
+import Auth from '../services/Auth';
 
 /**
  * Filters
@@ -51,6 +52,12 @@ const queryParams = (params) => {
 export const makeUrl = (url, params) => {
     return url += (url.indexOf('?') === -1 ? '?' : '&') + queryParams(params);
 };
+
+export const getHeaders = () => new Headers({
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${Auth.getToken()}`
+});
 
 export const renderCell = (entry, column) => {
     let value = entry[column.selector];
