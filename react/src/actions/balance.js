@@ -1,6 +1,5 @@
 import * as types from '../constants/actionTypes';
 import { errorHandler, getHeaders } from '../utils';
-import Auth from '../services/Auth';
 
 export const updateBalancePercentage = holding => ({
     type: types.UPDATE_BALANCE_PERCENTAGE,
