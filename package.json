@@ -22,8 +22,6 @@
     "dotenv": "^2.0.0",
     "errorhandler": "^1.4.3",
     "express": "^4.14.0",
-    "express-status-monitor": "^0.1.5",
-    "express-validator": "^2.21.0",
     "jsonwebtoken": "^7.2.1",
     "mongoose": "^4.6.6",
     "morgan": "^1.7.0",
