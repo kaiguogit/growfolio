@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import { errorHandler } from '../utils';
+import Auth from '../services/Auth';
 
 const SUBMIT_SIGNUP = () => {
     return {
@@ -7,9 +8,10 @@ const SUBMIT_SIGNUP = () => {
     };
 };
 
-const SUBMIT_SIGNUP_RESPONDED = () => {
+const SUBMIT_SIGNUP_RESPONDED = (data) => {
     return {
-        type: types.SUBMIT_SIGNUP_RESPONDED
+        type: types.SUBMIT_SIGNUP_RESPONDED,
+        data
     };
 };
 
@@ -19,9 +21,10 @@ const SUBMIT_LOGIN = () => {
     };
 };
 
-const SUBMIT_LOGIN_RESPONDED = () => {
+const SUBMIT_LOGIN_RESPONDED = (data) => {
     return {
-        type: types.SUBMIT_SIGNUP_RESPONDED
+        type: types.SUBMIT_SIGNUP_RESPONDED,
+        data
     };
 };
 
@@ -54,6 +57,12 @@ export const submitLogin = (data) => dispatch => {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => dispatch(SUBMIT_LOGIN_RESPONDED(data.result)))
+    .then((data) => {
+        if (data.success) {
+            // save the token
+            Auth.authenticateUser(data.token);
+        }
+        dispatch(SUBMIT_LOGIN_RESPONDED(data.result));
+    })
     .catch(errorHandler);
 };

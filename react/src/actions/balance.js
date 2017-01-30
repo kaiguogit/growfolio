@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import { errorHandler } from '../utils';
+import Auth from '../services/Auth';
 
 export const updateBalancePercentage = holding => ({
     type: types.UPDATE_BALANCE_PERCENTAGE,
@@ -49,15 +50,18 @@ const deleteAllocations = (id) => ({
 const headers = new Headers({
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    Authorization: `Bearer ${Auth.getToken()}`
 });
 
 // __MY_API__ is set in webpack globals
 export const fetchAllocations = () => dispatch => {
     dispatch(requestAllocations());
-    return fetch(__MY_API__ + 'allocations')
-        .then(response => response.json())
-        .then(data => dispatch(receiveAllocations(data.result)))
-        .catch(errorHandler);
+    return fetch(__MY_API__ + 'allocations', {
+        headers: headers
+    })
+    .then(response => response.json())
+    .then(data => dispatch(receiveAllocations(data.result)))
+    .catch(errorHandler);
 };
 
 export const createAllocations = (allocations) => dispatch => {

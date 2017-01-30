@@ -1,5 +1,7 @@
 import * as types from '../constants/actionTypes';
 import { errorHandler } from '../utils';
+import Auth from '../services/Auth';
+
 /*
  * Actions
  */
@@ -49,14 +51,17 @@ export const closeTscsForm = () => ({
 const headers = new Headers({
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    Authorization: `Bearer ${Auth.getToken()}`
 });
 
 export const fetchTscs = () => dispatch => {
     dispatch(requestTscs());
-    return fetch(__MY_API__ + 'transactions')
-        .then(response => response.json())
-        .then(data => dispatch(receiveTscs(data.result)))
-        .catch(errorHandler);
+    return fetch(__MY_API__ + 'transactions', {
+        headers: headers
+    })
+    .then(response => response.json())
+    .then(data => dispatch(receiveTscs(data.result)))
+    .catch(errorHandler);
 };
 
 export const createTscs = (tsc) => dispatch => {

@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import $ from 'jquery';
+import Auth from '../services/Auth';
 
 import * as currencyActions from './currency';
 import { getHoldings } from '../selectors';
@@ -138,7 +139,10 @@ export const fetchQuotes = symbols => dispatch => {
         type: 'GET',
         dataType: "json",
         url: __MY_API__ + "quotes",
-        data: {symbols: JSON.stringify(symbols)}
+        data: {symbols: JSON.stringify(symbols)},
+        headers: {
+            Authorization: `Bearer ${Auth.getToken()}`
+        }
     })
     .then(data => {
         if (!data.success) {
