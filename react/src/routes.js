@@ -7,10 +7,16 @@ import Performance from './containers/Performance/Performance.jsx';
 import Balance from './containers/Balance/Balance.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
 import LoginPage from './containers/LoginPage.jsx';
-
+import Auth from './services/Auth';
 import * as navigation from './constants/navigation';
 
-//componets
+const requireAuth = (nextState, replace) => {
+  if (!Auth.loggedIn())
+    replace({
+        pathname: '/login',
+        state: {nextPathname: nextState.location.pathname}
+    });
+};
 
 const routes = (/*store*/) => {
     return {
@@ -22,6 +28,7 @@ const routes = (/*store*/) => {
                 path: 'portfolio',
                 component: Portfolio,
                 indexRoute: {component: Performance},
+                onEnter: requireAuth,
                 childRoutes: [
                     {
                         path: navigation.PERFORMANCE,
@@ -44,6 +51,13 @@ const routes = (/*store*/) => {
             {
                 path: 'login',
                 component: LoginPage
+            },
+            {   path: 'logout',
+                onEnter: (nextState, replace) => {
+                    Auth.deauthenticateUser();
+                    // change the current URL to /
+                    replace('/');
+                }
             },
             {
                 path: 'error',

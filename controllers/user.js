@@ -116,15 +116,6 @@ exports.postLogin = (req, res, next) => {
 };
 
 /**
- * GET /logout
- * Log out.
- */
-exports.logout = (req, res) => {
-  req.logout();
-  res.redirect('/');
-};
-
-/**
  * POST /signup
  * Create a new local account.
  */

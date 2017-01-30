@@ -1,30 +1,31 @@
 import * as types from '../constants/actionTypes';
 import { errorHandler } from '../utils';
 import Auth from '../services/Auth';
+import { browserHistory } from 'react-router';
 
-const SUBMIT_SIGNUP = () => {
+const REQUEST_SIGNUP = () => {
     return {
-        type: types.SUBMIT_SIGNUP
+        type: types.REQUEST_SIGNUP
     };
 };
 
-const SUBMIT_SIGNUP_RESPONDED = (data) => {
+const RECEIVE_SIGNUP = (data) => {
     return {
-        type: types.SUBMIT_SIGNUP_RESPONDED,
-        data
+        type: types.RECEIVE_SIGNUP,
+        ...data
     };
 };
 
-const SUBMIT_LOGIN = () => {
+const REQUEST_LOGIN = () => {
     return {
-        type: types.SUBMIT_LOGIN
+        type: types.REQUEST_LOGIN
     };
 };
 
-const SUBMIT_LOGIN_RESPONDED = (data) => {
+const RECEIVE_LOGIN = (data) => {
     return {
-        type: types.SUBMIT_SIGNUP_RESPONDED,
-        data
+        type: types.RECEIVE_LOGIN,
+        ...data
     };
 };
 
@@ -38,19 +39,19 @@ const headers = new Headers({
 });
 
 export const submitSignUp = (data) => dispatch => {
-    dispatch(SUBMIT_SIGNUP());
+    dispatch(REQUEST_SIGNUP());
     return fetch(__HOST_URL__ + "signup", {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => dispatch(SUBMIT_SIGNUP_RESPONDED(data.result)))
+    .then(data => dispatch(RECEIVE_SIGNUP(data)))
     .catch(errorHandler);
 };
 
-export const submitLogin = (data) => dispatch => {
-    dispatch(SUBMIT_LOGIN());
+export const submitLogin = data => (dispatch, getState) => {
+    dispatch(REQUEST_LOGIN());
     return fetch(__HOST_URL__ + "login", {
         method: 'POST',
         headers: headers,
@@ -60,9 +61,16 @@ export const submitLogin = (data) => dispatch => {
     .then((data) => {
         if (data.success) {
             // save the token
-            Auth.authenticateUser(data.token);
+            Auth.authenticateUser(data.token, data.user);
+            // Redirect to previous intended page if applicable
+            const location = getState().routing.locationBeforeTransitions;
+            if (location.state && location.state.nextPathname) {
+                browserHistory.push(location.state.nextPathname);
+            } else {
+                browserHistory.push('/');
+            }
         }
-        dispatch(SUBMIT_LOGIN_RESPONDED(data.result));
+        dispatch(RECEIVE_LOGIN(data));
     })
     .catch(errorHandler);
 };

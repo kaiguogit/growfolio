@@ -1,21 +1,23 @@
 // Set up your root reducer here...
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
-import tscsReducer from './tscsReducer';
-import quotesReducer from './quotesReducer';
-import currencyReducer from './currencyReducer';
-import symbolsReducer from './symbolsReducer';
+import authReducer from './authReducer';
 import balanceReducer from './balanceReducer';
+import currencyReducer from './currencyReducer';
 import portfolioReducer  from './portfolioReducer';
+import quotesReducer from './quotesReducer';
+import symbolsReducer from './symbolsReducer';
+import tscsReducer from './tscsReducer';
 
 const rootReducer = combineReducers({
-    tscs: tscsReducer,
+    auth: authReducer,
+    balance: balanceReducer,
+    currency: currencyReducer,
     portfolio: portfolioReducer,
     quotes: quotesReducer,
-    currency: currencyReducer,
+    routing: routerReducer,
     symbols: symbolsReducer,
-    balance: balanceReducer,
-    routing: routerReducer
+    tscs: tscsReducer
 });
 
 export default rootReducer;

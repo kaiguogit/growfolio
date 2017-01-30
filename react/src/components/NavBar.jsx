@@ -1,5 +1,6 @@
 import React from 'react';
 import NavLink from './NavLink.jsx';
+import Auth from '../services/Auth';
 
 const NavBar = () => (
     <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -11,11 +12,17 @@ const NavBar = () => (
                 <NavLink to="/"><span>Home</span></NavLink>
                 <NavLink to="/portfolio" indexOnly={false}><span>Portfolio</span></NavLink>
             </ul>
-            <ul className="nav navbar-nav navbar-right">
-                <NavLink to="/login"><span>Login</span></NavLink>
-                <NavLink to="/signup"><span>SignUp</span></NavLink>
-
-            </ul>
+            {Auth.loggedIn() ? (
+                <ul className="nav navbar-nav navbar-right">
+                    <li><p className="navbar-text">{Auth.getUser().name}</p></li>
+                    <NavLink to="/logout"><span>Log out</span></NavLink>
+                </ul>
+            ) : (
+                <ul className="nav navbar-nav navbar-right">
+                    <NavLink to="/login"><span>Log in</span></NavLink>
+                    <NavLink to="/signup"><span>Sign Up</span></NavLink>
+                </ul>
+            )}
         </div>
     </nav>
 );

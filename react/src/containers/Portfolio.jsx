@@ -27,6 +27,10 @@ class Portfolio extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        NProgress.done();
+    }
+
     render() {
         this.props.isFetching ? NProgress.start() : NProgress.done();
         return (

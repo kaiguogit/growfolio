@@ -45,7 +45,7 @@ class LoginPage extends Component {
     processForm(event) {
       // prevent default action. in this case, action is the form submission event
       event.preventDefault();
-      this.props.actions.submitLogin(this.state.user);
+      this.props.actions.submitLogin(this.state.user, this.props);
     }
 
     /**
