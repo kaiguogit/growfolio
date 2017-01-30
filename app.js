@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
 const errorHandler = require('errorhandler');
-// const lusca = require('lusca');
 const dotenv = require('dotenv');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -64,7 +63,6 @@ app.use((req, res, next) => {
  */
 app.set('port', process.env.PORT || 8000);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 app.use(expressStatusMonitor());
 app.use(compression());
 app.use(logger('dev'));
