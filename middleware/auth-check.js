@@ -31,6 +31,10 @@ module.exports = (req, res, next) => {
         return res.status(401).end();
       }
 
+      if (user) {
+        req.user = user;
+      }
+
       return next();
     });
   });
