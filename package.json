@@ -9,7 +9,7 @@
   "author": "Kai Guo",
   "license": "MIT",
   "scripts": {
-    "build": "yarn upgrade && cd react && yarn upgrade && npm install && npm run build",
+    "build": "yarn upgrade && cd client && yarn upgrade && npm install && npm run build",
     "start": "node app.js",
     "test": "mocha --reporter spec"
   },
