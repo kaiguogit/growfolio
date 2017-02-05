@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/balance';
 
 import { getTotalPerformance } from '../../selectors';
-import { Table, Button } from 'react-bootstrap';
 import { percentage, currency } from '../../utils';
 
 class BalanceForm extends React.Component {
@@ -91,21 +90,21 @@ class BalanceForm extends React.Component {
         // http://stackoverflow.com/questions/10687306/why-do-twitter-bootstrap-tables-always-have-100-width
         return (
             <div>
-                <Table bordered hover style={{width: 'auto', font: '5px'}}>
+                <table className="table table-striped table-bordered table-condensed">
                     <thead>
                         <tr>
                             <th>Symbol</th>
                             <th>Label
                                 {' '}
-                                <Button onClick={this.resetAllLabel}>Reset</Button>
+                                <div className="btn" onClick={this.resetAllLabel}>Reset</div>
                             </th>
                             <th>Current
                                 {' '}
-                                <Button onClick={this.cloneAllPercentage}>Clone</Button>
+                                <div className="btn" onClick={this.cloneAllPercentage}>Clone</div>
                             </th>
                             <th>Target
                                 {' '}
-                                <Button onClick={this.resetAllPercentage}>Reset</Button>
+                                <div className="btn" onClick={this.resetAllPercentage}>Reset</div>
                             </th>
                             <th>Difference</th>
                         </tr>
@@ -118,9 +117,9 @@ class BalanceForm extends React.Component {
                                     <td>{this.renderLabelSelector(holding.symbol)}</td>
                                     <td>{percentage(holding.mkt_value / total.mkt_value)}
                                         {' '}
-                                        <Button name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
+                                        <div className="btn" name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
                                         Clone
-                                        </Button>
+                                        </div>
                                     </td>
                                     <td>
                                         <input
@@ -140,8 +139,8 @@ class BalanceForm extends React.Component {
                             );
                         })}
                     </tbody>
-                </Table>
-                <Button bsStyle="primary" onClick={this.saveBalance}>Save Balance</Button>
+                </table>
+                <button className="btn btn-primary" onClick={this.saveBalance}>Save Balance</button>
             </div>
         );
     }

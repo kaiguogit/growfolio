@@ -5,11 +5,10 @@ import * as rootActions from '../actions';
 import * as tscsActions from '../actions/tscs';
 
 import * as navigation from '../constants/navigation';
+import NavLink from '../components/NavLink.jsx';
+import * as Utils from '../utils';
 
 import NProgress from 'nprogress';
-
-//Components
-import { Tabs, Tab } from 'react-bootstrap';
 
 class Portfolio extends React.Component {
     static propTypes = {
@@ -35,11 +34,11 @@ class Portfolio extends React.Component {
         this.props.isFetching ? NProgress.start() : NProgress.done();
         return (
             <div>
-                <Tabs activeKey={this.props.selectedTab} onSelect={this.props.actions.selectTab} id="portfolio-tabs">
-                    <Tab eventKey={navigation.PERFORMANCE} title="Performance"/>
-                    <Tab eventKey={navigation.TSCS} title="Transactions"/>
-                    <Tab eventKey={navigation.BALANCE} title="Balance"/>
-                </Tabs>
+                <ul className="nav nav-tabs">
+                    <NavLink to={'/portfolio/' + navigation.PERFORMANCE}><span>{Utils.capitalize(navigation.PERFORMANCE)}</span></NavLink>
+                    <NavLink to={'/portfolio/' + navigation.TSCS}><span>{Utils.capitalize(navigation.TSCS)}</span></NavLink>
+                    <NavLink to={'/portfolio/' + navigation.BALANCE}><span>{Utils.capitalize(navigation.BALANCE)}</span></NavLink>
+                </ul>
                 {this.props.children}
             </div>
         );

@@ -7,9 +7,8 @@ import NavBar from './NavBar.jsx';
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div className="container-fluid">
         <NavBar/>
-        <br/>
         {this.props.children}
       </div>
     );

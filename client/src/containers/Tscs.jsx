@@ -3,7 +3,6 @@ import * as actions from '../actions/tscs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Button } from 'react-bootstrap';
 import TscsTable from '../components/Tscs/TscsTable.jsx';
 import TscsForm from '../components/Tscs/TscsForm.jsx';
 
@@ -46,9 +45,9 @@ class Tscs extends React.Component {
 
         return (
             <div>
-                <Button bsStyle="info" onClick={this.props.formOpened ? this.props.actions.closeTscsForm : this.props.actions.openTscsForm}>
+                <div className="btn btn-primary" onClick={this.props.formOpened ? this.props.actions.closeTscsForm : this.props.actions.openTscsForm}>
                     Add Transaction
-                </Button>
+                </div>
                 {/* Formm stay opened during fetching */}
                 {(this.props.isFetching || this.props.formOpened) &&
                     <TscsForm onSubmit={this.handleFormSubmit} isFetching={this.props.isFetching}/>

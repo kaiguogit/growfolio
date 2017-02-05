@@ -12,6 +12,10 @@ import { syncHistoryWithStore } from 'react-router-redux';
 require('./favicon.ico');
 // Bootstrap css
 import './styles/bootstrap/css/bootstrap.min.css';
+//Bootstrap Material Design
+import './styles/bootstrap-material-design.css';
+import './styles/ripples.min.css';
+
 // NProgress
 import 'nprogress/nprogress.css';
 // React-select

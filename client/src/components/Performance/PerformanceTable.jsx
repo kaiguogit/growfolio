@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
-import { Table } from 'react-bootstrap';
 import PerformanceTableRow from '../../containers/Performance/PerformanceTableRow.jsx';
 import PerformanceTableRowTotal from '../../containers/Performance/PerformanceTableRowTotal.jsx';
 
@@ -16,27 +15,29 @@ class PerformanceTable extends React.Component {
         return (
             <div>
             {isEmpty ? <h2>Empty.</h2>
-              : <Table bordered striped hover>
-                    <thead>
-                        <tr>
-                            {PERFORMANCE_COLUMNS.map(column => {
+              : <div className="table-responsive">
+                  <table className="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr>
+                                {PERFORMANCE_COLUMNS.map(column => {
+                                    return (
+                                        <th key={column.selector}>
+                                            {column.title}
+                                        </th>
+                                    );
+                                })}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <PerformanceTableRowTotal/>
+                            {this.props.symbols.map(symbol => {
                                 return (
-                                    <th key={column.selector}>
-                                        {column.title}
-                                    </th>
+                                    <PerformanceTableRow key={symbol} symbol={symbol} />
                                 );
                             })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <PerformanceTableRowTotal/>
-                        {this.props.symbols.map(symbol => {
-                            return (
-                                <PerformanceTableRow key={symbol} symbol={symbol} />
-                            );
-                        })}
-                    </tbody>
-                </Table>
+                        </tbody>
+                    </table>
+                </div>
             }
             </div>
         );

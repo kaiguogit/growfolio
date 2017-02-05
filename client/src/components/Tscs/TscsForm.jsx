@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
 
-import { Button, Table } from 'react-bootstrap';
-
 import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 
 const styles = {

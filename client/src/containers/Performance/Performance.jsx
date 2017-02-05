@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import * as quotesActions from '../../actions/quotes';
 import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
-import RefreshQuotesButton from './../RefreshQuotesButton.jsx';
+import RefreshQuotesButton from './RefreshQuotesButton.jsx';
 import PerformanceTable from '../../components/Performance/PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
-import CurrencySelector from './../CurrencySelector.jsx';
+import CurrencySelector from './CurrencySelector.jsx';
 
 class Performance extends React.Component {
     static propTypes = {

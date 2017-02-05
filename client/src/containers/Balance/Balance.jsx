@@ -9,7 +9,6 @@ import { getHoldings } from '../../selectors';
 import TargetAllocationWithDrilldown from './TargetAllocationWithDrilldown.jsx';
 import CurrenAllocationWithDrilldown from './CurrenAllocationWithDrilldown.jsx';
 import BalanceForm from './BalanceForm.jsx';
-import { Row, Col } from 'react-bootstrap';
 
 class Balance extends Component {
     static propTypes = {
@@ -32,18 +31,18 @@ class Balance extends Component {
 
     render() {
         return (
-            <div>
-                <Row>
-                    <Col md={6}>
-                                <CurrenAllocationWithDrilldown/>
-                    </Col>
-                    <Col md={6}>
-                                <TargetAllocationWithDrilldown/>
-                    </Col>
-                </Row>
-                <Row>
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-6">
+                        <CurrenAllocationWithDrilldown/>
+                    </div>
+                    <div className="col-md-6">
+                        <TargetAllocationWithDrilldown/>
+                    </div>
+                </div>
+                <div className="row">
                     <BalanceForm/>
-                </Row>
+                </div>
             </div>
         );
     }
