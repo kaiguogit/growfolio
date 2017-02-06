@@ -18,7 +18,7 @@ class PerformanceTableRowTotal extends React.Component {
     renderValidCell(column) {
         if (validColumn.indexOf(column.selector) !== -1) {
             return (
-                <td key={`${column.selector}-${this.props.total[column.selector]}`}>
+                <td className={column.className} key={`${column.selector}-${this.props.total[column.selector]}`}>
                     <NumberChangeTransition upOrDown={this.props.total[column.selector] > 0}>
                         <div>
                             {renderCell(this.props.total, column)}
@@ -28,7 +28,7 @@ class PerformanceTableRowTotal extends React.Component {
             );
         }
         return (
-            <td key={column.selector}>
+            <td className={column.className} key={column.selector}>
                 {column.selector ==='symbol' ? 'Total' : ''}
             </td>
         );

@@ -28,7 +28,7 @@ class Tscs extends React.Component {
     }
 
     render() {
-        const { isFetching, items } = this.props;
+        const { isFetching, items, formOpened, actions } = this.props;
         const isEmpty = items.length === 0;
         const sortedItems = items.slice(0);
 
@@ -45,17 +45,19 @@ class Tscs extends React.Component {
 
         return (
             <div>
-                <div className="btn btn-primary" onClick={this.props.formOpened ? this.props.actions.closeTscsForm : this.props.actions.openTscsForm}>
+                <button className={`btn btn-sm ${formOpened ? "btn-info" : "btn-info "}`} onClick={formOpened ? actions.closeTscsForm : actions.openTscsForm}>
+                    <i className={formOpened ? "fa fa-minus-square-o" : "fa fa-plus-square-o"} aria-hidden="true"/>
+                    {" "}
                     Add Transaction
-                </div>
+                </button>
                 {/* Formm stay opened during fetching */}
-                {(this.props.isFetching || this.props.formOpened) &&
-                    <TscsForm onSubmit={this.handleFormSubmit} isFetching={this.props.isFetching}/>
+                {(isFetching || formOpened) &&
+                    <TscsForm onSubmit={this.handleFormSubmit} isFetching={isFetching}/>
                 }
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable tscs={sortedItems} removeTscs={this.props.actions.removeTscs}/>
+                      <TscsTable tscs={sortedItems} removeTscs={actions.removeTscs}/>
                     </div>
                 }
             </div>

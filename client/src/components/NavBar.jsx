@@ -1,30 +1,34 @@
 import React from 'react';
 import NavLink from './NavLink.jsx';
 import Auth from '../services/Auth';
+import { Link } from 'react-router';
 
 const NavBar = () => (
-    <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div className="container">
-            <div className="navbar-header">
-                <div className="navbar-brand">Growfolio</div>
+    <nav className="navbar navbar-toggleable-sm navbar-light bg-faded">
+        <button className="navbar-toggler navbar-toggler-right"
+            type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"/>
+        </button>
+        <Link className="navbar-brand" to="/">Growfolio</Link>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div className="navbar-nav mr-auto">
+                <NavLink to="/portfolio" indexOnly={false}><span>Portfolio</span></NavLink>
             </div>
-            <div className="collapse navbar-collapse">
-                <ul className="nav navbar-nav">
-                    <NavLink to="/"><span>Home</span></NavLink>
-                    <NavLink to="/portfolio" indexOnly={false}><span>Portfolio</span></NavLink>
-                </ul>
-                {Auth.loggedIn() ? (
-                    <ul className="nav navbar-nav navbar-right">
-                        <li><p className="navbar-text">{Auth.getUser().name}</p></li>
-                        <NavLink to="/logout"><span>Log out</span></NavLink>
-                    </ul>
-                ) : (
-                    <ul className="nav navbar-nav navbar-right">
-                        <NavLink to="/login"><span>Log in</span></NavLink>
-                        <NavLink to="/signup"><span>Sign Up</span></NavLink>
-                    </ul>
-                )}
-            </div>
+            {Auth.loggedIn() ? (
+                <div className="navbar-nav ml-auto">
+                    <span className="navbar-text">Hello, {Auth.getUser().name}</span>
+                    <NavLink to="/logout"><span>Log out</span></NavLink>
+                </div>
+            ) : (
+                <div className="navbar-nav ml-auto">
+                    <NavLink to="/login"><span>Log in</span></NavLink>
+                    <NavLink to="/signup"><span>Sign Up</span></NavLink>
+                </div>
+            )}
         </div>
     </nav>
 );

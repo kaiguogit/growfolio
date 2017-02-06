@@ -8,6 +8,7 @@ class PerformanceTableRow extends React.Component {
     }
 
     render() {
+        const {holding} = this.props;
         return (
             <tr>
                 {PERFORMANCE_COLUMNS.map(column => {
@@ -16,9 +17,10 @@ class PerformanceTableRow extends React.Component {
                           * a new component on update to trigger 'Appear' animation
                           */}
                     return (
-                        <td key={`${column.selector}-${this.props.holding[column.selector]}`}>
-                            <NumberChangeTransition upOrDown={this.props.holding[column.selector] > 0}>
-                                {renderCell(this.props.holding, column)}
+                        <td className={column.className}
+                            key={`${column.selector}-${holding[column.selector]}`}>
+                            <NumberChangeTransition upOrDown={holding[column.selector] > 0}>
+                                {renderCell(holding, column)}
                             </NumberChangeTransition>
                         </td>
                     );

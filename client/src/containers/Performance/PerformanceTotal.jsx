@@ -5,17 +5,6 @@ import styles from '../../styles';
 import { currency, percentage } from '../../utils';
 import NumberChangeTransition from '../../components/Animation/NumberChangeTransition.jsx';
 
-const localStyles = {
-    total: {
-        display: 'inline-block',
-        paddingLeft: '10px',
-        paddingRight: '10px'
-    },
-    number: {
-        fontSize: '2em'
-    }
-};
-
 class Change extends React.Component {
     static propTypes = {
         change: PropTypes.number.isRequired,
@@ -27,12 +16,12 @@ class Change extends React.Component {
         if (value > 0) {
             return {
                 style: styles.up,
-                iconClass: 'glyphicon glyphicon-arrow-up'
+                iconClass: 'fa fa-long-arrow-up'
             };
         } else if (value < 0) {
             return {
                 style: styles.down,
-                iconClass: 'glyphicon glyphicon-arrow-down'
+                iconClass: 'fa fa-long-arrow-down'
             };
         }
         return {};
@@ -40,18 +29,20 @@ class Change extends React.Component {
 
     render() {
         const {change, change_percent, title} = this.props;
-        const numStyle = Object.assign({}, this.upOrDown(change).style, localStyles.number);
+        const numStyle = this.upOrDown(change).style;
         return (
-            <div style={localStyles.total} key={`${title}-${change}`}>
-                <p>{title}</p>
+            <div className="col-12 col-sm-6 col-md" key={`${title}-${change}`}>
+                <span>{title}</span>
                 <NumberChangeTransition upOrDown={change > 0}>
-                    <p style={numStyle}>
-                        {currency(change)}{'  '}
+                    <h2 style={numStyle}>
+                        {currency(change)}
+                        {' '}
                         {change_percent !== undefined &&
-                            <span className={this.upOrDown(change).iconClass}></span>
+                            <span className={this.upOrDown(change).iconClass}/>
                         }
+                        {' '}
                         {change_percent !== undefined && percentage(change_percent)}
-                    </p>
+                    </h2>
                 </NumberChangeTransition>
             </div>
         );
@@ -65,26 +56,28 @@ class PerformanceTotal extends React.Component {
 
     totalValue() {
         return (
-            <div style={localStyles.total}>
-                <p>Total Value</p>
-                <p style={localStyles.number}>{currency(this.props.performance.mkt_value)}</p>
+            <div className="col-12 col-sm-6 col-md">
+                <span>Total Value</span>
+                <h2>{currency(this.props.performance.mkt_value)}</h2>
             </div>
         );
     }
 
     render() {
         return(
-            <div>
-                {this.totalValue()}
-                <Change change={this.props.performance.days_gain}
-                    change_percent={this.props.performance.change_percent}
-                    title="Today's Change"/>
-                <Change change={this.props.performance.gain}
-                    change_percent={this.props.performance.gain_percent}
-                    title="Total Change"/>
-                <Change change={this.props.performance.gain_overall}
-                    change_percent={this.props.performance.gain_overall_percent}
-                    title="Overall Change"/>
+            <div className="container-fluid">
+                <div className="row no-gutters">
+                    {this.totalValue()}
+                    <Change change={this.props.performance.days_gain}
+                        change_percent={this.props.performance.change_percent}
+                        title="Today's Change"/>
+                    <Change change={this.props.performance.gain}
+                        change_percent={this.props.performance.gain_percent}
+                        title="Total Change"/>
+                    <Change change={this.props.performance.gain_overall}
+                        change_percent={this.props.performance.gain_overall_percent}
+                        title="Overall Change"/>
+                </div>
             </div>
         );
     }

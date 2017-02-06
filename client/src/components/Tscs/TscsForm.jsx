@@ -59,65 +59,62 @@ class TscsForm extends React.Component {
     render() {
         return (
             <div>
-                <Table bordered style={styles.formWidth}>
-                    <thead>
-                        <tr>
-                            <th>Symbol</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Currency</th>
-                            <th>Shares</th>
-                            <th>Price</th>
-                            <th>Commission</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div style={styles.symbolWidth}>
-                                    <SymbolAutoComplete
-                                        value={this.state.symbol}
-                                        onChange={this.handleSymbolChange}
-                                    />
-                                </div>
-                            </td>
-                            <td>
-                                <input className="form-control" style={styles.dateWidth} type="date" name="date" value={this.state.date} onChange={this.handleInputChange}/>
-                            </td>
-                            <td>
-                                <select className="form-control" style={styles.numberWidth} name="type" value={this.state.type} onChange={this.handleInputChange}>
-                                    <option value="buy">Buy</option>
-                                    <option value="sell">Sell</option>
-                                    <option value="dividend">Dividend</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select className="form-control" style={styles.numberWidth} placeholder="select" name="currency" value={this.state.currency} onChange={this.handleInputChange}>
-                                    <option value="CAD">CAD</option>
-                                    <option value="USD">USD</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input className="form-control" style={styles.numberWidth} type="number" name="shares" value={this.state.shares} onChange={this.handleInputChange}/>
-                            </td>
-                            <td>
-                                <input className="form-control" style={styles.numberWidth} type="number" name="price" value={this.state.price} onChange={this.handleInputChange}/>
-                            </td>
-                            <td>
-                                <input className="form-control" style={styles.numberWidth} type="number" name="commission" value={this.state.commission} onChange={this.handleInputChange}/>
-                            </td>
-                            <td>
-                                <input className="form-control" style={styles.noteWidth} type="text" name="notes" value={this.state.notes} onChange={this.handleInputChange}/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </Table>
-                <Button bsStyle="primary" onClick={this.handleSubmit} disabled={this.props.isFetching}>
+                <div className="row no-gutters">
+                    <div className="form-group col-sm-6 col-md-3 pr-2">
+                        <label htmlFor="date">Symbol</label>
+                        <SymbolAutoComplete
+                            value={this.state.symbol}
+                            onChange={this.handleSymbolChange}
+                        />
+                    </div>
+                    <div className="form-group col-sm-6 col-md-auto pr-2">
+                        <label htmlFor="date">Date</label>
+                        <input type="date" className="form-control" id="date"/>
+                    </div>
+                    <div className="form-group col-sm-6 col-md pr-2">
+                        <label htmlFor="type">Type</label>
+                        <select className="form-control" name="type" id="type"
+                            value={this.state.type}
+                            onChange={this.handleInputChange}>
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                            <option value="dividend">Dividend</option>
+                        </select>
+                    </div>
+                    <div className="form-group col-sm-6 col-md-auto pr-1">
+                        <label htmlFor="currency">Currency</label>
+                        <select className="form-control" placeholder="select" name="currency" id="currency"
+                            value={this.state.currency}
+                            onChange={this.handleInputChange}>
+                            <option value="CAD">CAD</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                    <div className="form-group col-sm-6 col-md pr-2">
+                        <label htmlFor="shares">Shares</label>
+                        <input className="form-control" type="number" name="shares" id="shares"
+                            value={this.state.shares} onChange={this.handleInputChange}/>
+                    </div>
+                    <div className="form-group col-sm-6 col-md pr-2">
+                        <label htmlFor="price">Price</label>
+                        <input className="form-control" type="number" name="price" id="price"
+                            value={this.state.price} onChange={this.handleInputChange}/>
+                    </div>
+                    <div className="form-group col-sm-6 col-md pr-2">
+                        <label htmlFor="commission">Commission</label>
+                        <input className="form-control" type="number" name="commission" id="commission"
+                            value={this.state.commission} onChange={this.handleInputChange}/>
+                    </div>
+                    <div className="form-group col-sm-6 col-md pr-2">
+                        <label htmlFor="notes">Notes</label>
+                        <input className="form-control" type="text" name="notes" id="notes"
+                            value={this.state.notes} onChange={this.handleInputChange}/>
+                    </div>
+                </div>
+                <button role="button" className="btn btn-primary" onClick={this.handleSubmit} disabled={this.props.isFetching}>
                     Save
-                </Button>
+                </button>
             </div>
-
         );
     }
 }

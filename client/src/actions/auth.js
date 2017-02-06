@@ -3,32 +3,43 @@ import { errorHandler } from '../utils';
 import Auth from '../services/Auth';
 import { browserHistory } from 'react-router';
 
-const REQUEST_SIGNUP = () => {
+const requestSignUp = () => {
     return {
         type: types.REQUEST_SIGNUP
     };
 };
 
-const RECEIVE_SIGNUP = (data) => {
+const receiveSignUp = (data) => {
     return {
         type: types.RECEIVE_SIGNUP,
         ...data
     };
 };
 
-const REQUEST_LOGIN = () => {
+const requestLogin = () => {
     return {
         type: types.REQUEST_LOGIN
     };
 };
 
-const RECEIVE_LOGIN = (data) => {
+const receiveLogin = (data) => {
     return {
         type: types.RECEIVE_LOGIN,
         ...data
     };
 };
 
+export const clearLoginError = () => {
+    return {
+        type: types.CLEAR_LOGIN_ERROR
+    };
+};
+
+export const clearSignUpError = () => {
+    return {
+        type: types.CLEAR_SIGNUP_ERROR
+    };
+};
 /*
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
@@ -39,19 +50,19 @@ const headers = new Headers({
 });
 
 export const submitSignUp = (data) => dispatch => {
-    dispatch(REQUEST_SIGNUP());
+    dispatch(requestSignUp());
     return fetch(__HOST_URL__ + "signup", {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => dispatch(RECEIVE_SIGNUP(data)))
+    .then(data => dispatch(receiveSignUp(data)))
     .catch(errorHandler);
 };
 
 export const submitLogin = data => (dispatch, getState) => {
-    dispatch(REQUEST_LOGIN());
+    dispatch(requestLogin());
     return fetch(__HOST_URL__ + "login", {
         method: 'POST',
         headers: headers,
@@ -70,7 +81,7 @@ export const submitLogin = data => (dispatch, getState) => {
                 browserHistory.push('/');
             }
         }
-        dispatch(RECEIVE_LOGIN(data));
+        dispatch(receiveLogin(data));
     })
     .catch(errorHandler);
 };

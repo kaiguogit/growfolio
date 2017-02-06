@@ -1,5 +1,4 @@
 import * as navigation from '../constants/navigation';
-import Auth from '../services/Auth';
 export default {
     portfolio: {
         tab: navigation.PERFORMANCE,
@@ -30,17 +29,17 @@ export default {
     balance: {},
     auth: {
         signup: {
+            errors: {},
             isFetching: false,
             success: false,
-            message: '',
-            errors: {},
-            user: {}
+            message: ''
         },
         login: {
+            errors: {},
             isFetching: false,
             success: false,
             message: '',
-            user: Auth.getUser()
+            user: {}
         }
     }
 };

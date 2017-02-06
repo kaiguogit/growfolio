@@ -19,10 +19,8 @@ const requestAllocations = () => ({
 });
 
 const receiveAllocations = (data) => {
-    // process allocation for consistency.
-    data.forEach(allocation=> {
-        allocation.symbol = allocation.symbol.toUpperCase();
-    });
+    // process allocation to ensure all allocation has symbol
+    data = data.filter(allocation => allocation.symbol);
     return {
         type: types.RECEIVE_ALLOCATIONS,
         allocations: data,

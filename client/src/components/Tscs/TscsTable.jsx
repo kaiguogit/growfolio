@@ -12,42 +12,40 @@ class TscsTable extends React.Component {
     render() {
         const { tscs } = this.props;
         return (
-            <div className="table-responsive">
-                <table className="table table-striped table-bordered table-condensed">
-                    <thead>
-                        <tr>
-                            {TSCS_COLUMNS.map(column => {
-                                return (
-                                    <th key={column.selector}>
-                                        {column.title}
-                                    </th>
-                                );
-                            })}
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tscs.map(tsc => {
+            <table className="table table-responsive table-striped table-bordered table-sm">
+                <thead className="">
+                    <tr>
+                        {TSCS_COLUMNS.map(column => {
                             return (
-                                <tr key={tsc._id}>
-                                    {TSCS_COLUMNS.map(column => {
-                                        return (
-                                            <td key={column.selector}>
-                                                {renderCell(tsc, column)}
-                                            </td>
-                                        );
-                                    })}
-                                    <td>
-                                        <button className="btn btn-primary" onClick={() => this.props.removeTscs(tsc._id)}>
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
+                                <th key={column.selector}>
+                                    {column.title}
+                                </th>
                             );
                         })}
-                    </tbody>
-                </table>
-            </div>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tscs.map(tsc => {
+                        return (
+                            <tr key={tsc._id}>
+                                {TSCS_COLUMNS.map(column => {
+                                    return (
+                                        <td key={column.selector}>
+                                            {renderCell(tsc, column)}
+                                        </td>
+                                    );
+                                })}
+                                <td>
+                                    <button className="btn btn-danger btn-sm" onClick={() => this.props.removeTscs(tsc._id)}>
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
         );
     }
 }

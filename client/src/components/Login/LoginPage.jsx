@@ -1,32 +1,27 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/auth';
-import LoginForm from '../components/LoginForm.jsx';
+import * as actions from '../../actions/auth';
+import LoginForm from './LoginForm.jsx';
+import NProgress from 'nprogress';
 
 class LoginPage extends Component {
 
     static propTypes = {
-        actions: PropTypes.object.isRequired
+        actions: PropTypes.object.isRequired,
+        errors: PropTypes.object,
+        message: PropTypes.string,
+        success: PropTypes.bool,
+        isFetching: PropTypes.bool
     }
     /**
     * Class constructor.
     */
-    constructor(props, context) {
-        super(props, context);
-
-        const storedMessage = localStorage.getItem('successMessage');
-        let successMessage = '';
-
-        if (storedMessage) {
-            successMessage = storedMessage;
-            localStorage.removeItem('successMessage');
-        }
+    constructor(props) {
+        super(props);
 
         // set the initial component state
         this.state = {
-            errors: {},
-            successMessage,
             user: {
                 email: '',
                 password: ''
@@ -37,6 +32,11 @@ class LoginPage extends Component {
         this.changeUser = this.changeUser.bind(this);
     }
 
+    componentWillUnmount() {
+        NProgress.done();
+        this.props.actions.clearLoginError();
+    }
+
     /**
      * Process the form.
      *
@@ -45,7 +45,7 @@ class LoginPage extends Component {
     processForm(event) {
       // prevent default action. in this case, action is the form submission event
       event.preventDefault();
-      this.props.actions.submitLogin(this.state.user, this.props);
+      this.props.actions.submitLogin(this.state.user);
     }
 
     /**
@@ -64,16 +64,24 @@ class LoginPage extends Component {
     }
 
     render() {
+        this.props.isFetching ? NProgress.start() : NProgress.done();
         return (
             <LoginForm
               onSubmit={this.processForm}
               onChange={this.changeUser}
-              errors={this.state.errors}
+              errors={this.props.errors}
+              message={this.props.message}
+              success={this.props.success}
               user={this.state.user}
             />
         );
     }
 }
+
+const mapStateToProps = state => {
+    const {errors, message, success, isFetching} = state.auth.login;
+    return {errors, message, success, isFetching};
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -81,4 +89,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(LoginPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

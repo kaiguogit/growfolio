@@ -15,11 +15,11 @@ class NavLink extends React.Component {
         const {to, children, indexOnly} = this.props;
         let isActive = this.context.router.isActive(to, indexOnly === undefined ? true : indexOnly);
         return (
-            <li className={isActive ?  'active' : ''}>
-                <Link to={to}>
+            <div className="nav-item">
+                <Link className={`nav-link ${(isActive ? 'active' : '')}`} to={to}>
                     {children}
                 </Link>
-            </li>
+            </div>
         );
     }
 }

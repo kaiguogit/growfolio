@@ -1,28 +1,30 @@
 import App from './components/App.jsx';
-import HomePage from './components/HomePage.jsx';
 import Portfolio from './containers/Portfolio.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
 import Tscs from './containers/Tscs.jsx';
 import Performance from './containers/Performance/Performance.jsx';
 import Balance from './containers/Balance/Balance.jsx';
-import SignUpPage from './containers/SignUpPage.jsx';
-import LoginPage from './containers/LoginPage.jsx';
+import SignUpPage from './components/SignUp/SignUpPage.jsx';
+import LoginPage from './components/Login/LoginPage.jsx';
 import Auth from './services/Auth';
 import * as navigation from './constants/navigation';
 
 const requireAuth = (nextState, replace) => {
-  if (!Auth.loggedIn())
+  if (!Auth.loggedIn()) {
     replace({
         pathname: '/login',
         state: {nextPathname: nextState.location.pathname}
     });
+  }
 };
 
 const routes = (/*store*/) => {
     return {
         path: '/',
         component: App,
-        indexRoute: {component: HomePage},
+        indexRoute: {
+            onEnter: (nextState, replace) => {replace('/portfolio');},
+        },
         childRoutes: [
             {
                 path: 'portfolio',

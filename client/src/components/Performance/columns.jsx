@@ -25,22 +25,26 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'currency',
-        title: 'Currency'
+        title: 'Currency',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'cost',
         filter: currency,
-        title: 'Cost'
+        title: 'Cost',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'mkt_value',
         filter: currency,
-        title: 'Market Value'
+        title: 'Market Value',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'average_cost',
         filter: currency,
-        title: 'Average Cost'
+        title: 'Average Cost',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'price',
@@ -49,7 +53,8 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'shares',
-        title: 'Shares'
+        title: 'Shares',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'change',
@@ -88,13 +93,15 @@ export const PERFORMANCE_COLUMNS = [
         selector: 'gain_overall',
         filter: currency,
         formatFunction: coloredCell,
-        title: 'Overall Return'
+        title: 'Overall Return',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'gain_overall_percent',
         filter: percentage,
         formatFunction: coloredCell,
-        title: 'Overall Return Percent'
+        title: 'Overall Return Percent',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'realized_gain',
@@ -106,11 +113,13 @@ export const PERFORMANCE_COLUMNS = [
         selector: 'dividend',
         filter: currency,
         formatFunction: coloredCell,
-        title: 'Dividend'
+        title: 'Dividend',
+        className: 'hidden-sm-down'
     },
     {
         selector: 'cost_overall',
         filter: currency,
-        title: 'Overall Cost'
+        title: 'Overall Cost',
+        className: 'hidden-sm-down'
     }
 ];

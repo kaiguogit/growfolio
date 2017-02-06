@@ -1,13 +1,18 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import SignUpForm from '../components/SignUpForm.jsx';
-import * as actions from '../actions/auth';
+import SignUpForm from './SignUpForm.jsx';
+import * as actions from '../../actions/auth';
+import NProgress from 'nprogress';
 
 class SignUpPage extends Component {
 
     static propTypes = {
-        actions: PropTypes.object.isRequired
+        actions: PropTypes.object.isRequired,
+        errors: PropTypes.object,
+        message: PropTypes.string,
+        success: PropTypes.bool,
+        isFetching: PropTypes.bool
     }
 
     /**
@@ -18,7 +23,6 @@ class SignUpPage extends Component {
 
       // set the initial component state
       this.state = {
-        errors: {},
         user: {
           email: '',
           name: '',
@@ -30,6 +34,10 @@ class SignUpPage extends Component {
       this.changeUser = this.changeUser.bind(this);
     }
 
+    componentWillUnmount() {
+        NProgress.done();
+        this.props.actions.clearSignUpError();
+    }
     /**
      * Process the form.
      *
@@ -57,16 +65,24 @@ class SignUpPage extends Component {
     }
 
     render() {
+        this.props.isFetching ? NProgress.start() : NProgress.done();
         return (
             <SignUpForm
               onSubmit={this.processForm}
               onChange={this.changeUser}
-              errors={this.state.errors}
+              errors={this.props.errors}
+              message={this.props.message}
+              success={this.props.success}
               user={this.state.user}
             />
         );
     }
 }
+
+const mapStateToProps = state => {
+  const {errors, message, success, isFetching} = state.auth.signup;
+  return {errors, message, success, isFetching};
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -74,4 +90,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(SignUpPage);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage);

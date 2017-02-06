@@ -68,8 +68,8 @@ export const renderCell = (entry, column) => {
         content = column.filter ? column.filter(value) : value;
     }
     return (
-        <div style={column.style}>
+        <span style={column.style}>
             {content}
-        </div>
+        </span>
     );
 };

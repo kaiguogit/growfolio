@@ -10,11 +10,11 @@ import { syncHistoryWithStore } from 'react-router-redux';
 
  // Tell webpack to load favicon.ico
 require('./favicon.ico');
-// Bootstrap css
-import './styles/bootstrap/css/bootstrap.min.css';
+// Font Awesome
+import './styles/font-awesome-4.7.0/css/font-awesome.min.css';
 //Bootstrap Material Design
-import './styles/bootstrap-material-design.css';
-import './styles/ripples.min.css';
+// import './styles/bootstrap-material-design.css';
+// import './styles/ripples.min.css';
 
 // NProgress
 import 'nprogress/nprogress.css';

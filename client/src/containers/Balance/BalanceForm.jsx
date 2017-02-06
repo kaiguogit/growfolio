@@ -93,18 +93,20 @@ class BalanceForm extends React.Component {
                 <table className="table table-striped table-bordered table-condensed">
                     <thead>
                         <tr>
-                            <th>Symbol</th>
+                            <th>
+                                Symbol
+                            </th>
                             <th>Label
                                 {' '}
-                                <div className="btn" onClick={this.resetAllLabel}>Reset</div>
+                                <button className="btn btn-warning" onClick={this.resetAllLabel}>Reset</button>
                             </th>
-                            <th>Current
-                                {' '}
-                                <div className="btn" onClick={this.cloneAllPercentage}>Clone</div>
+                            <th>
+                                <span className="mr-2">Current</span>
+                                <button className="btn btn-info" onClick={this.cloneAllPercentage}>Clone</button>
                             </th>
-                            <th>Target
-                                {' '}
-                                <div className="btn" onClick={this.resetAllPercentage}>Reset</div>
+                            <th>
+                                <span className="mr-2">Target</span>
+                                <button className="btn btn-warning" onClick={this.resetAllPercentage}>Reset</button>
                             </th>
                             <th>Difference</th>
                         </tr>
@@ -115,21 +117,29 @@ class BalanceForm extends React.Component {
                                 <tr key={holding.symbol}>
                                     <td>{holding.symbol}</td>
                                     <td>{this.renderLabelSelector(holding.symbol)}</td>
-                                    <td>{percentage(holding.mkt_value / total.mkt_value)}
-                                        {' '}
-                                        <div className="btn" name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
-                                        Clone
+                                    <td>
+                                        <div className="row no-gutters">
+                                            <div className="col-6">
+                                                <span className="align-middle">{percentage(holding.mkt_value / total.mkt_value)}</span>
+                                            </div>
+                                            <div className="col-6">
+                                                <button className="btn btn-info" name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
+                                                Clone
+                                                </button>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <input
-                                            className="form-control"
-                                            type="number"
-                                            name={holding.symbol}
-                                            value={balance[holding.symbol] && balance[holding.symbol].percentage || 0}
-                                            placeholder="%"
-                                            onChange={this.handlePercentageChange}
-                                        />
+                                        <div className="form-group" style={{maxWidth: 120}}>
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                name={holding.symbol}
+                                                value={balance[holding.symbol] && balance[holding.symbol].percentage || 0}
+                                                placeholder="%"
+                                                onChange={this.handlePercentageChange}
+                                            />
+                                        </div>
                                     </td>
                                     <td>{balance[holding.symbol] && percentage((balance[holding.symbol].percentage / 100 - holding.mkt_value / total.mkt_value))}
                                         {' '}
