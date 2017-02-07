@@ -3,11 +3,12 @@ import { percentage, currency } from '../../utils';
 import styles from '../../styles';
 
 const coloredCell = (entry, column) => {
+    let refValue = column.ref_selector ? entry[column.ref_selector] : entry[column.selector];
     let value = entry[column.selector];
     let style;
-    if (value > 0) {
+    if (refValue > 0) {
         style = styles.up;
-    } else if (value < 0) {
+    } else if (refValue < 0) {
         style = styles.down;
     }
 
@@ -21,7 +22,9 @@ const coloredCell = (entry, column) => {
 export const PERFORMANCE_COLUMNS = [
     {
         selector: 'symbol',
-        title: 'Symbol'
+        title: 'Symbol',
+        formatFunction: coloredCell,
+        ref_selector: 'change'
     },
     {
         selector: 'currency',
@@ -61,21 +64,21 @@ export const PERFORMANCE_COLUMNS = [
         filter: currency,
         formatFunction: coloredCell,
         title: 'Change',
-        style: styles.bold
+        className: 'font-weight-bold'
     },
     {
         selector: 'change_percent',
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Change Percent',
-        style: styles.bold
+        className: 'font-weight-bold'
     },
     {
         selector: 'days_gain',
         filter: currency,
         formatFunction: coloredCell,
         title: 'Day\'s Gain',
-        style: styles.bold
+        className: 'font-weight-bold'
     },
     {
         selector: 'gain',

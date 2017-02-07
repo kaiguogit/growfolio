@@ -3,10 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-const style = {
-    display: 'inline-block'
-};
-
 class CurrencySelector extends React.Component {
     static propTypes = {
         displayCurrency: PropTypes.string.isRequired,
@@ -19,7 +15,7 @@ class CurrencySelector extends React.Component {
 
     render() {
         return (
-            <div style={style}>
+            <div className="d-inline-block mr-2">
                 <label htmlFor="display-currency">Display Currency</label>
                 <select className="form-control" id="display-currency" value={this.props.displayCurrency} onChange={this.handleSelectCurrency}>
                     <option value="CAD">CAD</option>

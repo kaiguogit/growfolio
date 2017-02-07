@@ -32,17 +32,19 @@ class Change extends React.Component {
         const numStyle = this.upOrDown(change).style;
         return (
             <div className="col-12 col-sm-6 col-md" key={`${title}-${change}`}>
-                <span>{title}</span>
+                <div>{title}</div>
                 <NumberChangeTransition upOrDown={change > 0}>
-                    <h2 style={numStyle}>
-                        {currency(change)}
-                        {' '}
-                        {change_percent !== undefined &&
-                            <span className={this.upOrDown(change).iconClass}/>
-                        }
-                        {' '}
-                        {change_percent !== undefined && percentage(change_percent)}
-                    </h2>
+                    <div className="d-inline-block">
+                        <h2 style={numStyle}>
+                            {currency(change)}
+                            {' '}
+                            {change_percent !== undefined &&
+                                <span className={this.upOrDown(change).iconClass}/>
+                            }
+                            {' '}
+                            {change_percent !== undefined && percentage(change_percent)}
+                        </h2>
+                    </div>
                 </NumberChangeTransition>
             </div>
         );
@@ -65,19 +67,17 @@ class PerformanceTotal extends React.Component {
 
     render() {
         return(
-            <div className="container-fluid">
-                <div className="row no-gutters">
-                    {this.totalValue()}
-                    <Change change={this.props.performance.days_gain}
-                        change_percent={this.props.performance.change_percent}
-                        title="Today's Change"/>
-                    <Change change={this.props.performance.gain}
-                        change_percent={this.props.performance.gain_percent}
-                        title="Total Change"/>
-                    <Change change={this.props.performance.gain_overall}
-                        change_percent={this.props.performance.gain_overall_percent}
-                        title="Overall Change"/>
-                </div>
+            <div className="row no-gutters justify-content-start">
+                {this.totalValue()}
+                <Change change={this.props.performance.days_gain}
+                    change_percent={this.props.performance.change_percent}
+                    title="Today's Change"/>
+                <Change change={this.props.performance.gain}
+                    change_percent={this.props.performance.gain_percent}
+                    title="Total Change"/>
+                <Change change={this.props.performance.gain_overall}
+                    change_percent={this.props.performance.gain_overall_percent}
+                    title="Overall Change"/>
             </div>
         );
     }

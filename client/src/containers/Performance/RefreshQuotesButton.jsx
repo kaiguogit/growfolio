@@ -1,10 +1,6 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
 
-const style = {
-    display: 'inline-block'
-};
-
 class RefreshQuotesButton extends React.Component {
     static propTypes = {
         refreshFn: PropTypes.func.isRequired,
@@ -13,12 +9,14 @@ class RefreshQuotesButton extends React.Component {
     render() {
         const { isFetching, refreshFn } = this.props;
         return(
-            <button style={style} type="button" className="btn btn-outline-primary" onClick={refreshFn}
-            disabled={isFetching}>
-                <i className="fa fa-refresh" aria-hidden="true"/>
-                {' '}
-                {isFetching ? 'Refreshing' : 'Refresh Quotes'}
-            </button>
+            <div className="d-inline-block">
+                <button type="button" className={`btn ${isFetching ? "btn-outline-danger" : "btn-outline-primary"}`} onClick={refreshFn}
+                disabled={isFetching}>
+                    <i className="fa fa-refresh" aria-hidden="true"/>
+                    {' '}
+                    {isFetching ? 'Refreshing' : 'Refresh Quotes'}
+                </button>
+            </div>
         );
     }
 }

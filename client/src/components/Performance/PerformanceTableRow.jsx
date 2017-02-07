@@ -19,7 +19,7 @@ class PerformanceTableRow extends React.Component {
                     return (
                         <td className={column.className}
                             key={`${column.selector}-${holding[column.selector]}`}>
-                            <NumberChangeTransition upOrDown={holding[column.selector] > 0}>
+                            <NumberChangeTransition upOrDown={column.ref_selector ? holding[column.ref_selector] > 0 : holding[column.selector] > 0}>
                                 {renderCell(holding, column)}
                             </NumberChangeTransition>
                         </td>

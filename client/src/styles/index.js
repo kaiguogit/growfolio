@@ -4,12 +4,6 @@ const styles = {
     },
     down: {
         color: '#d14836'
-    },
-    floatLeft: {
-        float: 'left'
-    },
-    bold: {
-        fontWeight: 'bold'
     }
 };
 
