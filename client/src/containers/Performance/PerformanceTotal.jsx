@@ -67,7 +67,7 @@ class PerformanceTotal extends React.Component {
 
     render() {
         return(
-            <div className="row no-gutters justify-content-start">
+            <div className="row no-gutters">
                 {this.totalValue()}
                 <Change change={this.props.performance.days_gain}
                     change_percent={this.props.performance.change_percent}
