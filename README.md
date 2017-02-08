@@ -8,7 +8,6 @@ It is intended to add some features that Yahoo Finance and Google Finance don't 
 * Calculate realized gain, dividend, yield for tax purpose.
 
 ## How to build
-`git checkout deployment`
 `npm run build`
 ## How to deploy
-`git push heroku deployment:master --force`
+`git push heroku currentbranch:master --force`
