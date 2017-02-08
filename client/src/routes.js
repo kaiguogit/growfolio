@@ -1,9 +1,9 @@
 import App from './components/App.jsx';
-import Portfolio from './containers/Portfolio.jsx';
+import Portfolio from './components/Portfolio.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
-import Tscs from './containers/Tscs.jsx';
-import Performance from './containers/Performance/Performance.jsx';
-import Balance from './containers/Balance/Balance.jsx';
+import TscsContainer from './components/tscs/TscsContainer.jsx';
+import Performance from './components/performance/Performance.jsx';
+import Balance from './components/balance/Balance.jsx';
 import SignUpPage from './components/SignUp/SignUpPage.jsx';
 import LoginPage from './components/Login/LoginPage.jsx';
 import Auth from './services/Auth';
@@ -38,7 +38,7 @@ const routes = (/*store*/) => {
                     },
                     {
                         path: navigation.TSCS,
-                        component: Tscs
+                        component: TscsContainer
                     },
                     {
                         path: navigation.BALANCE,

@@ -5,7 +5,7 @@ import * as quotesActions from '../../actions/quotes';
 import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
 import RefreshQuotesButton from './RefreshQuotesButton.jsx';
-import PerformanceTable from '../../components/Performance/PerformanceTable.jsx';
+import PerformanceTable from './PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
 import CurrencySelector from './CurrencySelector.jsx';
 

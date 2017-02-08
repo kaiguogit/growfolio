@@ -69,7 +69,8 @@ class TscsForm extends React.Component {
                     </div>
                     <div className="form-group col-sm-6 col-md-auto pr-2">
                         <label htmlFor="date">Date</label>
-                        <input type="date" className="form-control" id="date"/>
+                        <input className="form-control" type="date" name="date" id="date"
+                            onChange={this.handleInputChange}/>
                     </div>
                     <div className="form-group col-sm-6 col-md pr-2">
                         <label htmlFor="type">Type</label>

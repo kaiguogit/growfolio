@@ -5,7 +5,7 @@ import * as rootActions from '../actions';
 import * as tscsActions from '../actions/tscs';
 
 import * as navigation from '../constants/navigation';
-import NavLink from '../components/NavLink.jsx';
+import NavLink from './NavLink.jsx';
 import * as Utils from '../utils';
 
 import NProgress from 'nprogress';

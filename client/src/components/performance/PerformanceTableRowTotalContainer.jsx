@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { getTotalPerformance } from '../../selectors';
 
-import PerformanceTableRowTotal from '../../components/Performance/PerformanceTableRowTotal.jsx';
+import PerformanceTableRowTotal from './PerformanceTableRowTotal.jsx';
 
 class PerformanceTableRowTotalContainer extends React.Component {
     static propTypes = {

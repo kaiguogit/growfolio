@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
-import * as actions from '../actions/tscs';
+import * as actions from '../../actions/tscs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import TscsTable from '../components/Tscs/TscsTable.jsx';
-import TscsForm from '../components/Tscs/TscsForm.jsx';
+import TscsTable from './TscsTable.jsx';
+import TscsForm from './TscsForm.jsx';
 
 
-class Tscs extends React.Component {
+class TscsContainer extends React.Component {
     static propTypes = {
       items: PropTypes.array.isRequired,
       isFetching: PropTypes.bool.isRequired,
@@ -57,7 +57,7 @@ class Tscs extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable tscs={sortedItems} removeTscs={actions.removeTscs}/>
+                      <TscsTable tscs={sortedItems} removeTscs={actions.removeTscs} isFetching={isFetching}/>
                     </div>
                 }
             </div>
@@ -75,4 +75,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tscs);
+export default connect(mapStateToProps, mapDispatchToProps)(TscsContainer);

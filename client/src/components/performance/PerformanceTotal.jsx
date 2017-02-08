@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getTotalPerformance } from '../../selectors';
 import styles from '../../styles';
 import { currency, percentage } from '../../utils';
-import NumberChangeTransition from '../../components/Animation/NumberChangeTransition.jsx';
+import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 
 class Change extends React.Component {
     static propTypes = {
@@ -31,7 +31,7 @@ class Change extends React.Component {
         const {change, change_percent, title} = this.props;
         const numStyle = this.upOrDown(change).style;
         return (
-            <div className="col-12 col-sm-6 col-md" key={`${title}-${change}`}>
+            <div className="col-12 col-sm-6 col-md-auto mr-md-3" key={`${title}-${change}`}>
                 <div>{title}</div>
                 <NumberChangeTransition upOrDown={change > 0}>
                     <div className="d-inline-block">
@@ -58,7 +58,7 @@ class PerformanceTotal extends React.Component {
 
     totalValue() {
         return (
-            <div className="col-12 col-sm-6 col-md">
+            <div className="col-12 col-sm-6 col-md-auto mr-md-3">
                 <span>Total Value</span>
                 <h2>{currency(this.props.performance.mkt_value)}</h2>
             </div>
