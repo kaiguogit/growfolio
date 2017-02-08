@@ -28,7 +28,11 @@ const createHoldingCalculator = () => {
             return [];
         }
         transactions.forEach((trsc) => {
+            // new object
+            trsc = Object.assign({}, trsc);
+            // Guard NaN values
             avoidNaN(['shares', 'price', 'commission'], trsc);
+            // Create holding and add trsc to it.
             let holding = holdings.find(x => x.symbol === trsc.symbol);
             if (!holding) {
                 holding = {
