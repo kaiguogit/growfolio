@@ -8,6 +8,7 @@ import portfolioReducer  from './portfolioReducer';
 import quotesReducer from './quotesReducer';
 import symbolsReducer from './symbolsReducer';
 import tscsReducer from './tscsReducer';
+import { BATCH } from '../constants/actionTypes';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -20,4 +21,16 @@ const rootReducer = combineReducers({
     tscs: tscsReducer
 });
 
-export default rootReducer;
+// Dispatch actions in batch to avoid update component too frequently.
+// Idea and code from https://github.com/tshelburne/redux-batched-actions
+// https://github.com/reactjs/redux/issues/911#issuecomment-149361073
+const batchingReducer = (state, action) => {
+    switch (action.type) {
+        case BATCH:
+            return action.payload.reduce(batchingReducer, state);
+        default:
+            return rootReducer(state, action);
+    }
+};
+
+export default batchingReducer;

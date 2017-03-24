@@ -1,6 +1,8 @@
 /*
  * Action Constants
  */
+export const BATCH = 'BATCHING_REDUCER.BATCH';
+
 export const REQUEST_TSCS = 'REQUEST_TSCS';
 export const RECEIVE_TSCS = 'RECEIVE_TSCS';
 export const ADD_TSCS = 'ADD_TSCS';

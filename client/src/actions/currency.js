@@ -12,7 +12,6 @@ export const receiveCurrency = (rate) => ({
     rate
 });
 
-
 /**
  * YAHOO Finance API version
  * makeQuotesUrl, processQuotes, fetchQuotes functions
@@ -50,18 +49,16 @@ const processRate = data => {
 //     }, 1000);
 // };
 
-export const fetchCurrency = currencyPairs => dispatch => {
+export const fetchCurrency = currencyPairs => {
     if (!(currencyPairs && Array.isArray(currencyPairs) && currencyPairs.length)) {
         // console.log("empty currencyPairs, skip fetching");
         // empty currencyPairs, skip fetching
-        return;
+        return Promise.resolve([]);
     }
-    dispatch(requestCurrency());
     return fetch(makeCurrencyUrl(currencyPairs))
         .then(response => response.json())
         .then(data => {
-            let result = processRate(data);
-            dispatch(receiveCurrency(result));
+            return processRate(data);
         })
         .catch(errorHandler);
 };

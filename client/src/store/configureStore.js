@@ -2,7 +2,7 @@ import {createStore, compose, applyMiddleware} from 'redux';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
-import rootReducer from '../reducers';
+import batchingReducer from '../reducers';
 
 
 function configureStoreProd(initialState) {
@@ -14,7 +14,7 @@ function configureStoreProd(initialState) {
     thunk,
   ];
 
-  return createStore(rootReducer, initialState, compose(
+  return createStore(batchingReducer, initialState, compose(
     applyMiddleware(...middlewares)
     )
   );
@@ -34,7 +34,7 @@ function configureStoreDev(initialState) {
   ];
 
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // add support for Redux dev tools
-  const store = createStore(rootReducer, initialState, composeEnhancers(
+  const store = createStore(batchingReducer, initialState, composeEnhancers(
     applyMiddleware(...middlewares)
     )
   );

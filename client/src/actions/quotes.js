@@ -3,6 +3,7 @@ import $ from 'jquery';
 import Auth from '../services/Auth';
 
 import * as currencyActions from './currency';
+import { batchActions } from './';
 import { getHoldings } from '../selectors';
 
 import { errorHandler } from '../utils';
@@ -129,39 +130,31 @@ const processQuotes = quotes => {
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
  */
-export const fetchQuotes = symbols => dispatch => {
+const fetchQuotes = symbols => {
     if (!(symbols && Array.isArray(symbols) && symbols.length)) {
         // empty symbols, skip fetching
-        return;
+        return Promise.resolve([]);
     }
-    dispatch(requestQuotes());
     return $.ajax({
         type: 'GET',
-        dataType: "json",
-        url: __MY_API__ + "quotes",
+        dataType: 'json',
+        url: __MY_API__ + 'quotes',
         data: {symbols: JSON.stringify(symbols)},
         headers: {
             Authorization: `Bearer ${Auth.getToken()}`
-        }
+        },
+        timeout: 3000
     })
     .then(data => {
         if (!data.success) {
             return Promise.reject(data);
         }
-        let result = processQuotes(data.result);
-        dispatch(receiveQuotes(result));
+        return processQuotes(data.result);
     })
     .catch(errorHandler);
 };
 
-export const refreshQuotes = () => (dispatch, getState) => {
-    const state = getState();
-    const holdings = getHoldings(state);
-    const displayCurrency = state.portfolio.displayCurrency;
-    dispatch(fetchQuotes(holdings.map(x => ({
-        symbol: x.symbol,
-        exch: x.exch
-    }))));
+const fetchCurrency = (holdings, displayCurrency) => {
     let currencyPairs = [];
     holdings.forEach(x => {
         let pair = x.currency + displayCurrency;
@@ -169,7 +162,32 @@ export const refreshQuotes = () => (dispatch, getState) => {
             currencyPairs.push(pair);
         }
     });
-    dispatch(currencyActions.fetchCurrency(currencyPairs));
+    return currencyActions.fetchCurrency(currencyPairs);
+};
+
+export const refreshQuotes = () => (dispatch, getState) => {
+    const state = getState();
+    const holdings = getHoldings(state);
+    const displayCurrency = state.portfolio.displayCurrency;
+
+    dispatch(batchActions([
+        requestQuotes(),
+        currencyActions.requestCurrency()
+    ]));
+
+    let quotePromise = fetchQuotes(holdings.map(x => ({
+        symbol: x.symbol,
+        exch: x.exch
+    })));
+    let currencyPromise = fetchCurrency(holdings, displayCurrency);
+
+    Promise.all([quotePromise, currencyPromise]).then(([quotes, currency]) => {
+        // Dispatch two receive actions together to avoid updating components twice.
+        dispatch(batchActions([
+            receiveQuotes(quotes),
+            currencyActions.receiveCurrency(currency)
+        ]));
+    });
 };
 
 export const setIntervalRefreshQuotes = () => (dispatch, getState) => {
