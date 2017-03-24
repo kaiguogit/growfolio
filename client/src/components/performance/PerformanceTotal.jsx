@@ -36,7 +36,7 @@ class Change extends React.Component {
                 <NumberChangeTransition upOrDown={change > 0}>
                     <div className="d-inline-block">
                         <h2 style={numStyle}>
-                            {currency(change)}
+                            {currency(2)(change)}
                             {' '}
                             {change_percent !== undefined &&
                                 <span className={this.upOrDown(change).iconClass}/>
@@ -60,7 +60,7 @@ class PerformanceTotal extends React.Component {
         return (
             <div className="col-12 col-sm-6 col-md-auto mr-md-3">
                 <span>Total Value</span>
-                <h2>{currency(this.props.performance.mkt_value)}</h2>
+                <h2>{currency(0)(this.props.performance.mkt_value)}</h2>
             </div>
         );
     }

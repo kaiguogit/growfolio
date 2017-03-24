@@ -33,25 +33,25 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'cost',
-        filter: currency,
+        filter: currency(3),
         title: 'Cost',
         className: 'hidden-sm-down'
     },
     {
         selector: 'mkt_value',
-        filter: currency,
+        filter: currency(3),
         title: 'Market Value',
         className: 'hidden-sm-down'
     },
     {
         selector: 'average_cost',
-        filter: currency,
+        filter: currency(3),
         title: 'Average Cost',
         className: 'hidden-sm-down'
     },
     {
         selector: 'price',
-        filter: currency,
+        filter: currency(3),
         title: 'Price'
     },
     {
@@ -61,7 +61,7 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'change',
-        filter: currency,
+        filter: currency(2),
         formatFunction: coloredCell,
         title: 'Change',
         className: 'font-weight-bold'
@@ -75,14 +75,14 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'days_gain',
-        filter: currency,
+        filter: currency(2),
         formatFunction: coloredCell,
         title: 'Day\'s Gain',
         className: 'font-weight-bold'
     },
     {
         selector: 'gain',
-        filter: currency,
+        filter: currency(2),
         formatFunction: coloredCell,
         title: 'Gain'
     },
@@ -94,7 +94,7 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gain_overall',
-        filter: currency,
+        filter: currency(2),
         formatFunction: coloredCell,
         title: 'Overall Return',
         className: 'hidden-sm-down'
@@ -108,20 +108,20 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'realized_gain',
-        filter: currency,
+        filter: currency(2),
         formatFunction: coloredCell,
         title: 'Realized Gain'
     },
     {
         selector: 'dividend',
-        filter: currency,
+        filter: currency(2),
         formatFunction: coloredCell,
         title: 'Dividend',
         className: 'hidden-sm-down'
     },
     {
         selector: 'cost_overall',
-        filter: currency,
+        filter: currency(2),
         title: 'Overall Cost',
         className: 'hidden-sm-down'
     }

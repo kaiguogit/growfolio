@@ -1,4 +1,4 @@
-import { currency, date, capitalize } from '../../utils';
+import { date, capitalize } from '../../utils';
 
 export const TSCS_COLUMNS = [
     {
