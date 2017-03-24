@@ -24,7 +24,6 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'price',
-        filter: currency,
         title: 'Price'
     },
     {
@@ -33,7 +32,6 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'commission',
-        filter: currency,
         title: 'Commission'
     },
     {

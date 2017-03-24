@@ -16,7 +16,7 @@ export const percentage = number => {
 
 export const currency = number => {
     try {
-        return numeral(number).format('0,0[.]00');
+        return numeral(number).format('0,0[.]00[0]');
     }
     catch(e) {
         return number;
