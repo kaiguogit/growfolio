@@ -1,4 +1,7 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { getTotalPerformance } from '../../selectors';
+
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 import { renderCell } from '../../utils';
@@ -45,4 +48,9 @@ class PerformanceTableRowTotal extends React.Component {
     }
 }
 
-export default PerformanceTableRowTotal;
+const mapStateToProps = (state) => {
+  return {
+      total: getTotalPerformance(state)
+  };
+};
+export default connect(mapStateToProps)(PerformanceTableRowTotal);

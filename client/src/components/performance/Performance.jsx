@@ -7,7 +7,7 @@ import { getHoldings } from '../../selectors';
 import RefreshQuotesButton from './RefreshQuotesButton.jsx';
 import PerformanceTable from './PerformanceTable.jsx';
 import PerformanceTotal from './PerformanceTotal.jsx';
-import CurrencySelector from './CurrencySelector.jsx';
+import SettingButton from './SettingButton.jsx';
 
 class Performance extends React.Component {
     static propTypes = {
@@ -40,8 +40,8 @@ class Performance extends React.Component {
         return(
             <div>
                 <div>
-                    <CurrencySelector/>
                     <RefreshQuotesButton refreshFn={this.refreshQuotes}/>
+                    <SettingButton/>
                 </div>
                 <PerformanceTotal/>
                 <PerformanceTable symbols={holdings.map(x => x.symbol)}/>

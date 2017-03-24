@@ -1,9 +1,15 @@
-import React, { PropTypes } from 'react';
+import React, {PropTypes} from 'react';
+import { connect } from 'react-redux';
+
+import { makeGetHoldingPerformance } from '../../selectors';
+import { renderCell } from '../../utils';
+
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
-import { renderCell } from '../../utils';
+
 class PerformanceTableRow extends React.Component {
     static propTypes = {
+        symbol: PropTypes.string.isRequired,
         holding: PropTypes.object.isRequired
     }
 
@@ -30,4 +36,14 @@ class PerformanceTableRow extends React.Component {
     }
 }
 
-export default PerformanceTableRow;
+ const makeMapStateToProps = () => {
+     const getHoldingPerformance = makeGetHoldingPerformance();
+     const mapStateToProps = (state, props) => {
+          return {
+              holding: getHoldingPerformance(state, props)
+          };
+     };
+     return mapStateToProps;
+ };
+
+export default connect(makeMapStateToProps)(PerformanceTableRow);

@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as rootActions from '../actions';
 import * as tscsActions from '../actions/tscs';
-
-import * as navigation from '../constants/navigation';
-import NavLink from './NavLink.jsx';
+import Performance from './performance/Performance.jsx';
+import TscsContainer from './tscs/TscsContainer.jsx';
+import Balance from './balance/Balance.jsx';
+import {PERFORMANCE, TSCS, BALANCE} from '../constants/navigation';
 import * as Utils from '../utils';
 
 import NProgress from 'nprogress';
@@ -15,8 +16,7 @@ class Portfolio extends React.Component {
         selectedTab: PropTypes.string.isRequired,
         actions: PropTypes.object.isRequired,
         tscs: PropTypes.array,
-        isFetching: PropTypes.bool.isRequired,
-        children: PropTypes.element
+        isFetching: PropTypes.bool.isRequired
     };
 
     componentDidMount() {
@@ -32,14 +32,31 @@ class Portfolio extends React.Component {
 
     render() {
         this.props.isFetching ? NProgress.start() : NProgress.done();
+        const cap = Utils.capitalize;
         return (
             <div>
                 <ul className="nav nav-tabs">
-                    <NavLink to={'/portfolio/' + navigation.PERFORMANCE}><span>{Utils.capitalize(navigation.PERFORMANCE)}</span></NavLink>
-                    <NavLink to={'/portfolio/' + navigation.TSCS}><span>{Utils.capitalize(navigation.TSCS)}</span></NavLink>
-                    <NavLink to={'/portfolio/' + navigation.BALANCE}><span>{Utils.capitalize(navigation.BALANCE)}</span></NavLink>
+                    <li className="nav-item">
+                        <a className="nav-link" data-toggle="tab" href={`#${PERFORMANCE}`} role="tab">
+                            {cap(PERFORMANCE)}
+                        </a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" data-toggle="tab" href={`#${TSCS}`} role="tab">
+                            {cap(TSCS)}
+                        </a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" data-toggle="tab" href={`#${BALANCE}`} role="tab">
+                            {cap(BALANCE)}
+                        </a>
+                    </li>
                 </ul>
-                {this.props.children}
+                <div className="tab-content">
+                  <div className="tab-pane active" id={PERFORMANCE} role="tabpanel"><Performance/></div>
+                  <div className="tab-pane" id={TSCS} role="tabpanel"><TscsContainer/></div>
+                  <div className="tab-pane" id={BALANCE} role="tabpanel"><Balance/></div>
+                </div>
             </div>
         );
     }

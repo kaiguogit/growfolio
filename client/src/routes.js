@@ -1,13 +1,11 @@
 import App from './components/App.jsx';
 import Portfolio from './components/Portfolio.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
-import TscsContainer from './components/tscs/TscsContainer.jsx';
-import Performance from './components/performance/Performance.jsx';
-import Balance from './components/balance/Balance.jsx';
+import Base from './components/Base.jsx';
+import PerformanceSetting from './components/performance/PerformanceSetting.jsx';
 import SignUpPage from './components/SignUp/SignUpPage.jsx';
 import LoginPage from './components/Login/LoginPage.jsx';
 import Auth from './services/Auth';
-import * as navigation from './constants/navigation';
 
 const requireAuth = (nextState, replace) => {
   if (!Auth.loggedIn()) {
@@ -28,22 +26,14 @@ const routes = (/*store*/) => {
         childRoutes: [
             {
                 path: 'portfolio',
-                component: Portfolio,
-                indexRoute: {component: Performance},
+                indexRoute: {component: Portfolio},
                 onEnter: requireAuth,
                 childRoutes: [
                     {
-                        path: navigation.PERFORMANCE,
-                        component: Performance
-                    },
-                    {
-                        path: navigation.TSCS,
-                        component: TscsContainer
-                    },
-                    {
-                        path: navigation.BALANCE,
-                        component: Balance
-                    },
+                        path: 'setting',
+                        component: Base,
+                        indexRoute: {component: PerformanceSetting}
+                    }
                 ]
             },
             {

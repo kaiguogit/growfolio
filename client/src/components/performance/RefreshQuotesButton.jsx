@@ -9,14 +9,13 @@ class RefreshQuotesButton extends React.Component {
     render() {
         const { isFetching, refreshFn } = this.props;
         return(
-            <div className="d-inline-block">
-                <button type="button" className={`btn ${isFetching ? "btn-outline-danger" : "btn-outline-primary"}`} onClick={refreshFn}
+            <button type="button" className={`btn d-inline-block mr-2 ${isFetching ? "btn-outline-danger" : "btn-outline-primary"}`}
+                onClick={refreshFn}
                 disabled={isFetching}>
-                    <i className="fa fa-refresh" aria-hidden="true"/>
-                    {' '}
-                    {isFetching ? 'Refreshing' : 'Refresh Quotes'}
-                </button>
-            </div>
+                <i className="fa fa-refresh" aria-hidden="true"/>
+                {' '}
+                {isFetching ? 'Refreshing' : 'Refresh Quotes'}
+            </button>
         );
     }
 }
