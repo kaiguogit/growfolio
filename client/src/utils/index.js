@@ -23,9 +23,13 @@ export const currency = decimal => number => {
     }
 };
 
+// http://stackoverflow.com/questions/7556591/javascript-date-object-always-one-day-off#answer-14569783
+// Convert UTC to local date
 export const date = dateStr => {
     try {
-        return new Date(dateStr).toLocaleDateString();
+        let doo = new Date(dateStr);
+        let adjustedTime = new Date(doo.getTime() + Math.abs(doo.getTimezoneOffset()*60000));
+        return adjustedTime.toLocaleDateString();
     }
     catch(e) {
         return dateStr;
