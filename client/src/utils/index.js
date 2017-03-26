@@ -1,6 +1,7 @@
 import React from 'react';
 import numeral from 'numeral';
 import Auth from '../services/Auth';
+import styles from '../styles';
 
 /**
  * Filters
@@ -74,6 +75,23 @@ export const renderCell = (entry, column) => {
     return (
         <span style={column.style}>
             {content}
+        </span>
+    );
+};
+
+export const coloredCell = (entry, column) => {
+    let refValue = column.ref_selector ? entry[column.ref_selector] : entry[column.selector];
+    let value = entry[column.selector];
+    let style;
+    if (refValue > 0) {
+        style = styles.up;
+    } else if (refValue < 0) {
+        style = styles.down;
+    }
+
+    return (
+        <span style={style}>
+            {column.filter ? column.filter(value) : value}
         </span>
     );
 };

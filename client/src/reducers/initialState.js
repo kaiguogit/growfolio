@@ -6,7 +6,7 @@ export default {
     },
     tscs: {
         isFetching: false,
-        items: [],
+        items: {},
         formOpened: false,
         lastUpdated: Date.now()
     },

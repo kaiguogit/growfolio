@@ -15,13 +15,13 @@ class Portfolio extends React.Component {
     static propTypes = {
         selectedTab: PropTypes.string.isRequired,
         actions: PropTypes.object.isRequired,
-        tscs: PropTypes.array,
+        tscs: PropTypes.object,
         isFetching: PropTypes.bool.isRequired
     };
 
     componentDidMount() {
         const tscs = this.props.tscs;
-        if (Array.isArray(tscs) && tscs.length === 0) {
+        if (Object.keys(tscs).length === 0) {
             this.props.actions.fetchTscs();
         }
     }

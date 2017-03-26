@@ -1,3 +1,8 @@
+// Backend is based on hackathon boilerplate
+// https://github.com/sahat/hackathon-starter
+// Frontend is based on react slingshot
+// https://github.com/coryhouse/react-slingshot
+
 /**
  * Module dependencies.
  */

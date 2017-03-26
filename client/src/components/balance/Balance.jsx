@@ -17,18 +17,6 @@ class Balance extends Component {
         displayCurrency: PropTypes.string.isRequired
     }
 
-    componentDidMount() {
-        this.props.actions.setIntervalRefreshQuotes();
-    }
-
-    componentDidUpdate(prevProps) {
-        //Only refresh quotes when holdings or display currency changed
-        if (!(isEqual(prevProps.holdings, this.props.holdings) &&
-            prevProps.displayCurrency === this.props.displayCurrency)) {
-            this.props.actions.refreshQuotes();
-        }
-    }
-
     render() {
         return (
             <div className="container-fluid">

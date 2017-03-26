@@ -2,24 +2,6 @@ import React, { PropTypes } from 'react';
 
 import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 
-const styles = {
-    symbolWidth: {
-        width: '200px'
-    },
-    numberWidth: {
-        width: '100px'
-    },
-    dateWidth: {
-        width: '200px'
-    },
-    noteWidth: {
-        width: 'auto'
-    },
-    formWidth: {
-        width: '80%'
-    }
-};
-
 class TscsForm extends React.Component {
 
     static propTypes = {

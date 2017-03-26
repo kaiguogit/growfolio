@@ -4,6 +4,8 @@ import * as types from '../constants/actionTypes';
 const tscsReducer = (state = initialState.tscs, action) => {
     switch (action.type) {
         case types.REQUEST_TSCS:
+        case types.ADD_TSCS:
+        case types.DELETE_TSCS:
             return {
                 ...state,
                 isFetching: true
@@ -14,23 +16,6 @@ const tscsReducer = (state = initialState.tscs, action) => {
                 isFetching: false,
                 items: action.tscs,
                 lastUpdated: action.receivedAt
-            };
-        case types.ADD_TSCS:
-            return {
-                ...state,
-                isFetching: false,
-                items: [
-                    ...(state.items),
-                    action.tsc
-                ],
-                lastUpdated: action.receivedAt
-            };
-        case types.DELETE_TSCS:
-            return {
-                ...state,
-                isFetching: false,
-                lastUpdated: action.receivedAt,
-                items: state.items.filter((x) => x._id !== action.id)
             };
         case types.OPEN_TSCS_FORM:
             return {

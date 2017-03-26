@@ -1,23 +1,4 @@
-import React from 'react';
-import { percentage, currency } from '../../utils';
-import styles from '../../styles';
-
-const coloredCell = (entry, column) => {
-    let refValue = column.ref_selector ? entry[column.ref_selector] : entry[column.selector];
-    let value = entry[column.selector];
-    let style;
-    if (refValue > 0) {
-        style = styles.up;
-    } else if (refValue < 0) {
-        style = styles.down;
-    }
-
-    return (
-        <span style={style}>
-            {column.filter ? column.filter(value) : value}
-        </span>
-    );
-};
+import { percentage, currency, coloredCell } from '../../utils';
 
 export const PERFORMANCE_COLUMNS = [
     {

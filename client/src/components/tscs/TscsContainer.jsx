@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import * as actions from '../../actions/tscs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { getHoldings } from '../../selectors';
 
 import TscsTable from './TscsTable.jsx';
 import TscsForm from './TscsForm.jsx';
@@ -9,17 +10,10 @@ import TscsForm from './TscsForm.jsx';
 
 class TscsContainer extends React.Component {
     static propTypes = {
-      items: PropTypes.array.isRequired,
+      holdings: PropTypes.array.isRequired,
       isFetching: PropTypes.bool.isRequired,
       formOpened: PropTypes.bool.isRequired,
       actions: PropTypes.object.isRequired
-    }
-
-    handleRefreshClick = e => {
-        if (e) {
-            e.preventDefault();
-        }
-        this.props.actions.fetchTscs();
     }
 
     handleFormSubmit = tsc => {
@@ -28,21 +22,9 @@ class TscsContainer extends React.Component {
     }
 
     render() {
-        const { isFetching, items, formOpened, actions } = this.props;
-        const isEmpty = items.length === 0;
-        const sortedItems = items.slice(0);
-
-        // Sort tscs by symbol then by date.
-        sortedItems.sort(function(a, b) {
-            const symbolA = a.symbol.toUpperCase();
-            const symbolB = b.symbol.toUpperCase();
-            const result = (symbolA < symbolB) ? -1 : (symbolA > symbolB) ? 1 : 0;
-            if (result !== 0) {
-                return result;
-            }
-            return new Date(a.date) - new Date(b.date);
-        });
-
+        const { isFetching, holdings, formOpened, actions } = this.props;
+        const isEmpty = holdings.length === 0;
+        const itemsArray = holdings.reduce((acc, holding) => acc.concat(holding.transactions), []);
         return (
             <div>
                 <button className={`btn btn-sm ${formOpened ? "btn-info" : "btn-info "}`} onClick={formOpened ? actions.closeTscsForm : actions.openTscsForm}>
@@ -57,7 +39,7 @@ class TscsContainer extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable tscs={sortedItems} removeTscs={actions.removeTscs} isFetching={isFetching}/>
+                      <TscsTable tscs={itemsArray} removeTscs={actions.removeTscs} isFetching={isFetching}/>
                     </div>
                 }
             </div>
@@ -66,7 +48,11 @@ class TscsContainer extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return state.tscs;
+    return {
+        holdings: getHoldings(state),
+        isFetching: state.tscs.isFetching,
+        formOpened: state.tscs.formOpened
+    };
 };
 
 const mapDispatchToProps = dispatch => {

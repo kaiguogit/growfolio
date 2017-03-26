@@ -9,7 +9,7 @@ const DeleteTsc = ({
     const handleClick = () => {
         onConfirm();
         $('#' + modelId).modal('hide');
-    }
+    };
     return (
         <div>
             <button className="btn btn-danger btn-sm" data-target={'#' + modelId} data-toggle="modal">

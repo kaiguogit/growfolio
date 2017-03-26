@@ -7,26 +7,17 @@ import { errorHandler, getHeaders } from '../utils';
 export const requestTscs = () => ({
     type: types.REQUEST_TSCS
 });
-export const receiveTscs = (data) => {
-    // process tsc for consistency.
-    data.forEach(tsc=> {
-        tsc.symbol = tsc.symbol.toUpperCase();
-        tsc.type = tsc.type.toLowerCase();
-    });
-    return {
-        type: types.RECEIVE_TSCS,
-        tscs: data,
-        receivedAt: Date.now()
-    };
-};
-export const addTscs = (tsc) => ({
-    type: types.ADD_TSCS,
-    tsc: tsc,
+export const receiveTscs = (data) => ({
+    type: types.RECEIVE_TSCS,
+    tscs: data,
     receivedAt: Date.now()
 });
-export const deleteTscs = (id) => ({
+export const addTscs = () => ({
+    type: types.ADD_TSCS,
+    receivedAt: Date.now()
+});
+export const deleteTscs = () => ({
     type: types.DELETE_TSCS,
-    id: id,
     receivedAt: Date.now()
 });
 export const openTscsForm = () => ({
@@ -54,30 +45,59 @@ export const fetchTscs = () => dispatch => {
         headers: getHeaders()
     })
     .then(response => response.json())
-    .then(data => dispatch(receiveTscs(data.result)))
+    .then(data => {
+        let tscs = data.result;
+        let tscsMap = {};
+        if (!Array.isArray(tscs)) {
+            return Promise.reject();
+        }
+        // Sort tscs by symbol then by date.
+        tscs.sort(function(a, b) {
+            const symbolA = a.symbol.toUpperCase();
+            const symbolB = b.symbol.toUpperCase();
+            const result = (symbolA < symbolB) ? -1 : (symbolA > symbolB) ? 1 : 0;
+            if (result !== 0) {
+                return result;
+            }
+            return new Date(a.date) - new Date(b.date);
+        });
+        tscs.forEach(function(tsc) {
+            // process tsc for consistency.
+            tsc.symbol = tsc.symbol.toUpperCase();
+            tsc.type = tsc.type.toLowerCase();
+
+            let symbol = tsc.symbol;
+            tscsMap[symbol] = tscsMap[symbol] || [];
+            tscsMap[symbol].push(tsc);
+        });
+        return tscsMap;
+    })
+    .then(data => dispatch(receiveTscs(data)))
     .catch(errorHandler);
 };
 
 export const createTscs = (tsc) => dispatch => {
-    dispatch(requestTscs());
+    dispatch(addTscs());
     return fetch(__MY_API__ + "transactions", {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify(tsc)
     })
     .then(response => response.json())
-    .then(data => dispatch(addTscs(data.result)))
+    // TODO add logic to check result is successful or not
+    .then(() => fetchTscs()(dispatch))
     .catch(errorHandler);
 };
 
 export const removeTscs = (id) => dispatch => {
-    dispatch(requestTscs());
+    dispatch(deleteTscs());
     return fetch(__MY_API__ + "transactions", {
         method: 'DELETE',
         headers: getHeaders(),
         body: JSON.stringify({'id': id}),
     })
     .then(response => response.json())
-    .then(() => dispatch(deleteTscs(id)))
+    // TODO add logic to check result is successful or not
+    .then(() => fetchTscs()(dispatch))
     .catch(errorHandler);
 };

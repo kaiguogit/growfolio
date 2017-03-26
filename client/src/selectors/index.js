@@ -10,17 +10,30 @@ export const getSymbolFromProps = (state, props) => props.symbol;
 export const getCurrency = state => state.currency.rate;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-// Memoized selector
-// Read more from https://github.com/reactjs/reselect
-// Use lodash.isequal library to compare array of tscs to avoid recalculating
+/**
+ * Memoized selector
+ * Read more from https://github.com/reactjs/reselect
+ * Use lodash.isequal library to compare array of tscs to avoid recalculating
+ * @param Array: array of selector functions, if input is not changed, won't
+ *                run output selector
+ * @param Function: output function, process input from input selectors.
+ * @return Function: a memoized selector that will return same result if input
+ *                   is same without running the output function.
+ */
 export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
-// Use createHoldingCalculator selector to calculate holdings.
-// If tscs in state is not 'changed' (value-wise, the object is
-// actually new), it won't recalculate.
-// signature for selector created by createHoldingCalculator is (transactions) => holdings
-// signature for getHoldings is (state) => holdings
+/**
+ * Use createHoldingCalculator selector to calculate holdings.
+ * If tscs in state is not 'changed' (value-wise, the object is
+ * actually new), it won't recalculate.
+ * signature for selector created by createHoldingCalculator is (transactions) => holdings
+ *
+ * @param Object: pass the global state here
+ * @param Array: calculated holdings based on transactions.
+ */
 export const getHoldings = createDeepEqualSelector([getTscs], createHoldingCalculator());
+
+//
 export const getHolding = createDeepEqualSelector(
     [getHoldings, getSymbolFromProps],
     (holdings, symbol) => holdings.find(x => x.symbol === symbol)
@@ -88,7 +101,9 @@ const calculateHoldingPerformance = (holding, quote, currency, displayCurrency) 
 
 /** Nest selector to further calculate holding gains based on Real Time Quotes
  * If holding is not changed, holdings based on transaction won't have to be calculated.
- * This is a make function to generate unique selector for 1 holding.
+ * This is a make function to generate unique selector for 1 holding, so that
+ * each row can be updated when its holding changed without triggering other
+ * row's selector function.
  * Usage:
  * // props.symbol is required
  * const makeMapStateToProps = () => {
