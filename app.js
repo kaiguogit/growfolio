@@ -138,6 +138,7 @@ app.route('/api/allocations')
 app.route('/api/quotes')
   .get(apiController.getQuotes);
 
+
 app.get('*', homeController.index);
 
 // app.get('/login', userController.getLogin);

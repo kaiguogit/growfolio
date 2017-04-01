@@ -13,12 +13,49 @@ exports.getApi = (req, res) => {
   });
 };
 
-const BASE_URI = 'http://finance.google.com/finance/info';
-const makeQuotesUrl = (symbols) => {
-  // Accommodate bug in production,that Toronto exch can't get qutoes properly.
-  symbols.forEach((symbol) => {
-    if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN' || symbol.symbol === 'CPD') {
-      symbol.exch = 'TSE';
+/**
+ * GET /api/quotes
+ * Yahoo quotes
+ */
+exports.getQuotes = (req, res, next) => {
+  var BASE_URI = 'https://query.yahooapis.com/v1/public/yql';
+  var qs = {
+    q: `select * from yahoo.finance.quotes where symbol in ("YHOO","AAPL","GOOG","MSFT")`,
+    format:'json',
+    diagnostics: 'true',
+    env: 'store://datatables.org/alltableswithkeys',
+    callback: ''
+  }
+  request.get({url: BASE_URI, qs: qs}, (err, request, body) => {
+    if (err) { return next(err); }
+    if (request.statusCode === 403) {
+      return next(new Error('Error when getting quotes'));
+    }
+    res.send({response: JSON.parse(body)});
+  });
+}
+
+/**
+ * GET /api/foursquare
+ * Foursquare API example.
+ */
+exports.getFoursquare = (req, res, next) => {
+  const token = req.user.tokens.find(token => token.kind === 'foursquare');
+  async.parallel({
+    trendingVenues: (callback) => {
+      foursquare.Venues.getTrending('40.7222756', '-74.0022724', { limit: 50 }, token.accessToken, (err, results) => {
+        callback(err, results);
+      });
+    },
+    venueDetail: (callback) => {
+      foursquare.Venues.getVenue('49da74aef964a5208b5e1fe3', token.accessToken, (err, results) => {
+        callback(err, results);
+      });
+    },
+    userCheckins: (callback) => {
+      foursquare.Users.getCheckins('self', null, token.accessToken, (err, results) => {
+        callback(err, results);
+      });
     }
   });
   //
