@@ -40,6 +40,10 @@ export const TSCS_COLUMNS = [
         title: 'Date'
     },
     {
+        selector: 'total',
+        title: 'Total'
+    },
+    {
         selector: 'newAcb',
         title: 'New ACB'
     },
