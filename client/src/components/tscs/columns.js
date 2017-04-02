@@ -1,4 +1,4 @@
-import { date, capitalize, coloredCell } from '../../utils';
+import { date, capitalize, currency, coloredCell } from '../../utils';
 
 export const TSCS_COLUMNS = [
     {
@@ -41,19 +41,23 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'total',
-        title: 'Total'
+        title: 'Total',
+        filter: currency(3)
     },
     {
         selector: 'newAcb',
-        title: 'New ACB'
+        title: 'New ACB',
+        filter: currency(3)
     },
     {
         selector: 'acbChange',
         title: 'Change in ACB',
+        filter: currency(3),
         formatFunction: coloredCell
     },
     {
         selector: 'newAverageCost',
+        filter: currency(3),
         title: 'Average Cost'
     },
     {
