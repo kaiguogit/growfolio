@@ -16,8 +16,9 @@ exports.getApi = (req, res) => {
 const BASE_URI = 'http://finance.google.com/finance/info';
 const makeQuotesUrl = (symbols) => {
   // Accommodate bug in production,that Toronto exch can't get qutoes properly.
+  // TODO find a better API.
   symbols.forEach((symbol) => {
-    if (symbol.symbol === 'VSB' || symbol.symbol === 'VUN' || symbol.symbol === 'CPD') {
+    if (symbol.exch && (symbol.exch.toLowerCase() === 'toronto' || symbol.exch.toLowerCase() === 'industry')) {
       symbol.exch = 'TSE';
     }
   });

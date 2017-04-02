@@ -6,7 +6,7 @@ const createHoldingCalculator = () => {
     const avoidNaN = (keys, obj) => {
         keys.forEach(key => {
             if (key in obj) {
-                obj[key] = +obj[key] || 0;
+                obj[key] = isFinite(+obj[key]) ? +obj[key] : 0;
             }
         });
     };
@@ -163,8 +163,8 @@ const createHoldingCalculator = () => {
 
             tsc.total = round(tsc.total, 3);
         });
-
-        holding.average_cost = holding.cost / holding.shares;
+        holding.cost = round(holding.cost, 3);
+        holding.average_cost = holding.shares ? holding.cost / holding.shares : 0;
         avoidNaN([
             'cost',
             'cost_overall',
