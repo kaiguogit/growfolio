@@ -96,52 +96,27 @@ const createHoldingCalculator = () => {
         holding.realized_gain = 0;
         holding.dividend = 0;
 
-        holding.buyTransactions.forEach(buyTsc => {
-            buyTsc.leftShares = buyTsc.shares;
-            buyTsc.total = buyTsc.shares * buyTsc.price + buyTsc.commission;
-            // TODO keep one of them.
-            buyTsc.acbChange = buyTsc.total;
-        });
-
-        // minus sell-shares from each buy-transaction until sell-shares
-        // is empty.
-        holding.sellTransactions.forEach(sellTsc => {
-            let soldShares = sellTsc.shares;
-            sellTsc.realized_gain = 0;
-            sellTsc.total = sellTsc.shares * sellTsc.price - sellTsc.commission;
-            sellTsc.acbChange = 0;
-
-            for(let i = 0;i < holding.buyTransactions.length; ++i) {
-                if (soldShares === 0) {
-                    break;
-                }
-
-                let buyTsc = holding.buyTransactions[i];
-                let processingShares = Math.min(buyTsc.leftShares, soldShares);
-
-                let buyCost = (processingShares / buyTsc.shares) * buyTsc.total;
-                let sellGain = (processingShares / sellTsc.shares) * sellTsc.total;
-                sellTsc.realized_gain += sellGain - buyCost;
-                sellTsc.acbChange -= buyCost;
-
-                soldShares -= processingShares;
-                buyTsc.leftShares -= processingShares;
-            }
-        });
-
         // Assuming the transactions here are already sorted by date.
         holding.transactions.forEach(tsc => {
             if (tsc.type === 'buy' || tsc.type === 'sell') {
                 if (tsc.type === 'buy') {
-                    holding.cost += tsc.acbChange;
+                    tsc.total = tsc.shares * tsc.price + tsc.commission;
+                    tsc.acbChange = tsc.total;
+
                     holding.cost_overall += tsc.acbChange;
                     holding.shares += tsc.shares;
 
                 } else if (tsc.type === 'sell') {
-                    holding.cost += tsc.acbChange;
+                    tsc.total = tsc.shares * tsc.price - tsc.commission;
+                    // TODO may need to check if holding.shares is 0
+                    tsc.acbChange = -(holding.cost * tsc.shares / holding.shares);
+                    tsc.realized_gain = tsc.total + tsc.acbChange;
+
                     holding.shares -= tsc.shares;
                     holding.realized_gain += tsc.realized_gain;
                 }
+                holding.cost += tsc.acbChange;
+                tsc.acbChange = round(tsc.acbChange, 3);
                 // ACB status for tsc
                 // Not sure why, but 774 * 47.19 + 9.95 = 36535.009999999995 instead of
                 // 36536.01
@@ -153,7 +128,6 @@ const createHoldingCalculator = () => {
                     tsc.newAcb = 0;
                     tsc.newAverageCost = 0;
                 }
-                tsc.acbChange = round(tsc.acbChange, 3);
 
             } else if (tsc.type === 'dividend') {
                 tsc.total = tsc.price * tsc.shares + tsc.commission;

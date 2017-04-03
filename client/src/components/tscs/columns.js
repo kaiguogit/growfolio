@@ -45,15 +45,15 @@ export const TSCS_COLUMNS = [
         filter: currency(3)
     },
     {
-        selector: 'newAcb',
-        title: 'New ACB',
-        filter: currency(3)
-    },
-    {
         selector: 'acbChange',
         title: 'Change in ACB',
         filter: currency(3),
         formatFunction: coloredCell
+    },
+    {
+        selector: 'newAcb',
+        title: 'New ACB',
+        filter: currency(3)
     },
     {
         selector: 'newAverageCost',
