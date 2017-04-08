@@ -1,4 +1,3 @@
-'use strict';
 /**
  * GET /allocations
  * List all transactions.
@@ -11,15 +10,22 @@ const handleError = (err) => {
 };
 
 exports.getAllocations = (req, res) => {
-  Allocation.find((err, data) =>
-    res.json({ result: data })
-  );
+  Allocation.find({ _user: req.user._id })
+  .exec((err, data) => {
+    if (err) {
+      res.json({ result: [], error: err });
+    } else {
+      res.json({ result: data });
+    }
+  });
 };
 
 exports.createAllocations = (req, res) => {
   const data = req.body;
   const result = [];
+  const errors = [];
   data.forEach((entry) => {
+    entry._user = req.user._id;
     // http://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
     const query = Allocation.findOneAndUpdate(
       { symbol: entry.symbol },
@@ -27,15 +33,15 @@ exports.createAllocations = (req, res) => {
       { new: true, upsert: true });
 
     query.exec((err, doc) => {
-      if (err) throw err;
+      errors.push(err);
       result.push(doc);
     });
   });
-  res.json({ result });
+  res.json({ result, error: errors });
 };
 
 exports.deleteAllocations = (req, res) => {
-  Allocation.remove({ _id: req.body.id }, (err) => {
+  Allocation.remove({ _id: req.body.id, _user: req.user._id }, (err) => {
     if (err) return handleError(err);
     // removed!
     res.json({ result: { message: 'removed' } });
