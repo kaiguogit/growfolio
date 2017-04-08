@@ -13,7 +13,8 @@ class Performance extends React.Component {
     static propTypes = {
         holdings: PropTypes.array.isRequired,
         actions: PropTypes.object.isRequired,
-        displayCurrency: PropTypes.string.isRequired
+        displayCurrency: PropTypes.string.isRequired,
+        showZeroShareHolding: PropTypes.bool.isRequired
     }
 
     componentDidMount() {
@@ -36,7 +37,11 @@ class Performance extends React.Component {
     }
 
     render() {
-        const { holdings } = this.props;
+        let { holdings, showZeroShareHolding } = this.props;
+        if (!showZeroShareHolding) {
+            holdings = holdings.filter(holding => holding.shares);
+        }
+
         return(
             <div>
                 <div>
@@ -53,7 +58,8 @@ class Performance extends React.Component {
 const mapStateToProps = state => {
     return {
         holdings: getHoldings(state),
-        displayCurrency: state.portfolio.displayCurrency
+        displayCurrency: state.portfolio.displayCurrency,
+        showZeroShareHolding: state.portfolio.showZeroShareHolding
     };
 };
 

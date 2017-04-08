@@ -2,7 +2,8 @@ import * as navigation from '../constants/navigation';
 export default {
     portfolio: {
         tab: navigation.PERFORMANCE,
-        displayCurrency: 'CAD'
+        displayCurrency: 'CAD',
+        showZeroShareHolding: false
     },
     tscs: {
         isFetching: false,

@@ -1,6 +1,11 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import { browserHistory } from 'react-router';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actions from '../../actions/portfolio';
+
 import CurrencySelector from './CurrencySelector.jsx';
+import {CheckBox} from '../shared/index.jsx';
 
 const onClick = () => {
     browserHistory.push('/portfolio');
@@ -16,18 +21,38 @@ const GoBackButton = () => (
     </div>
 );
 
-const PerformanceSetting = () => {
-    return (
-        <div className="row justify-content-center">
-            <div className="col-md-4">
-                <CurrencySelector/>
-                <GoBackButton/>
+class PerformanceSetting extends React.Component {
+    static propTypes = {
+        showZeroShareHolding: PropTypes.bool.isRequired,
+        actions: PropTypes.object.isRequired
+    }
+
+    render() {
+        return (
+            <div className="card">
+                <div className="card-block">
+                    <CurrencySelector/>
+                    <div>
+                        <CheckBox
+                            title="Show 0-share holdings"
+                            onChange={this.props.actions.showZeroShareHolding}
+                            checked={this.props.showZeroShareHolding}/>
+                    </div>
+                    <GoBackButton/>
+                </div>
             </div>
-        </div>
+        );
+    }
+}
 
-    );
-};
+const mapStateToProps = (state) => ({
+    showZeroShareHolding: state.portfolio.showZeroShareHolding
+});
 
-export default PerformanceSetting;
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(actions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PerformanceSetting);
 
 

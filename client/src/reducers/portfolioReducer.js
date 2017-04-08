@@ -13,6 +13,11 @@ const portfolioReducer = (state = initialState.portfolio, action) => {
                 ...state,
                 displayCurrency: action.displayCurrency
             };
+        case types.SHOW_ZERO_SHARE_HOLDING:
+            return {
+                ...state,
+                showZeroShareHolding: action.showZeroShareHolding
+            };
         default:
             return state;
     }

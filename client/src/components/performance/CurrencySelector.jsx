@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
+import * as actions from '../../actions/portfolio';
 
 class CurrencySelector extends React.Component {
     static propTypes = {
@@ -15,12 +15,16 @@ class CurrencySelector extends React.Component {
 
     render() {
         return (
-            <div className="d-inline-block mr-2">
-                <label htmlFor="display-currency">Display Currency</label>
+            <div>
+                <div className="d-inline-block mr-2">
+                    <label htmlFor="display-currency">Display Currency</label>
+                </div>
+                <div className="d-inline-block">
                 <select className="form-control" id="display-currency" value={this.props.displayCurrency} onChange={this.handleSelectCurrency}>
                     <option value="CAD">CAD</option>
                     <option value="USD">USD</option>
                 </select>
+                </div>
             </div>
         );
     }
