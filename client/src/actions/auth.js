@@ -3,43 +3,25 @@ import { errorHandler } from '../utils';
 import Auth from '../services/Auth';
 import { browserHistory } from 'react-router';
 
-const requestSignUp = () => {
-    return {
-        type: types.REQUEST_SIGNUP
-    };
-};
+export const logout = () => ({type: types.USER_LOGOUT});
 
-const receiveSignUp = (data) => {
-    return {
-        type: types.RECEIVE_SIGNUP,
-        ...data
-    };
-};
+const requestSignUp = () => ({type: types.REQUEST_SIGNUP});
 
-const requestLogin = () => {
-    return {
-        type: types.REQUEST_LOGIN
-    };
-};
+const receiveSignUp = (data) => ({
+    type: types.RECEIVE_SIGNUP,
+    ...data
+});
 
-const receiveLogin = (data) => {
-    return {
-        type: types.RECEIVE_LOGIN,
-        ...data
-    };
-};
+const requestLogin = () => ({type: types.REQUEST_LOGIN});
 
-export const clearLoginError = () => {
-    return {
-        type: types.CLEAR_LOGIN_ERROR
-    };
-};
+const receiveLogin = (data) => ({
+    type: types.RECEIVE_LOGIN,
+    ...data
+});
 
-export const clearSignUpError = () => {
-    return {
-        type: types.CLEAR_SIGNUP_ERROR
-    };
-};
+export const clearLoginError = () => ({type: types.CLEAR_LOGIN_ERROR});
+
+export const clearSignUpError = () => ({type: types.CLEAR_SIGNUP_ERROR});
 /*
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware

@@ -6,6 +6,7 @@ import PerformanceSetting from './components/performance/PerformanceSetting.jsx'
 import SignUpPage from './components/SignUp/SignUpPage.jsx';
 import LoginPage from './components/Login/LoginPage.jsx';
 import Auth from './services/Auth';
+import {logout} from './actions/auth';
 
 const requireAuth = (nextState, replace) => {
   if (!Auth.loggedIn()) {
@@ -16,7 +17,7 @@ const requireAuth = (nextState, replace) => {
   }
 };
 
-const routes = (/*store*/) => {
+const routes = (store) => {
     return {
         path: '/',
         component: App,
@@ -47,6 +48,7 @@ const routes = (/*store*/) => {
             {   path: 'logout',
                 onEnter: (nextState, replace) => {
                     Auth.deauthenticateUser();
+                    store.dispatch(logout());
                     // change the current URL to /
                     replace('/');
                 }

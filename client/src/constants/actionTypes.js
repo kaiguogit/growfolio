@@ -1,6 +1,7 @@
 /*
  * Action Constants
  */
+export const USER_LOGOUT = 'USER_LOGOUT';
 export const BATCH = 'BATCHING_REDUCER.BATCH';
 
 export const REQUEST_TSCS = 'REQUEST_TSCS';

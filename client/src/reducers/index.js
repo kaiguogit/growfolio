@@ -8,9 +8,9 @@ import portfolioReducer  from './portfolioReducer';
 import quotesReducer from './quotesReducer';
 import symbolsReducer from './symbolsReducer';
 import tscsReducer from './tscsReducer';
-import { BATCH } from '../constants/actionTypes';
+import { BATCH, USER_LOGOUT } from '../constants/actionTypes';
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
     auth: authReducer,
     balance: balanceReducer,
     currency: currencyReducer,
@@ -20,6 +20,13 @@ const rootReducer = combineReducers({
     symbols: symbolsReducer,
     tscs: tscsReducer
 });
+
+const rootReducer = (state, action) => {
+    if (action.type === USER_LOGOUT) {
+        state = undefined;
+    }
+    return appReducer(state, action);
+};
 
 // Dispatch actions in batch to avoid update component too frequently.
 // Idea and code from https://github.com/tshelburne/redux-batched-actions
