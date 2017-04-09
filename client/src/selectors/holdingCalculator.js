@@ -1,3 +1,4 @@
+import { round } from '../utils';
 /**
  * Return a selector function that takes transactions and calculate holdings
  * with shares and cost.
@@ -11,15 +12,6 @@ const createHoldingCalculator = () => {
         });
     };
 
-    /**
-     * round keys in object
-     * http://www.javascriptkit.com/javatutors/round.shtml
-     * @param {Number} digit, round at last x decimal
-     */
-    const round = (value, digit) => {
-        let multiplier = Math.pow(10, digit);
-        return Math.round(value * multiplier) / multiplier;
-    };
     /**
      * generate an array of holdings based on transactions
      * holdings map will be

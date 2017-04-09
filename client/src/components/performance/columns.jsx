@@ -14,25 +14,25 @@ export const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'cost',
-        filter: currency(3),
+        filter: currency(2),
         title: 'Cost',
         className: 'hidden-sm-down'
     },
     {
         selector: 'mkt_value',
-        filter: currency(3),
+        filter: currency(2),
         title: 'Market Value',
         className: 'hidden-sm-down'
     },
     {
         selector: 'average_cost',
-        filter: currency(3),
+        filter: currency(2),
         title: 'Average Cost',
         className: 'hidden-sm-down'
     },
     {
         selector: 'price',
-        filter: currency(3),
+        filter: currency(2),
         title: 'Price'
     },
     {

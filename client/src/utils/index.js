@@ -4,6 +4,16 @@ import Auth from '../services/Auth';
 import styles from '../styles';
 
 /**
+ * round number by digits
+ * http://www.javascriptkit.com/javatutors/round.shtml
+ * @param {Number} digit, round at last x decimal
+ */
+export const round = (value, digit) => {
+    let multiplier = Math.pow(10, digit);
+    return Math.round(value * multiplier) / multiplier;
+};
+
+/**
  * Filters
  */
 export const percentage = number => {
@@ -17,7 +27,7 @@ export const percentage = number => {
 
 export const currency = decimal => number => {
     try {
-        return numeral(number).format(`0,0[.][${'0'.repeat(decimal)}]`);
+        return numeral(round(number, decimal)).format(`0,0[.][${'0'.repeat(decimal)}]`);
     }
     catch(e) {
         return number;

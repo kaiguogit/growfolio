@@ -60,7 +60,7 @@ class PerformanceTotal extends React.Component {
         return (
             <div className="col-12 col-sm-6 col-md-auto mr-md-3">
                 <span>Total Value</span>
-                <h2>{currency(0)(this.props.performance.mkt_value)}</h2>
+                <h2>{currency(2)(this.props.performance.mkt_value)}</h2>
             </div>
         );
     }
