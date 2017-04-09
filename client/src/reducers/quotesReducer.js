@@ -9,12 +9,11 @@ const quotesReducer = (state = initialState.quotes, action) => {
                 isFetching: true
             };
         case types.RECEIVE_QUOTES:
-            // console.log("Equaliy check: previous quote and new quotes are:",
-                // isEqual(state.items, action.quotes) ? "same" : "different" );
+            // if fetch quote failed, don't change.
             return {
                 ...state,
                 isFetching: false,
-                items: action.quotes,
+                items: action.quotes || state.items,
                 lastUpdated: action.receivedAt
             };
         default:

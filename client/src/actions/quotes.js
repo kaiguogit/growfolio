@@ -147,7 +147,7 @@ const fetchQuotes = symbols => {
     })
     .then(data => {
         if (!data.success) {
-            return Promise.reject(data);
+            return null;
         }
         return processQuotes(data.result);
     })
