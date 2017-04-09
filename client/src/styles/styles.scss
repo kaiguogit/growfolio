@@ -1,18 +1,18 @@
-.background-green-fade-out-appear {
+.background-green-fade-out-enter {
   background-color: #093;
 }
 
-.background-green-fade-out-appear.background-green-fade-out-appear-active {
+.background-green-fade-out-enter.background-green-fade-out-enter-active {
   background-color: #FFF;
   transition: background-color 1s ease-out;
 }
 
-.background-red-fade-out-appear {
+.background-red-fade-out-enter {
   background-color: #d14836;
 
 }
 
-.background-red-fade-out-appear.background-red-fade-out-appear-active {
+.background-red-fade-out-enter.background-red-fade-out-enter-active {
   background-color: #FFF;
   transition: background-color 1s ease-out;
 }

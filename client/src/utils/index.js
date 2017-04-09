@@ -67,13 +67,14 @@ export const getHeaders = () => new Headers({
 export const renderCell = (entry, column) => {
     let value = entry[column.selector];
     let content;
+    let filteredValue = column.filter ? column.filter(value) : value;
     if (column.formatFunction) {
         content = column.formatFunction(entry, column);
     } else {
-        content = column.filter ? column.filter(value) : value;
+        content = filteredValue;
     }
     return (
-        <span style={column.style}>
+        <span style={column.style} key={filteredValue}>
             {content}
         </span>
     );

@@ -13,18 +13,22 @@ class NumberChangeTransition extends React.Component {
 
     render() {
             {/**
-              * Because then transition group is within a map. The transition group
-              * and children are rendered at same time. That's why we use 'Appear'.
-              * Read React document.
+              * Each children needs a key attribute to trigger the transition properly.
+              * They will have class name background-(green/red)-fade-out.(enter/active)
+              * added.
+              * This component must already be mounted when children changes.
+              * unless we use transitionAppear attribute so that "appear" class will be add
+              * at the same time when this component is mounted with children.
+              * But I removed transitionAppear attribute to avoid transition when entering page.
+              * read more at
               * https://facebook.github.io/react/docs/animation.html#animate-initial-mounting
               */}
         return(
             <ReactCSSTransitionGroup
                 transitionName={this.transitionUpOrDown()}
-                transitionEnter={false}
+                transitionEnter={true}
+                transitionEnterTimeout={1000}
                 transitionLeave={false}
-                transitionAppear={true}
-                transitionAppearTimeout={1000}
             >
                 {this.props.children}
             </ReactCSSTransitionGroup>
