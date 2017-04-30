@@ -23,3 +23,54 @@ CheckBox.propTypes = {
     onChange: PropTypes.func,
     checked: PropTypes.bool
 };
+
+// Simple input component with bootstrap form-control class for drier code.
+export const Input = (props) => {
+    // spread object with exception
+    // http://stackoverflow.com/questions/34698905/clone-a-js-object-except-for-one-key
+    let {className, ...rest} = props;
+    return (
+        <input className={addClassName(className, "form-control")} {...rest}/>
+    );
+};
+
+Input.propTypes = {
+    className: PropTypes.string
+};
+
+export const Select = (props) => {
+    let {className, children, ...rest} = props;
+    return (
+        <select className={addClassName(className, "form-control")} {...rest}>
+            {children}
+        </select>
+    );
+};
+
+Select.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node
+};
+
+export const FormGroup = (props) => {
+    let {className, children, ...rest} = props;
+    return (
+        <div className={addClassName(className, "form-group")} {...rest}>
+            {children}
+        </div>
+    );
+};
+
+FormGroup.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node
+};
+
+function addClassName(className, addition) {
+    className = className || '';
+    addition = addition || '';
+    if (addition && className) {
+        return className + ' ' + addition;
+    }
+    return addition || className;
+}

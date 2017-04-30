@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
+import {Input, FormGroup, Select} from '../shared/index.jsx';
 
 class TscsForm extends React.Component {
 
@@ -39,60 +40,61 @@ class TscsForm extends React.Component {
     };
 
     render() {
+        let {type, symbol, currency, shares, price, commission, notes} = this.state;
         return (
             <div>
                 <div className="row no-gutters">
-                    <div className="form-group col-sm-6 col-md-3 pr-2">
+                    <FormGroup className="col-sm-6 col-md-3 pr-2">
                         <label htmlFor="date">Symbol</label>
                         <SymbolAutoComplete
-                            value={this.state.symbol}
+                            value={symbol}
                             onChange={this.handleSymbolChange}
                         />
-                    </div>
-                    <div className="form-group col-sm-6 col-md-auto pr-2">
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md-auto pr-2">
                         <label htmlFor="date">Date</label>
-                        <input className="form-control" type="date" name="date" id="date"
+                        <Input type="date" name="date" id="date"
                             onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group col-sm-6 col-md pr-2">
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md pr-2">
                         <label htmlFor="type">Type</label>
-                        <select className="form-control" name="type" id="type"
-                            value={this.state.type}
+                        <Select name="type" id="type"
+                            value={type}
                             onChange={this.handleInputChange}>
                             <option value="buy">Buy</option>
                             <option value="sell">Sell</option>
                             <option value="dividend">Dividend</option>
-                        </select>
-                    </div>
-                    <div className="form-group col-sm-6 col-md-auto pr-1">
+                        </Select>
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md-auto pr-1">
                         <label htmlFor="currency">Currency</label>
-                        <select className="form-control" placeholder="select" name="currency" id="currency"
-                            value={this.state.currency}
+                        <Select placeholder="select" name="currency" id="currency"
+                            value={currency}
                             onChange={this.handleInputChange}>
                             <option value="CAD">CAD</option>
                             <option value="USD">USD</option>
-                        </select>
-                    </div>
-                    <div className="form-group col-sm-6 col-md pr-2">
+                        </Select>
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md pr-2">
                         <label htmlFor="shares">Shares</label>
-                        <input className="form-control" type="number" name="shares" id="shares"
-                            value={this.state.shares} onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group col-sm-6 col-md pr-2">
+                        <Input type="number" name="shares" id="shares"
+                            value={shares} onChange={this.handleInputChange}/>
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md pr-2">
                         <label htmlFor="price">Price</label>
-                        <input className="form-control" type="number" name="price" id="price"
-                            value={this.state.price} onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group col-sm-6 col-md pr-2">
+                        <Input type="number" name="price" id="price"
+                            value={price} onChange={this.handleInputChange}/>
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md pr-2">
                         <label htmlFor="commission">Commission</label>
-                        <input className="form-control" type="number" name="commission" id="commission"
-                            value={this.state.commission} onChange={this.handleInputChange}/>
-                    </div>
-                    <div className="form-group col-sm-6 col-md pr-2">
+                        <Input type="number" name="commission" id="commission"
+                            value={commission} onChange={this.handleInputChange}/>
+                    </FormGroup>
+                    <FormGroup className="col-sm-6 col-md pr-2">
                         <label htmlFor="notes">Notes</label>
-                        <input className="form-control" type="text" name="notes" id="notes"
-                            value={this.state.notes} onChange={this.handleInputChange}/>
-                    </div>
+                        <Input type="text" name="notes" id="notes"
+                            value={notes} onChange={this.handleInputChange}/>
+                    </FormGroup>
                 </div>
                 <button role="button" className="btn btn-primary" onClick={this.handleSubmit} disabled={this.props.isFetching}>
                     Save

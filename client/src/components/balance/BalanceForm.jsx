@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/balance';
 import isEqual from 'lodash.isequal';
 
+import { Input, Select } from '../shared/index.jsx';
 import { getTotalPerformance } from '../../selectors';
 import { percentage, currency, redOrGreen } from '../../utils';
 
@@ -92,7 +93,7 @@ class BalanceForm extends React.Component {
             label = holding.label;
         }
         return (
-            <select className="form-control" name={symbol} value={label} onChange={this.handleLabelChange}>
+            <Select name={symbol} value={label} onChange={this.handleLabelChange}>
                 <option>{''}</option>
                 <option>US Equity</option>
                 <option>Canada Equity</option>
@@ -103,7 +104,7 @@ class BalanceForm extends React.Component {
                 <option>Real Return</option>
                 <option>Fix Income</option>
                 <option>Growth</option>
-            </select>
+            </Select>
         );
     }
 
@@ -133,7 +134,7 @@ class BalanceForm extends React.Component {
                 <div className="row">
                     <form className="form-inline">
                         <label>Amount to Invest</label>
-                        <input className="form-control ml-2" type="number"
+                        <Input className="ml-2" type="number"
                             defaultValue={0}
                             onChange={this.handleInvestAmountChange}/>
                     </form>
@@ -182,8 +183,7 @@ class BalanceForm extends React.Component {
                                         </div>
                                     </td>
                                     <td>
-                                        <input
-                                            className="form-control"
+                                        <Input
                                             type="text"
                                             name={holding.symbol}
                                             value={balance[holding.symbol] && balance[holding.symbol].percentage}

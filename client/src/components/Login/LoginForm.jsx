@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import { Link } from 'react-router';
+import { Input, FormGroup } from '../shared/index.jsx';
 
 const LoginForm = ({
   onSubmit,
@@ -16,11 +17,11 @@ const LoginForm = ({
 
     const renderField = (fieldName) => {
         return (
-            <div className={`form-group ${errors[fieldName] ? "has-danger" : ""}`}>
+            <FormGroup className={`${errors[fieldName] ? "has-danger" : ""}`}>
                 <label className="form-control-label text-capitalize" htmlFor={fieldName}>{fieldName}</label>
-                <input className="form-control" id={fieldName} type={typeMap[fieldName]} value={user[fieldName]} name={fieldName} onChange={onChange}/>
+                <Input id={fieldName} type={typeMap[fieldName]} value={user[fieldName]} name={fieldName} onChange={onChange}/>
                 <div className="form-control-feedback">{errors[fieldName]}</div>
-            </div>
+            </FormGroup>
         );
     };
 
