@@ -10,8 +10,7 @@ const updateHolding = (state, action) => {
                 ...state,
                 symbol: action.symbol || (state && state.symbol),
                 label: action.label || (state && state.label),
-                percentage: action.percentage ? Math.round(action.percentage * 100) / 100 :
-                            (state && state.percentage)
+                percentage: action.percentage || (state && state.percentage)
             };
         default:
             return state;

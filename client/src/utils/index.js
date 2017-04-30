@@ -26,6 +26,9 @@ export const percentage = number => {
 };
 
 export const currency = decimal => number => {
+    if (decimal === undefined) {
+        decimal = 2;
+    }
     try {
         return numeral(round(number, decimal)).format(`0,0[.][${'0'.repeat(decimal)}]`);
     }
@@ -90,18 +93,22 @@ export const renderCell = (entry, column) => {
     );
 };
 
+export const redOrGreen = (value) => {
+    let style;
+    if (value > 0) {
+        style = styles.up;
+    } else if (value < 0) {
+        style = styles.down;
+    }
+    return style;
+};
+
 export const coloredCell = (entry, column) => {
     let refValue = column.ref_selector ? entry[column.ref_selector] : entry[column.selector];
     let value = entry[column.selector];
-    let style;
-    if (refValue > 0) {
-        style = styles.up;
-    } else if (refValue < 0) {
-        style = styles.down;
-    }
 
     return (
-        <span style={style}>
+        <span style={redOrGreen(refValue)}>
             {column.filter ? column.filter(value) : value}
         </span>
     );

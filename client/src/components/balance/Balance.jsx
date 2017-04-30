@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as quotesActions from '../../actions/quotes';
-import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
 
 // import CurrentAllocationPieChart from './CurrentAllocationPieChart.jsx';
