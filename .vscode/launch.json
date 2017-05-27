@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            //https://github.com/Microsoft/vscode-chrome-debug#sourcemaps
+            // Source map problem can be fixed with userful .scripts command
+            // it will show what is the actual map from browser
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceRoot}/client/src",
+            "userDataDir": "${workspaceRoot}/.chrome",
+            // "trace": "verbose",
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+                "webpack:///./src/*": "${webRoot}/*"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Node",
+            "program": "${workspaceRoot}/app.js"
+        }
+    ]
+}
