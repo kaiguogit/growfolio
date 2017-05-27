@@ -10,7 +10,7 @@
             // it will show what is the actual map from browser
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome",
+            "name": "Chrome Launch",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceRoot}/client/src",
             "userDataDir": "${workspaceRoot}/.chrome",
@@ -25,8 +25,8 @@
             // google-chrome --remote-debugging-port=9222
             "type": "chrome",
             "request": "attach",
-            "name": "Attach Chrome",
-            "url": "http://localhost:3000",
+            "name": "Chrome Attach",
+            "url": "http://localhost:3000/*",
             "webRoot": "${workspaceRoot}/client/src",
             "port": 9222,
             // "trace": "verbose",
