@@ -12,9 +12,6 @@ import { syncHistoryWithStore } from 'react-router-redux';
 require('./favicon.ico');
 // Font Awesome
 import './styles/font-awesome-4.7.0/css/font-awesome.min.css';
-//Bootstrap Material Design
-// import './styles/bootstrap-material-design.css';
-// import './styles/ripples.min.css';
 //Bootstrap
 import './plugin/bootstrap.min';
 import './plugin/bootstrap.min.css';

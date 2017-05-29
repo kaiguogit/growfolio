@@ -1073,13 +1073,6 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-bootstrap-material-design@0.5.10:
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/bootstrap-material-design/-/bootstrap-material-design-0.5.10.tgz#b36b0035b528a821c1758695b25d25e25e121372"
-  dependencies:
-    bootstrap ">=3.0"
-    jquery ">=1.9.1"
-
 bootstrap@>=3.0:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
