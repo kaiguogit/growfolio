@@ -10,4 +10,4 @@ It is intended to add some features that Yahoo Finance and Google Finance don't 
 ## How to build
 `npm run build`
 ## How to deploy
-`git push heroku currentbranch:master --force`
+`git push heroku <currentbranchname>:master --force`
