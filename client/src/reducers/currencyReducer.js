@@ -18,6 +18,11 @@ const currencyReducer = (state = initialState.currency, action) => {
                 rate: action.rate,
                 lastUpdated: action.receivedAt
             };
+        case types.REQUEST_CURRENCY_TIMEOUT:
+            return {
+                ...state,
+                isFetching: false
+            };
         default:
             return state;
     }

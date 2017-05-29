@@ -14,6 +14,10 @@ export const requestQuotes = () => ({
     type: types.REQUEST_QUOTES
 });
 
+export const requestQuotesTimeout = () => ({
+    type: types.REQUEST_QUOTES_TIMEOUT
+});
+
 export const receiveQuotes = (quotes) => ({
     type: types.RECEIVE_QUOTES,
     receivedAt: Date.now(),
@@ -181,11 +185,17 @@ export const refreshQuotes = () => (dispatch, getState) => {
     })));
     let currencyPromise = fetchCurrency(holdings, displayCurrency);
 
-    Promise.all([quotePromise, currencyPromise]).then(([quotes, currency]) => {
+    Promise.timeout(3000, Promise.all([quotePromise, currencyPromise]))
+    .then(([quotes, currency]) => {
         // Dispatch two receive actions together to avoid updating components twice.
         dispatch(batchActions([
             receiveQuotes(quotes),
             currencyActions.receiveCurrency(currency)
+        ]));
+    }).catch((/*error*/) => {
+        dispatch(batchActions([
+            requestQuotesTimeout(),
+            currencyActions.requestCurrencyTimeout()
         ]));
     });
 };

@@ -5,6 +5,9 @@ export const requestCurrency = () => ({
     type: types.REQUEST_CURRENCY
 });
 
+export const requestCurrencyTimeout = () => ({
+    type: types.REQUEST_CURRENCY_TIMEOUT
+});
 
 export const receiveCurrency = (rate) => ({
     type: types.RECEIVE_CURRENCY,

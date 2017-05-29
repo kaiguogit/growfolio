@@ -16,6 +16,11 @@ const quotesReducer = (state = initialState.quotes, action) => {
                 items: action.quotes || state.items,
                 lastUpdated: action.receivedAt
             };
+        case types.REQUEST_QUOTES_TIMEOUT:
+            return {
+                ...state,
+                isFetching: false
+            };
         default:
             return state;
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import numeral from 'numeral';
 import Auth from '../services/Auth';
 import styles from '../styles';
-
+import './promise';
 /**
  * round number by digits
  * http://www.javascriptkit.com/javatutors/round.shtml
@@ -93,6 +93,12 @@ export const renderCell = (entry, column) => {
     );
 };
 
+/**
+ * Generate red or green style based on whether number is positive.
+ *
+ * @param {number} value
+ * @returns {object} A style object used for component style property
+ */
 export const redOrGreen = (value) => {
     let style;
     if (value > 0) {
