@@ -1,4 +1,6 @@
 {
+  // Boilerplate from react-slingshot
+  // https://github.com/coryhouse/react-slingshot
   "name": "growfolio-frontend",
   "version": "0.1.0",
   "description": "Easily manage portfolio",
