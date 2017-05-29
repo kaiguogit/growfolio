@@ -13,7 +13,7 @@
             "name": "Chrome Launch",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceRoot}/client/src",
-            "userDataDir": "${workspaceRoot}/.chrome",
+            // "userDataDir": "${workspaceRoot}/.chrome",
             // "trace": "verbose",
             "sourceMaps": true,
             "sourceMapPathOverrides": {
@@ -40,6 +40,17 @@
             "request": "launch",
             "name": "Launch Node",
             "program": "${workspaceRoot}/app.js"
+        },
+        // Attach debugger to nodemon program launced with
+        // use "restart": true
+        // nodemon --debug app.js
+        // https://github.com/bdspen/nodemon_vscode
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach Node",
+            "port": 5858,
+            "restart": true
         }
     ]
 }
