@@ -9,6 +9,7 @@ import { getHoldings } from '../selectors';
 import { errorHandler } from '../utils';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
+const REFRESH_QUOTES_TIMEOUT = 30000;
 
 export const requestQuotes = () => ({
     type: types.REQUEST_QUOTES
@@ -185,7 +186,7 @@ export const refreshQuotes = () => (dispatch, getState) => {
     })));
     let currencyPromise = fetchCurrency(holdings, displayCurrency);
 
-    Promise.timeout(3000, Promise.all([quotePromise, currencyPromise]))
+    Promise.timeout(REFRESH_QUOTES_TIMEOUT, Promise.all([quotePromise, currencyPromise]))
     .then(([quotes, currency]) => {
         // Dispatch two receive actions together to avoid updating components twice.
         dispatch(batchActions([
