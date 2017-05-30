@@ -1,6 +1,6 @@
 {
-  // Used boilerplate hackathon-starter
-  // https://github.com/sahat/hackathon-starter
+  "//": "Used boilerplate hackathon-starter",
+  "//": "https://github.com/sahat/hackathon-starter",
   "name": "Growfolio",
   "version": "0.1.1",
   "description": "A Portfolio Management App",
@@ -11,7 +11,7 @@
   "author": "Kai Guo",
   "license": "MIT",
   "scripts": {
-    // Go to ./client and run build, output is saved in public folder
+    "//": "Go to ./client and run build, output is saved in public folder",
     "build": "yarn upgrade && cd client && yarn upgrade && npm install && npm run build",
     "start": "node app.js",
     "test": "mocha --reporter spec"
