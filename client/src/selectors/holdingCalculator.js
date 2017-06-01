@@ -143,6 +143,8 @@ const createHoldingCalculator = () => {
 
     /**
      * calculate holdings based on transactions
+     * @param {object} transactions map
+     * @returns {array} holdings array
      */
     const selector = (transactions) => {
         let holdings = _loadTransactionsToHolding(transactions);
@@ -153,4 +155,5 @@ const createHoldingCalculator = () => {
     return selector;
 };
 
-export default createHoldingCalculator;
+const holdingCalculator = createHoldingCalculator();
+export default holdingCalculator;

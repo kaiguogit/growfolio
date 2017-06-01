@@ -1,5 +1,5 @@
 import * as types from '../constants/actionTypes';
-import { makeUrl, errorHandler } from '../utils';
+import { makeUrl } from '../utils';
 
 export const requestCurrency = () => ({
     type: types.REQUEST_CURRENCY
@@ -62,6 +62,5 @@ export const fetchCurrency = currencyPairs => {
         .then(response => response.json())
         .then(data => {
             return processRate(data);
-        })
-        .catch(errorHandler);
+        });
 };

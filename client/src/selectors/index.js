@@ -1,8 +1,16 @@
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import createHoldingCalculator from './holdingCalculator';
+import holdingCalculator from './holdingCalculator';
 import isEqual from 'lodash.isequal';
 
-// Input selectors
+// Memoized selector
+// Read more from https://github.com/reactjs/reselect
+
+/**
+ * Input selectors
+ * input selectors pluck information from state. It also takes props
+ * for addtional information.
+ */
+
 export const getTscs = state => state.tscs.items;
 export const getQuotes = state => state.quotes.items;
 export const getQuote = (state, props) => state.quotes.items[props.symbol];
@@ -10,39 +18,80 @@ export const getSymbolFromProps = (state, props) => props.symbol;
 export const getCurrency = state => state.currency.rate;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
+
 /**
- * Memoized selector
- * Read more from https://github.com/reactjs/reselect
- * Use lodash.isequal library to compare array of tscs to avoid recalculating
- * @param Array: array of selector functions, if input is not changed, won't
- *                run output selector
- * @param Function: output function, process input from input selectors.
- * @return Function: a memoized selector that will return same result if input
- *                   is same without running the output function.
+ * Create a selector function that uses lodash.isequal library to
+ * compare new/old input to avoid recalculating
+ * @param {Array} array of input selector functions, if input is not
+ *     changed, won't run output selector
+ * @param {Function} output selector function, process input from input
+ *     selectors.
+ * @return {SelectorFunction} func The memoized selector function
+ *     that will return output selector function's result
  */
 export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
+
 /**
- * Use createHoldingCalculator selector to calculate holdings.
+ * Selector function
+ * @name SelectorFunction
+ * @param {object} state
+ * @param {object} props
+ * @return {any} calculated output
+ * Usage:
+ * import { getHoldings } from '../../selectors';
+ * const mapStateToProps = state => {
+ *     return {
+ *         holdings: getHoldings(state),
+ *         displayCurrency: state.portfolio.displayCurrency,
+ *         showZeroShareHolding: state.portfolio.showZeroShareHolding
+ *     };
+ * };
+ * const mapDispatchToProps = dispatch => {
+ *     return {
+ *         actions: bindActionCreators(quotesActions, dispatch)
+ *     };
+ * };
+ * export default connect(mapStateToProps, mapDispatchToProps)(Performance);
+ */
+
+/**
+ * Use holdingCalculator to calculate holdings from transactions.
  * If tscs in state is not 'changed' (value-wise, the object is
  * actually new), it won't recalculate.
- * signature for selector created by createHoldingCalculator is (transactions) => holdings
  *
- * @param Object: pass the global state here
- * @param Array: calculated holdings based on transactions.
+ * @param {object} pass the global state here
+ * @param {object} props
+ * @return {Array}: calculated holdings based on transactions.
  */
-export const getHoldings = createDeepEqualSelector([getTscs], createHoldingCalculator());
+export const getHoldings = createDeepEqualSelector([getTscs], holdingCalculator);
 
-//
+/**
+ * Selector function for 1 holding.
+ * @param {object} pass the global state here
+ * @param {object} props with props.symbol
+ * @return {object} holding
+ */
 export const getHolding = createDeepEqualSelector(
     [getHoldings, getSymbolFromProps],
     (holdings, symbol) => holdings.find(x => x.symbol === symbol)
 );
 
-const convertHoldingCurrency = (holding, currency, displayCurrency) => {
+/*
+* Output selectors
+* output selectors are calculators based on info from input selector.
+*/
+
+/**
+ * Output selectors, convert holding's values based on provided displayCurrency setting.
+ * @param {object} holding
+ * @param {array} currencyRates The currency data in store.
+ * @param {string} displayCurrency
+ */
+const convertHoldingCurrency = (holding, currencyRates, displayCurrency) => {
     let rate = 1;
     if (holding.currency !== displayCurrency) {
-        let pair = currency.find(x => x.id === holding.currency + displayCurrency);
+        let pair = (currencyRates || []).find(x => x.id === holding.currency + displayCurrency);
         if (pair) {
             rate = pair.Rate;
             // Properties before quote calculation
@@ -62,7 +111,15 @@ const convertHoldingCurrency = (holding, currency, displayCurrency) => {
     }
 };
 
-const calculateHoldingPerformance = (holding, quote, currency, displayCurrency) => {
+/**
+ * Output selectors, add performance data to holdings
+ * @param {object} holding
+ * @param {object} quote quote data for the holding
+ * @param {array} currencyRates currency map
+ * @param {string} displayCurrency setting
+ * @returns {object} holding with performance data
+ */
+const calculateHoldingPerformance = (holding, quote, currencyRates, displayCurrency) => {
         let newHolding = Object.assign({}, holding);
         if (quote &&
             typeof newHolding.shares === 'number' && typeof newHolding.cost === 'number' &&
@@ -86,7 +143,7 @@ const calculateHoldingPerformance = (holding, quote, currency, displayCurrency) 
         }
         newHolding.gain_overall = newHolding.gain + newHolding.realized_gain;
         newHolding.gain_overall_percent = newHolding.gain_overall / newHolding.cost_overall;
-        convertHoldingCurrency(newHolding, currency, displayCurrency);
+        convertHoldingCurrency(newHolding, currencyRates, displayCurrency);
         /** TODO: another way to achieve this is to make a better getQuote selector
          * Currently this calculation is triggered when anything in quote is new.
          * A better getQuote function should filter API response with only the
@@ -99,8 +156,10 @@ const calculateHoldingPerformance = (holding, quote, currency, displayCurrency) 
         return newHolding;
 };
 
-/** Nest selector to further calculate holding gains based on Real Time Quotes
+/**
+ * Nest selector to further calculate holding gains based on Real Time Quotes
  * If holding is not changed, holdings based on transaction won't have to be calculated.
+ *
  * This is a make function to generate unique selector for 1 holding, so that
  * each row can be updated when its holding changed without triggering other
  * row's selector function.
@@ -120,12 +179,24 @@ export const makeGetHoldingPerformance = () => {
     return createDeepEqualSelector([getHolding, getQuote, getCurrency, getDisplayCurrency], calculateHoldingPerformance);
 };
 
-export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQuotes, getCurrency, getDisplayCurrency], (holdings, quotes, currency, displayCurrency) => {
-    return holdings.map(holding => {
-        return calculateHoldingPerformance(holding, quotes[holding.symbol], currency, displayCurrency);
-    });
-});
+/**
+ * Selector function for all holdings with performance.
+ * @param {object} pass the global state here
+ * @return {Array}: calculated holdings with performance data.
+ */
+export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQuotes, getCurrency, getDisplayCurrency],
+    (holdings, quotes, currencyRates, displayCurrency) => {
+        return holdings.map(holding => {
+            return calculateHoldingPerformance(holding, quotes[holding.symbol], currencyRates, displayCurrency);
+        });
+    }
+);
 
+/**
+ * Selector function for total performance.
+ * @param {object} pass the global state here
+ * @return {object}: calculated total performance.
+ */
 export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerformance], holdings => {
     let mkt_value = 0,
         cost = 0,

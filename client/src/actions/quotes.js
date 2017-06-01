@@ -6,8 +6,6 @@ import * as currencyActions from './currency';
 import { batchActions } from './';
 import { getHoldings } from '../selectors';
 
-import { errorHandler } from '../utils';
-
 const REFRESH_QUOTES_INTERVAL = 600000;
 const REFRESH_QUOTES_TIMEOUT = 30000;
 
@@ -149,14 +147,12 @@ const fetchQuotes = symbols => {
             Authorization: `Bearer ${Auth.getToken()}`
         },
         timeout: 3000
-    })
-    .then(data => {
+    }).then(data => {
         if (!data.success) {
             return null;
         }
         return processQuotes(data.result);
-    })
-    .catch(errorHandler);
+    });
 };
 
 const fetchCurrency = (holdings, displayCurrency) => {
