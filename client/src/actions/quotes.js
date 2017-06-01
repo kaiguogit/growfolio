@@ -7,7 +7,7 @@ import { batchActions } from './';
 import { getHoldings } from '../selectors';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
-const REFRESH_QUOTES_TIMEOUT = 30000;
+const REFRESH_QUOTES_TIMEOUT = 15000;
 
 export const requestQuotes = () => ({
     type: types.REQUEST_QUOTES
