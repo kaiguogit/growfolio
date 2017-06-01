@@ -37,6 +37,15 @@ export const closeTscsForm = () => ({
 /*
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
+ * Usage:
+ * import { connect } from 'react-redux';
+ * import { bindActionCreators } from 'redux';
+ * import * as tscsActions from '../actions/tscs';
+ * const mapDispatchToProps = dispatch => {
+    return {
+        actions: bindActionCreators(tscsActions, dispatch)
+    };
+};
  */
 
 export const fetchTscs = () => dispatch => {
