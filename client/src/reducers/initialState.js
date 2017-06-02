@@ -19,6 +19,8 @@ export default {
     currency: {
         isFetching: false,
         rate: [],
+        // TODO support CRUD watch list
+        watchList: ['CNY', 'USD'],
         lastUpdated: Date.now()
     },
     symbols: {

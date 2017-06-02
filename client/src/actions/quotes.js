@@ -155,21 +155,9 @@ const fetchQuotes = symbols => {
     });
 };
 
-const fetchCurrency = (holdings, displayCurrency) => {
-    let currencyPairs = [];
-    holdings.forEach(x => {
-        let pair = x.currency + displayCurrency;
-        if (x.currency !== displayCurrency && currencyPairs.indexOf(pair) === -1) {
-            currencyPairs.push(pair);
-        }
-    });
-    return currencyActions.fetchCurrency(currencyPairs);
-};
-
 export const refreshQuotes = () => (dispatch, getState) => {
     const state = getState();
     const holdings = getHoldings(state);
-    const displayCurrency = state.portfolio.displayCurrency;
 
     dispatch(batchActions([
         requestQuotes(),
@@ -180,7 +168,7 @@ export const refreshQuotes = () => (dispatch, getState) => {
         symbol: x.symbol,
         exch: x.exch
     })));
-    let currencyPromise = fetchCurrency(holdings, displayCurrency);
+    let currencyPromise = currencyActions.fetchCurrency(state);
 
     Promise.timeout(REFRESH_QUOTES_TIMEOUT, Promise.all([quotePromise, currencyPromise]))
     .then(([quotes, currency]) => {

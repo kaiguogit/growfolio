@@ -1,5 +1,6 @@
 import * as types from '../constants/actionTypes';
 import { makeUrl } from '../utils';
+import { getHoldings } from '../selectors';
 
 export const requestCurrency = () => ({
     type: types.REQUEST_CURRENCY
@@ -39,22 +40,41 @@ const processRate = data => {
     return Array.isArray(rate) ? rate : [rate];
 };
 
-/*
- * Async Actions
- * Return a function that takes dispatch, fed by React Thunk middleware
+/**
+ * Generate currency pairs array based on holding's currency,
+ * displaycurrency setting and currency watchlist
+ * @param {object} state
+ * @return {array} array of string e.g ['CADCNY', 'CADUSD']
  */
+const getCurrencyPairs = (state) => {
+    const holdings = getHoldings(state);
+    const watchList = state.currency.watchList;
+    const displayCurrency = state.portfolio.displayCurrency;
+    const currencyPairs = [];
 
-// DUMMY VERSION
-// export const fetchCurrency = () => dispatch => {
-//     dispatch(requestCurrency());
-//     setTimeout(()=> {
-//         dispatch(receiveCurrency(1.3));
-//     }, 1000);
-// };
+    watchList.forEach(currencyId => {
+        // TODO hard coded as CAD for now, add support changing base
+        // currency.
+        currencyPairs.push('CAD' + currencyId);
+    });
 
-export const fetchCurrency = currencyPairs => {
-    if (!(currencyPairs && Array.isArray(currencyPairs) && currencyPairs.length)) {
-        // console.log("empty currencyPairs, skip fetching");
+    holdings.forEach(holding => {
+        let pair = holding.currency + displayCurrency;
+        if (holding.currency !== displayCurrency && currencyPairs.indexOf(pair) === -1) {
+            currencyPairs.push(pair);
+        }
+    });
+    return currencyPairs;
+};
+
+/**
+ * Fetch currency based on holdings and displayCurrency
+ * @param {object} state
+ * @returns {promise} fetch currency promise
+ */
+export const fetchCurrency = (state) => {
+    const currencyPairs = getCurrencyPairs(state);
+    if (!currencyPairs.length) {
         // empty currencyPairs, skip fetching
         return Promise.resolve([]);
     }

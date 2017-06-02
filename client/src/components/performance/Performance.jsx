@@ -6,7 +6,7 @@ import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
 import RefreshQuotesButton from './RefreshQuotesButton.jsx';
 import PerformanceTable from './PerformanceTable.jsx';
-import PerformanceTotal from './PerformanceTotal.jsx';
+import SummaryBar from './SummaryBar.jsx';
 import SettingButton from './SettingButton.jsx';
 
 class Performance extends React.Component {
@@ -48,7 +48,7 @@ class Performance extends React.Component {
                     <RefreshQuotesButton refreshFn={this.refreshQuotes}/>
                     <SettingButton/>
                 </div>
-                <PerformanceTotal/>
+                <SummaryBar/>
                 <PerformanceTable symbols={holdings.map(x => x.symbol)}/>
             </div>
         );
