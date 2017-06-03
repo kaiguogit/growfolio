@@ -1,5 +1,5 @@
 import * as types from '../constants/actionTypes';
-import { errorHandler, getHeaders } from '../utils';
+import { errorHandler, getHeaders, avoidNaN } from '../utils';
 
 /*
  * Actions
@@ -72,10 +72,10 @@ export const fetchTscs = () => dispatch => {
         });
         tscs.forEach(function(tsc) {
             // process tsc for consistency.
-            tsc.symbol = tsc.symbol.toUpperCase();
-            tsc.type = tsc.type.toLowerCase();
-
             let symbol = tsc.symbol;
+            tsc.symbol = symbol.toUpperCase();
+            tsc.type = tsc.type.toLowerCase();
+            avoidNaN(['shares', 'price', 'commission'], tsc);
             tscsMap[symbol] = tscsMap[symbol] || [];
             tscsMap[symbol].push(tsc);
         });
@@ -100,7 +100,7 @@ export const createTscs = (tsc) => dispatch => {
 
 export const removeTscs = (id) => dispatch => {
     dispatch(deleteTscs());
-    return fetch(__MY_API__ + "transactions", {
+    return fetch(__MY_API__ + 'transactions', {
         method: 'DELETE',
         headers: getHeaders(),
         body: JSON.stringify({'id': id}),

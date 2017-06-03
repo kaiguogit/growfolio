@@ -14,6 +14,27 @@ export const round = (value, digit) => {
 };
 
 /**
+ * Convert string to number with numeral library
+ * @param {string|number} n
+ */
+export const num = (n) => numeral(n).value();
+
+/**
+ * Convert value to number for provided keys in object.
+ * If it's not a finite number, i.e NaN or Infinity, use 0
+ * @param {array} keys
+ * @param {object} obj
+ */
+export const avoidNaN = (keys, obj) => {
+    let result;
+    keys.forEach(key => {
+        if (key in obj) {
+            result = num(obj[key]);
+            obj[key] = isFinite(result) ? result : 0;
+        }
+    });
+};
+/**
  * Filters
  */
 export const percentage = number => {
@@ -91,6 +112,16 @@ export const renderCell = (entry, column) => {
             {content}
         </span>
     );
+};
+
+// Safely divide
+// https://stackoverflow.com/questions/8072323/best-way-to-prevent-handle-divide-by-0-in-javascript
+export const divide = (a, b) => {
+    const result = num(a) / num(b);
+    if (isFinite(result)) {
+        return result;
+    }
+    return 0;
 };
 
 /**

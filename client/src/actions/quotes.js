@@ -1,6 +1,7 @@
 import * as types from '../constants/actionTypes';
 import $ from 'jquery';
 import Auth from '../services/Auth';
+import { num } from '../utils';
 
 import * as currencyActions from './currency';
 import { batchActions } from './';
@@ -115,15 +116,15 @@ const processQuotes = quotes => {
     // always return an Array.
     quotes = Array.isArray(quotes) ? quotes : [quotes];
     // convert to object map
-    let result = {};
+    const result = {};
     quotes.forEach(quote => {
         const { t: symbol, l: current_price, c: change, cp: change_percent} = quote;
         result[symbol] = {
+            $original: quote,
             symbol,
-            current_price,
-            change,
-            change_percent: change_percent / 100,
-            $original: quote
+            current_price: num(current_price),
+            change: num(change),
+            change_percent: num(change_percent) / 100
         };
     });
     return result;

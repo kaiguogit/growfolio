@@ -1,17 +1,10 @@
-import { round } from '../utils';
+import { round, divide, avoidNaN } from '../utils';
+
 /**
  * Return a selector function that takes transactions and calculate holdings
  * with shares and cost.
  */
 const createHoldingCalculator = () => {
-    const avoidNaN = (keys, obj) => {
-        keys.forEach(key => {
-            if (key in obj) {
-                obj[key] = isFinite(+obj[key]) ? +obj[key] : 0;
-            }
-        });
-    };
-
     /**
      * generate an array of holdings based on transactions
      * holdings map will be
@@ -31,8 +24,6 @@ const createHoldingCalculator = () => {
             transactions.forEach((tsc) => {
                 // new object
                 tsc = Object.assign({}, tsc);
-                // Guard NaN values
-                avoidNaN(['shares', 'price', 'commission'], tsc);
                 // Create holding and add tsc to it.
                 let holding = holdings.find(x => x.symbol === tsc.symbol);
                 if (!holding) {
@@ -100,8 +91,7 @@ const createHoldingCalculator = () => {
 
                 } else if (tsc.type === 'sell') {
                     tsc.total = tsc.shares * tsc.price - tsc.commission;
-                    // TODO may need to check if holding.shares is 0
-                    tsc.acbChange = -(holding.cost * tsc.shares / holding.shares);
+                    tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
                     tsc.realized_gain = tsc.total + tsc.acbChange;
 
                     holding.shares -= tsc.shares;
@@ -115,7 +105,7 @@ const createHoldingCalculator = () => {
                 // so round last 3 digit for these properties
                 if (holding.shares) {
                     tsc.newAcb = round(holding.cost, 3);
-                    tsc.newAverageCost = round(holding.cost / holding.shares, 3);
+                    tsc.newAverageCost = round(divide(holding.cost, holding.shares), 3);
                 } else {
                     tsc.newAcb = 0;
                     tsc.newAverageCost = 0;
@@ -129,8 +119,16 @@ const createHoldingCalculator = () => {
 
             tsc.total = round(tsc.total, 3);
         });
-        holding.cost = round(holding.cost, 3);
-        holding.average_cost = holding.shares ? holding.cost / holding.shares : 0;
+
+        if (holding.shares) {
+            holding.cost = round(holding.cost, 3);
+        } else {
+            // Clear cost if share is 0, since it maybe very small
+            // number after minize sell transacations.
+            holding.cost = 0;
+        }
+
+        holding.average_cost = divide(holding.cost, holding.shares);
         avoidNaN([
             'cost',
             'cost_overall',

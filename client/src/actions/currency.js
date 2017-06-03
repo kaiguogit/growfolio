@@ -1,5 +1,5 @@
 import * as types from '../constants/actionTypes';
-import { makeUrl } from '../utils';
+import { makeUrl, num} from '../utils';
 import { getHoldings } from '../selectors';
 
 export const requestCurrency = () => ({
@@ -35,9 +35,13 @@ const makeCurrencyUrl = currencyPairs => {
 };
 
 const processRate = data => {
-    let rate = data.query.results.rate;
+    let rates = data.query.results.rate;
     // always return an Array.
-    return Array.isArray(rate) ? rate : [rate];
+    rates = Array.isArray(rates) ? rates : [rates];
+    rates.forEach((rate) => {
+        rate.Rate = num(rate.Rate);
+    });
+    return rates;
 };
 
 /**

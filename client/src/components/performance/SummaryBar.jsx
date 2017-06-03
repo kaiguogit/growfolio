@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { getTotalPerformance } from '../../selectors';
 import styles from '../../styles';
-import { currency, percentage } from '../../utils';
+import { currency, percentage, round} from '../../utils';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 
 const Change = (props) => {
@@ -53,14 +53,14 @@ const ExchangeRate = ({title, rate}) => (
     <div className="col-12 col-sm-6 col-md-auto mr-md-3">
         <div>{title}</div>
         <div className="d-inline-block">
-            <h2>{rate}</h2>
+            <h2>{round(rate, 3)}</h2>
         </div>
     </div>
 )
 
 ExchangeRate.propTypes = {
     title: PropTypes.string.isRequired,
-    rate: PropTypes.string.isRequired
+    rate: PropTypes.number.isRequired
 };
 
 /*

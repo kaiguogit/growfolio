@@ -1,9 +1,21 @@
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 import holdingCalculator from './holdingCalculator';
 import isEqual from 'lodash.isequal';
+import { divide } from '../utils';
 
 // Memoized selector
 // Read more from https://github.com/reactjs/reselect
+/**
+ * Create a selector function that uses lodash.isequal library to
+ * compare new/old input to avoid recalculating
+ * @param {Array} array of input selector functions, if input is not
+ *     changed, won't run output selector
+ * @param {Function} output selector function, process input from input
+ *     selectors.
+ * @return {SelectorFunction} func The memoized selector function
+ *     that will return output selector function's result
+ */
+export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
 /**
  * Input selectors
@@ -18,18 +30,6 @@ export const getSymbolFromProps = (state, props) => props.symbol;
 export const getCurrency = state => state.currency.rate;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-
-/**
- * Create a selector function that uses lodash.isequal library to
- * compare new/old input to avoid recalculating
- * @param {Array} array of input selector functions, if input is not
- *     changed, won't run output selector
- * @param {Function} output selector function, process input from input
- *     selectors.
- * @return {SelectorFunction} func The memoized selector function
- *     that will return output selector function's result
- */
-export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
 
 
 /**
@@ -125,13 +125,13 @@ const calculateHoldingPerformance = (holding, quote, currencyRates, displayCurre
             typeof newHolding.shares === 'number' && typeof newHolding.cost === 'number' &&
             typeof newHolding.realized_gain === 'number' &&
             typeof newHolding.cost_overall === 'number') {
-            newHolding.price = quote.current_price * 1;
-            newHolding.change = quote.change * 1;
-            newHolding.change_percent = quote.change_percent * 1;
-            newHolding.mkt_value = newHolding.shares * newHolding.price;
-            newHolding.gain = newHolding.mkt_value - newHolding.cost;
-            newHolding.gain_percent = newHolding.gain / newHolding.cost;
-            newHolding.days_gain = newHolding.shares * newHolding.change;
+                newHolding.price = quote.current_price;
+                newHolding.change = quote.change * 1;
+                newHolding.change_percent = quote.change_percent * 1;
+                newHolding.mkt_value = newHolding.shares * newHolding.price;
+                newHolding.gain = newHolding.mkt_value - newHolding.cost;
+                newHolding.gain_percent = divide(newHolding.gain, newHolding.cost);
+                newHolding.days_gain = newHolding.shares * newHolding.change;
         } else {
             // If quote is not found, still make property available
             // to avoid NaN in sum calculation.
@@ -142,7 +142,7 @@ const calculateHoldingPerformance = (holding, quote, currencyRates, displayCurre
             newHolding.days_gain = 0;
         }
         newHolding.gain_overall = newHolding.gain + newHolding.realized_gain;
-        newHolding.gain_overall_percent = newHolding.gain_overall / newHolding.cost_overall;
+        newHolding.gain_overall_percent = divide(newHolding.gain_overall, newHolding.cost_overall);
         convertHoldingCurrency(newHolding, currencyRates, displayCurrency);
         /** TODO: another way to achieve this is to make a better getQuote selector
          * Currently this calculation is triggered when anything in quote is new.
@@ -219,9 +219,9 @@ export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerforman
         realized_gain += holding.realized_gain;
         dividend += holding.dividend;
     });
-    gain_percent = gain / cost;
-    change_percent = days_gain / cost;
-    gain_overall_percent = gain_overall / cost_overall;
+    gain_percent = divide(gain, cost);
+    change_percent = divide(days_gain, cost);
+    gain_overall_percent = divide(gain_overall, cost_overall);
     return {
         mkt_value,
         cost,
