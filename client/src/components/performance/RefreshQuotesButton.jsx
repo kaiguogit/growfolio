@@ -13,8 +13,9 @@ class RefreshQuotesButton extends React.Component {
                 onClick={refreshFn}
                 disabled={isFetching}>
                 <i className="fa fa-refresh" aria-hidden="true"/>
-                {' '}
-                {isFetching ? 'Refreshing' : 'Refresh Quotes'}
+                <span className="ml-2">
+                    {isFetching ? 'Refreshing' : 'Refresh'}
+                </span>
             </button>
         );
     }

@@ -9,8 +9,9 @@ const SettingButton = () => (
     <div className="d-inline-block">
         <button type="button" className="btn btn-outline-primary" onClick={onClick}>
             <i className="fa fa-cog fa-lg" aria-hidden="true"/>
-            {' '}
-            Setting
+            <span className="ml-2">
+                Setting
+            </span>
         </button>
     </div>
 );
