@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux';
 
-class RefreshQuotesButton extends React.Component {
+class RefreshButton extends React.Component {
     static propTypes = {
         refreshFn: PropTypes.func.isRequired,
         isFetching: PropTypes.bool.isRequired
@@ -27,4 +27,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(RefreshQuotesButton);
+export default connect(mapStateToProps)(RefreshButton);

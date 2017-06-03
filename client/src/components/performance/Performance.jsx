@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as quotesActions from '../../actions/quotes';
 import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
-import RefreshQuotesButton from './RefreshQuotesButton.jsx';
+import RefreshButton from './RefreshButton.jsx';
 import PerformanceTable from './PerformanceTable.jsx';
 import SummaryBar from './SummaryBar.jsx';
 import SettingButton from './SettingButton.jsx';
@@ -45,7 +45,7 @@ class Performance extends React.Component {
         return(
             <div>
                 <div>
-                    <RefreshQuotesButton refreshFn={this.refreshQuotes}/>
+                    <RefreshButton refreshFn={this.refreshQuotes}/>
                     <SettingButton/>
                 </div>
                 <SummaryBar/>
