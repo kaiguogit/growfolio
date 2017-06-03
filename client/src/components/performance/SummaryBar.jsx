@@ -50,7 +50,7 @@ Change.propTypes = {
 };
 
 const ExchangeRate = ({title, rate}) => (
-    <div className="col-12 col-sm-6 col-md-auto mr-md-3">
+    <div className="col-3 col-sm-1 mr-4">
         <div>{title}</div>
         <div className="d-inline-block">
             <h2>{round(rate, 3)}</h2>
