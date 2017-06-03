@@ -11,6 +11,9 @@ import { syncHistoryWithStore } from 'react-router-redux';
  // Tell webpack to load favicon.ico
 require('./favicon.ico');
 // Font Awesome
+// https://blog.webjeda.com/optimize-fontawesome/
+// TODO delete unused icons
+// Great site to select fonts https://icomoon.io/app/
 import './styles/font-awesome-4.7.0/css/font-awesome.min.css';
 //Bootstrap
 import './plugin/bootstrap.min';
