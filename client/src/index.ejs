@@ -5,10 +5,6 @@
   For more info on ejs, see http://www.embeddedjs.com/. For examples of using it with htmlWebpackPlugin, see https://github.com/jaketrent/html-webpack-template/blob/master/index.ejs
   -->
 <head>
-<meta name="theme-color" content="#a8b6bf">
-  <!-- BootStrap4 -->
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
   <!--
     The htmlWebpackPlugin will parse the logic below so that trackJS is only added to the production version of index.html (since only webpack.config.prod.js provides the trackJS token)
     This is an example of how to add features to index.html for only one environment.
@@ -20,6 +16,8 @@
   <% } %>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Change toolbar color for chrome mobile app-->
+  <meta name="theme-color" content="#a8b6bf">
   <!--no referer is used to cope 400 bad request error for SYMBOL auto complete API calls-->
   <!--Reference: http://stackoverflow.com/questions/37094571/getting-400-bad-request-when-making-jsonp-request-to-yahoo-finance-api?answertab=votes#tab-top -->
   <meta charset="UTF-8" name="referrer" content="no-referrer">

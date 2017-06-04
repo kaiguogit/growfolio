@@ -66,7 +66,13 @@ export default {
     new webpack.optimize.DedupePlugin(),
 
     // Minify JS
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.ProvidePlugin({
+      'jQuery': 'jquery',
+      'window.jQuery': 'jquery',
+      'Tether': 'tether',
+      'window.Tether': 'tether'
+    })
   ],
   module: {
     loaders: [

@@ -1,6 +1,5 @@
 {
-  "//": "Boilerplate from react-slingshot",
-  "//": "https://github.com/coryhouse/react-slingshot",
+  "//": "Boilerplate from react-slingshot https://github.com/coryhouse/react-slingshot",
   "name": "growfolio-frontend",
   "version": "0.1.0",
   "description": "Easily manage portfolio",
@@ -31,6 +30,7 @@
   "author": "Kai GUo",
   "license": "MIT",
   "dependencies": {
+    "bootstrap": "4.0.0-alpha.6",
     "create-react-class": "15.5.2",
     "highcharts": "5.0.6",
     "jquery": "3.1.1",
@@ -49,7 +49,8 @@
     "redux": "3.6.0",
     "redux-logger": "2.7.4",
     "redux-thunk": "2.1.0",
-    "reselect": "2.5.4"
+    "reselect": "2.5.4",
+    "tether": "1.4.0"
   },
   "devDependencies": {
     "autoprefixer": "6.5.4",

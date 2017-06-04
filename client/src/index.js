@@ -15,14 +15,16 @@ require('./favicon.ico');
 // TODO delete unused icons
 // Great site to select fonts https://icomoon.io/app/
 import './styles/font-awesome-4.7.0/css/font-awesome.min.css';
-//Bootstrap
-import './plugin/bootstrap.min';
-import './plugin/bootstrap.min.css';
 // NProgress
 import 'nprogress/nprogress.css';
 // React-select
 import 'react-select/dist/react-select.css';
 // Yep, that's right. You can import SASS/CSS files too! Webpack will run the associated loader and plug this into the page.
+
+import 'jquery';
+// Bootstrap 4.x
+import './styles/bootstrap/bootstrap';
+import './styles/bootstrap/bootstrap.scss';
 import './styles/styles.scss';
 
 const store = configureStore();

@@ -40,6 +40,12 @@ export default {
         collapseWhitespace: true
       },
       inject: true
+    }),
+    new webpack.ProvidePlugin({
+      'jQuery': 'jquery',
+      'window.jQuery': 'jquery',
+      'Tether': 'tether',
+      'window.Tether': 'tether'
     })
   ],
   module: {
