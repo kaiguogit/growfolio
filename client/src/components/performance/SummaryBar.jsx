@@ -50,7 +50,7 @@ Change.propTypes = {
 };
 
 const ExchangeRate = ({title, rate}) => (
-    <div className="col-3 col-sm-1 mr-4">
+    <div className="col-3 col-sm-1 col-md-auto mr-4">
         <div>{title}</div>
         <div className="d-inline-block">
             <h2>{round(rate, 3)}</h2>
@@ -90,7 +90,7 @@ class SummaryBar extends React.Component {
         });
 
         return(
-            <div className="row no-gutters">
+            <div className="summary-bar row no-gutters">
                 {this.totalValue()}
                 <Change change={performance.days_gain}
                     change_percent={performance.change_percent}

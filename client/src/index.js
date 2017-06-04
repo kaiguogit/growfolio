@@ -23,9 +23,8 @@ import 'react-select/dist/react-select.css';
 
 import 'jquery';
 // Bootstrap 4.x
-import './styles/bootstrap/bootstrap';
-import './styles/bootstrap/bootstrap.scss';
-import './styles/styles.scss';
+import './styles/vendor/bootstrap/bootstrap';
+import './styles/application.scss';
 
 const store = configureStore();
 // Create an enhanced history that syncs navigation events with the store

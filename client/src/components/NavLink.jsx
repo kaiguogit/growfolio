@@ -8,18 +8,20 @@ class NavLink extends React.Component {
     static propTypes = {
         to: PropTypes.string,
         children: PropTypes.element,
-        indexOnly: PropTypes.bool
+        // indexOnly: default is true
+        //  ture: only match the exact path.
+        //  false: every route in the route branch will be matched
+        indexOnly: PropTypes.bool,
+        className: PropTypes.string
     }
 
     render() {
-        const {to, children, indexOnly} = this.props;
+        const {to, children, indexOnly, className} = this.props;
         let isActive = this.context.router.isActive(to, indexOnly === undefined ? true : indexOnly);
         return (
-            <div className="nav-item">
-                <Link className={`nav-link ${(isActive ? 'active' : '')}`} to={to}>
-                    {children}
-                </Link>
-            </div>
+            <Link className={`${className} ${(isActive ? 'active' : '')}`} to={to}>
+                {children}
+            </Link>
         );
     }
 }

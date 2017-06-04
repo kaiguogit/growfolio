@@ -4,7 +4,7 @@ import Auth from '../services/Auth';
 import { Link } from 'react-router';
 
 const NavBar = () => (
-    <nav className="navbar navbar-toggleable-sm navbar-light bg-faded">
+    <nav id="header" className="navbar navbar-toggleable-sm">
         <button className="navbar-toggler navbar-toggler-right"
             type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"

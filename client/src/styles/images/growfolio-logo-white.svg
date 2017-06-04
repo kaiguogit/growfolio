@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1201.7382"
+   height="272"
+   viewBox="0 0 1201.7382 272"
+   id="svg3375"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="growfolio-logo-white.svg">
+  <metadata
+     id="metadata3383">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3381" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     id="namedview3379"
+     showgrid="false"
+     inkscape:zoom="0.51283482"
+     inkscape:cx="256.69641"
+     inkscape:cy="185.96736"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g3412"
+     fit-margin-top="-0.5"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     id="g3412"
+     transform="translate(-3.4820289e-8,0.26115379)"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <path
+       inkscape:connector-curvature="0"
+       id="path3377"
+       d="m 113.33333,135.73885 0,90.6667 -45.33333,0 0,-90.6667 45.33333,0 z m 68,-90.666703 0,181.333403 -45.33333,0 0,-181.333403 45.33333,0 z m 181.33334,204.000003 0,22.6667 -362.666669965179835,0 0,-272.00000379 22.666666965179825,0 0,249.33330379 340.000003,0 z M 249.33333,90.405546 l 0,136.000004 -45.33333,0 0,-136.000004 45.33333,0 z m 68,-67.999999 0,204.000003 -45.33333,0 0,-204.000003 45.33333,0 z"
+       style="fill:#ffffff;fill-opacity:1"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       transform="matrix(5.1348244,0,0,5.1348244,3266.6596,-2534.2639)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:Pacifico;-inkscape-font-specification:Pacifico;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       id="flowRoot3385"
+       xml:space="preserve"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3387"><rect
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Pacifico;-inkscape-font-specification:Pacifico;fill:#ffffff;fill-opacity:1;"
+           y="493.33624"
+           x="-567.43414"
+           height="233.99347"
+           width="430.93799"
+           id="rect3389" /></flowRegion><flowPara
+         id="flowPara3391">Growfolio</flowPara></flowRoot>    <g
+       id="g4327"
+       transform="matrix(0.125,0,0,-0.125,2.6115217e-8,249.80413)"
+       style="fill:#000000;stroke:none" />
+  </g>
+</svg>
