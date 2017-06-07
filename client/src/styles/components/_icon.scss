@@ -1,0 +1,18 @@
+.icon-lg {
+    height: 30px;
+    font-size: 20px;
+    line-height: 30px;
+    width: 30px;
+}
+
+.icon-lg, .icon-sm {
+    display: inline-block;
+    font-family: trellicons;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-weight: 400;
+    text-align: center;
+    text-decoration: none;
+    color: #999;
+}

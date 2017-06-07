@@ -1,8 +1,13 @@
 import App from './components/App.jsx';
-import Portfolio from './components/Portfolio.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
-import Base from './components/Base.jsx';
+// import Base from './components/Base.jsx';
+
+import Portfolio from './components/Portfolio.jsx';
+import Performance from './components/performance/Performance.jsx';
+import TscsContainer from './components/tscs/TscsContainer.jsx';
+import Balance from './components/balance/Balance.jsx';
 import PerformanceSetting from './components/performance/PerformanceSetting.jsx';
+
 import SignUpPage from './components/SignUp/SignUpPage.jsx';
 import LoginPage from './components/Login/LoginPage.jsx';
 import Auth from './services/Auth';
@@ -27,13 +32,35 @@ const routes = (store) => {
         childRoutes: [
             {
                 path: 'portfolio',
-                indexRoute: {component: Portfolio},
+                indexRoute: {
+                    onEnter: (nextState, replace) => {replace('/portfolio/performance');},
+                },
                 onEnter: requireAuth,
                 childRoutes: [
                     {
                         path: 'setting',
-                        component: Base,
-                        indexRoute: {component: PerformanceSetting}
+                        component: PerformanceSetting,
+                    },
+                    {
+                        // Since there isn't really a /portfolio page
+                        // (always followed with child route), use
+                        // Portfolio as component here with indexRoute
+                        // component as children, so that above
+                        // setting page can replace the portfolio
+                        // instead of being its children
+                        path: 'performance',
+                        component: Portfolio,
+                        indexRoute: {component: Performance}
+                    },
+                    {
+                        path: 'transactions',
+                        component: Portfolio,
+                        indexRoute: {component: TscsContainer}
+                    },
+                    {
+                        path: 'balance',
+                        component: Portfolio,
+                        indexRoute: {component: Balance}
                     }
                 ]
             },

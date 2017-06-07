@@ -6,6 +6,8 @@ import * as tscsActions from '../actions/tscs';
 import Performance from './performance/Performance.jsx';
 import TscsContainer from './tscs/TscsContainer.jsx';
 import Balance from './balance/Balance.jsx';
+import NavLink from './NavLink.jsx';
+
 import {PERFORMANCE, TSCS, BALANCE} from '../constants/navigation';
 import * as Utils from '../utils';
 
@@ -16,7 +18,8 @@ class Portfolio extends React.Component {
         selectedTab: PropTypes.string.isRequired,
         actions: PropTypes.object.isRequired,
         tscs: PropTypes.object,
-        isFetching: PropTypes.bool.isRequired
+        isFetching: PropTypes.bool.isRequired,
+        children: PropTypes.element
     };
 
     componentDidMount() {
@@ -33,29 +36,37 @@ class Portfolio extends React.Component {
     render() {
         this.props.isFetching ? NProgress.start() : NProgress.done();
         const cap = Utils.capitalize;
+        const tabItem = 'tabbed-pane-nav-item';
+        const tabButton = 'tabbed-pane-nav-item-button';
+        const url = '/portfolio/';
         return (
             <div>
-                <ul className="nav nav-tabs">
-                    <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href={`#${PERFORMANCE}`} role="tab">
-                            {cap(PERFORMANCE)}
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href={`#${TSCS}`} role="tab">
-                            {cap(TSCS)}
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" data-toggle="tab" href={`#${BALANCE}`} role="tab">
-                            {cap(BALANCE)}
-                        </a>
-                    </li>
-                </ul>
+                <div className="tabbed-pane-nav mod-left u-clearfix">
+                    <ul>
+                        <li className={tabItem}>
+                            <NavLink className={tabButton} to={`${url}performance`} role="tab">
+                                <span>{cap(PERFORMANCE)}</span>
+                            </NavLink>
+                        </li>
+                        <li className={tabItem}>
+                            <NavLink className={tabButton} to={`${url}transactions`} role="tab">
+                                <span>{cap(TSCS)}</span>
+                            </NavLink>
+                        </li>
+                        <li className={tabItem}>
+                            <NavLink className={tabButton} to={`${url}balance`} role="tab">
+                                <span>{cap(BALANCE)}</span>
+                            </NavLink>
+                        </li>
+                    </ul>
+                </div>
                 <div className="tab-content">
-                  <div className="tab-pane active" id={PERFORMANCE} role="tabpanel"><Performance/></div>
+                  {/*<div className="tab-pane active" id={PERFORMANCE} role="tabpanel"><Performance/></div>
                   <div className="tab-pane" id={TSCS} role="tabpanel"><TscsContainer/></div>
-                  <div className="tab-pane" id={BALANCE} role="tabpanel"><Balance/></div>
+                  <div className="tab-pane" id={BALANCE} role="tabpanel"><Balance/></div>*/}
+                  <div>
+                      {this.props.children}
+                  </div>
                 </div>
             </div>
         );

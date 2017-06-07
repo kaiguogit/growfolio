@@ -99,18 +99,25 @@ code {
 // Links
 
 a {
-  color: $trello-blue-400;
+// color: $trello-blue-400;
+// Trello site is #444
+  color: #444;
   text-decoration: none;
 }
 
   a:hover,
   a:visited:hover {
-    color: $trello-blue-900;
+    // color: $trello-blue-900;
+    // Trello site is #111
+    color: #111;
   }
 
-  a:visited {
-    color: $trello-blue-500;
+  a.active, a:hover {
+    outline: 0;
   }
+//   a:visited {
+//     color: $trello-blue-500;
+//   }
 
 
 // Horizontal Rule
@@ -135,7 +142,6 @@ hr {
 
 // Smaller Screens
 
-// TODO used to be @small in LESS, verify if "small" is correct in SCSS
 @media #{$small} {
 
   body {
