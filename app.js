@@ -52,6 +52,12 @@ const options = {
  */
 const app = express();
 
+/** Get isDEv
+ * https://stackoverflow.com/questions/8449665/how-do-you-detect-the-environment-in-an-express-js-app
+ * https://github.com/expressjs/express/blob/master/lib/application.js#L71
+ */
+const isDev = app.get('env') === 'development';
+
 /**
  * Connect to MongoDB.
  */
@@ -63,7 +69,8 @@ mongoose.connection.on('error', () => {
 });
 
 const ensureSecure = (req, res, next) => {
-  // Use 'x-forwarded-proto' for heroku as Heroku terminates SSL connections at the load balancer level
+  // Use 'x-forwarded-proto' for heroku as Heroku terminates SSL connections at the load balancer
+  // level
   // https://stackoverflow.com/questions/32952085/express-js-redirect-to-https-and-send-index-html
   // https://stackoverflow.com/questions/24015292/express-4-x-redirect-http-to-https
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
@@ -73,7 +80,10 @@ const ensureSecure = (req, res, next) => {
   res.redirect(`https://${req.headers.host}${req.url}`);
 };
 
-app.all('*', ensureSecure);
+if (!isDev) {
+  app.all('*', ensureSecure);
+}
+
 /**
  * Enable CORS
  */
@@ -128,9 +138,6 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
-// https://stackoverflow.com/questions/8449665/how-do-you-detect-the-environment-in-an-express-js-app
-// https://github.com/expressjs/express/blob/master/lib/application.js#L71
-const isDev = app.get('env') === 'development';
 
 // Create an HTTP service.
 // http://expressjs.com/en/api.html
