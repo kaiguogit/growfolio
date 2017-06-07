@@ -19,6 +19,7 @@ class Portfolio extends React.Component {
         actions: PropTypes.object.isRequired,
         tscs: PropTypes.object,
         isFetching: PropTypes.bool.isRequired,
+        isTscsFetching: PropTypes.bool.isRequired,
         children: PropTypes.element
     };
 
@@ -34,7 +35,8 @@ class Portfolio extends React.Component {
     }
 
     render() {
-        this.props.isFetching ? NProgress.start() : NProgress.done();
+        let {isTscsFetching, isFetching} = this.props;
+        isFetching ? NProgress.start() : NProgress.done();
         const cap = Utils.capitalize;
         const tabItem = 'tabbed-pane-nav-item';
         const tabButton = 'tabbed-pane-nav-item-button';
@@ -60,13 +62,15 @@ class Portfolio extends React.Component {
                         </li>
                     </ul>
                 </div>
-                <div className="tab-content">
-                  {/*<div className="tab-pane active" id={PERFORMANCE} role="tabpanel"><Performance/></div>
-                  <div className="tab-pane" id={TSCS} role="tabpanel"><TscsContainer/></div>
-                  <div className="tab-pane" id={BALANCE} role="tabpanel"><Balance/></div>*/}
-                  <div>
-                      {this.props.children}
-                  </div>
+                <div>
+                    <div className={`tabbed-pane-main-col-loading ${isTscsFetching ? '' : 'u-hidden'}`}>
+                        <span className="tabbed-pane-main-col-loading-spinner">
+                            <i className="fa fa-spinner fa-2x fa-spin" aria-hidden="true"/>
+                        </span>
+                    </div>
+                    <div className={isTscsFetching ? 'u-hidden' : ''}>
+                        {this.props.children}
+                    </div>
                 </div>
             </div>
         );
@@ -76,6 +80,7 @@ class Portfolio extends React.Component {
 const mapStateToProps = state => {
     return {
         selectedTab: state.portfolio.tab,
+        isTscsFetching: state.tscs.isFetching,
         isFetching: state.tscs.isFetching || state.quotes.isFetching,
         tscs: state.tscs.items
      };

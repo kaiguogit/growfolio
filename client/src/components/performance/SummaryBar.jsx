@@ -44,7 +44,7 @@ const Change = (props) => {
 };
 
 Change.propTypes = {
-    change: PropTypes.number.isRequired,
+    change: PropTypes.number,
     change_percent: PropTypes.number,
     title: PropTypes.string.isRequired
 };
