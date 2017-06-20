@@ -20,7 +20,7 @@ export const receiveSymbols = (symbols, query) => ({
  * http://autoc.finance.yahoo.com/autoc?query=google&region=1&lang=en&callback=YAHOO.Finance.SymbolSuggest.ssCallback
  */
 const makeSymbolUrl = input => {
-    let url = 'http://autoc.finance.yahoo.com/autoc';
+    let url = 'https://autoc.finance.yahoo.com/autoc';
     let params = {
         query: input,
         region: 1,
