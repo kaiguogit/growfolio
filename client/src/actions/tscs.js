@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import { errorHandler, getHeaders, avoidNaN } from '../utils';
 
 /*
@@ -25,6 +25,12 @@ export const openTscsForm = () => ({
 });
 export const closeTscsForm = () => ({
     type: types.CLOSE_TSCS_FORM
+});
+
+export const toggleTscsDeleteModal = (showModal, tscId) => ({
+    type: types.TOGGLE_TSCS_DELETE_MODAL,
+    showModal,
+    tscId
 });
 
 // Fake API version

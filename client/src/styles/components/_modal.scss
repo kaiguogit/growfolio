@@ -1,0 +1,33 @@
+/* Remove scroll on the body when react-modal is open */
+.ReactModal__Body--open {
+    overflow: hidden;
+}
+
+.modal {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+.modal.show {
+    display: block;
+}
+
+// Used for ReactCSSTransitionGroup
+// Same animation in from bootstrap _modal.scss
+.modal-show {
+    &-appear, &-enter {
+        @include transition(transform .3s ease-out);
+        transform: translate(0, -25%);
+        &-active {
+            transform: translate(0, 0);
+        }
+    }
+}
+
+// Used for ReactCSSTransitionGroup
+.modal-show-leave {
+    @include transition(transform .3s ease-out);
+    transform: translate(0, 0);
+    &-active {
+        transform: translate(0, -25%) !important;
+    }
+}
+

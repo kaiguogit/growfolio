@@ -3,9 +3,9 @@ import React, { PropTypes } from 'react';
 import { TSCS_COLUMNS } from './columns';
 import { renderCell } from '../../utils';
 import TableCategory from '../../utils/table/TableCategory.jsx';
-import DeleteTsc from './DeleteTsc.jsx';
+import DeleteTscButton from './DeleteTscButton.jsx';
 
-const TscsTable = ({ holdings, isFetching }) => {
+const TscsTable = ({holdings}) => {
     return (
         <table className="table table-responsive table-bordered table-sm table-compact">
             <thead>
@@ -20,32 +20,28 @@ const TscsTable = ({ holdings, isFetching }) => {
                     <th>Delete</th>
                 </tr>
             </thead>
-            {
-                holdings.map(holding => {
-                    return (
-                        <TableCategory
-                            title={holding.symbol + ': ' + holding.name}
-                            columnsCount={TSCS_COLUMNS.length + 1}
-                            key={holding.symbol}
-                        >
-                            {holding.transactions.map(tsc => {
-                                return <TscsRow tsc={tsc} isFetching={isFetching} key={tsc._id}/>;
-                            })}
-                        </TableCategory>
-                    );
-                })
-            }
+            {holdings.map(holding => {
+                return (
+                    <TableCategory
+                        title={holding.symbol + ': ' + holding.name}
+                        columnsCount={TSCS_COLUMNS.length + 1}
+                        key={holding.symbol}
+                    >
+                        {holding.transactions.map(tsc => {
+                            return <TscsRow tsc={tsc} key={tsc._id}/>;
+                        })}
+                    </TableCategory>
+                );
+            })}
         </table>
     );
 };
 
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
-    removeTscs: PropTypes.func.isRequired,
-    isFetching: PropTypes.bool.isRequired
 };
 
-const TscsRow = ({tsc, isFetching}) => {
+const TscsRow = ({tsc}) => {
     return (
         <tr>
             {TSCS_COLUMNS.map(column => {
@@ -56,11 +52,7 @@ const TscsRow = ({tsc, isFetching}) => {
                 );
             })}
             <td>
-                <DeleteTsc
-                    onConfirm={() => this.props.removeTscs(tsc._id)}
-                    id={tsc._id}
-                    loading={isFetching}
-                />
+                <DeleteTscButton tscId={tsc._id}/>
             </td>
         </tr>
     );
@@ -68,7 +60,6 @@ const TscsRow = ({tsc, isFetching}) => {
 
 TscsRow.propTypes = {
     tsc: PropTypes.object.isRequired,
-    isFetching: PropTypes.bool.isRequired
 };
 
 export default TscsTable;

@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import { makeUrl, num} from '../utils';
 import { getHoldings } from '../selectors';
 

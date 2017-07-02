@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import initialState from './initialState';
 
 const portfolioReducer = (state = initialState.portfolio, action) => {

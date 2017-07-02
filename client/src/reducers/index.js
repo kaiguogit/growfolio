@@ -8,7 +8,7 @@ import portfolioReducer  from './portfolioReducer';
 import quotesReducer from './quotesReducer';
 import symbolsReducer from './symbolsReducer';
 import tscsReducer from './tscsReducer';
-import { BATCH, USER_LOGOUT } from '../constants/actionTypes';
+import ActionTypes from '../constants/actionTypes';
 
 const appReducer = combineReducers({
     auth: authReducer,
@@ -22,7 +22,7 @@ const appReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-    if (action.type === USER_LOGOUT) {
+    if (action.type === ActionTypes.USER_LOGOUT) {
         state = undefined;
     }
     return appReducer(state, action);
@@ -33,7 +33,7 @@ const rootReducer = (state, action) => {
 // https://github.com/reactjs/redux/issues/911#issuecomment-149361073
 const batchingReducer = (state, action) => {
     switch (action.type) {
-        case BATCH:
+        case ActionTypes.BATCH:
             return action.payload.reduce(batchingReducer, state);
         default:
             return rootReducer(state, action);

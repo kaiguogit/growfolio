@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 
 // Dispatch actions in batch to avoid update component too frequently.
 // Idea and code from https://github.com/tshelburne/redux-batched-actions

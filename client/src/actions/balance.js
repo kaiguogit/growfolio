@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import { errorHandler, getHeaders } from '../utils';
 
 export const updateBalancePercentage = holding => ({

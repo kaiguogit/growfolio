@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 
 const tscsReducer = (state = initialState.tscs, action) => {
     switch (action.type) {
@@ -26,6 +26,14 @@ const tscsReducer = (state = initialState.tscs, action) => {
             return {
                 ...state,
                 formOpened: false
+            };
+        case types.TOGGLE_TSCS_DELETE_MODAL:
+            return {
+                ...state,
+                deleteTscModalData: {
+                    isOpened: action.showModal,
+                    tscId: action.tscId
+                }
             };
         default:
             return state;

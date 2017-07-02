@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import { errorHandler } from '../utils';
 import Auth from '../services/Auth';
 import { browserHistory } from 'react-router';

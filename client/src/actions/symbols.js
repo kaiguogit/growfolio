@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import $ from 'jquery';
 
 import { makeUrl, errorHandler } from '../utils';

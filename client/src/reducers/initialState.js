@@ -9,6 +9,10 @@ export default {
         isFetching: false,
         items: {},
         formOpened: false,
+        deleteTscModalData: {
+            isOpened: false,
+            tscId: ''
+        },
         lastUpdated: Date.now()
     },
     quotes: {

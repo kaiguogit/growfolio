@@ -1,4 +1,4 @@
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 import $ from 'jquery';
 import Auth from '../services/Auth';
 import { num } from '../utils';

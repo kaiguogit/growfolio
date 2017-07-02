@@ -6,7 +6,7 @@ import { getHoldings } from '../../selectors';
 
 import TscsTable from './TscsTable.jsx';
 import TscsForm from './TscsForm.jsx';
-
+import DeleteTscModal from './DeleteTscModal.jsx';
 
 class TscsContainer extends React.Component {
     static propTypes = {
@@ -38,9 +38,10 @@ class TscsContainer extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable holdings={holdings} removeTscs={actions.removeTscs} isFetching={isFetching}/>
+                      <TscsTable holdings={holdings}/>
                     </div>
                 }
+                <DeleteTscModal/>
             </div>
         );
     }

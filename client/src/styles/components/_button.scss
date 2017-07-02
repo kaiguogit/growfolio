@@ -12,21 +12,23 @@
 a.button,
 input[type="submit"],
 button {
-  background: linear-gradient(to bottom, $light-gray-100 0%, $light-gray-200 100%);
-  border: 0;
-  border-radius: .3em;
-  box-shadow: 0 2px 0 $light-gray-700;
-  color: $default-font-color;
-  cursor: pointer;
-  display: inline-block;
-  font-size: .9em;
-  font-weight: bold;
-  line-height: 1.2;
-  margin: .3em 1em 1em 0;
-  outline: 0;
-  padding: .7em 1.2em;
-  position: relative;
-  text-decoration: none;
+  &:not(.mod-bare) {
+    background: linear-gradient(to bottom, $light-gray-100 0%, $light-gray-200 100%);
+    border: 0;
+    border-radius: .3em;
+    box-shadow: 0 2px 0 $light-gray-700;
+    color: $default-font-color;
+    cursor: pointer;
+    display: inline-block;
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 1.2;
+    margin: .3em .3em .3em 0;
+    outline: 0;
+    padding: .7em 1.2em;
+    position: relative;
+    text-decoration: none;
+  }
 }
 
   a.button:focus,
@@ -35,15 +37,19 @@ button {
   input[type="submit"]:hover,
   button:not([disabled]):focus,
   button:not([disabled]):hover {
-    background: linear-gradient(to bottom, $light-gray-200 0%, $light-gray-300 100%);
-    color: $default-font-color;
+    &:not(.mod-bare) {
+      background: linear-gradient(to bottom, $light-gray-200 0%, $light-gray-300 100%);
+      color: $default-font-color;
+    }
   }
 
   a.button:active,
   input[type="submit"]:active,
   button:not([disabled]):active {
-    background: linear-gradient(to bottom, $light-gray-300 0%, $light-gray-400 100%);
-    color: $default-font-color;
+    &:not(.mod-bare) {
+      background: linear-gradient(to bottom, $light-gray-300 0%, $light-gray-400 100%);
+      color: $default-font-color;
+    }
   }
 
 
@@ -214,6 +220,13 @@ button[disabled] {
   input[type="submit"].mod-no-margin,
   button.mod-no-margin {
     margin: 0;
+  }
+
+  // No Padding
+  a.button.mod-icon,
+  input[type="submit"].mod-icon,
+  button.mod-icon {
+    padding: .4em .6em;
   }
 
 // Media Queries

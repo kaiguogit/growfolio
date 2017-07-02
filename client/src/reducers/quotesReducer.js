@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import * as types from '../constants/actionTypes';
+import types from '../constants/actionTypes';
 // import isEqual from 'lodash.isequal';
 const quotesReducer = (state = initialState.quotes, action) => {
     switch (action.type) {
