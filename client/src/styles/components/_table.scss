@@ -1,7 +1,8 @@
 // Tables
 
 table {
-  font-size: .9em;
+  // font-size: .9em; // Default trellisheet value
+  font-size: .7em;
   margin-bottom: 1em;
   width: 100%;
 }
@@ -33,4 +34,25 @@ thead {
 
 tbody {
   background-color: #fff;
+}
+
+.table-category {
+  background: $light-gray-900;
+  color: white;
+
+  .toggle-label {
+    cursor: pointer;
+  }
+
+  :hover {
+    background: $light-gray-800;
+  }
+}
+
+.table-compact {
+  th {
+    font-size: .8em;
+    max-width: 5em;
+    word-wrap: break-word;
+  }
 }

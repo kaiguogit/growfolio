@@ -15,7 +15,7 @@ class PerformanceTable extends React.Component {
         return (
             <div>
             {isEmpty ? <h2>Empty.</h2>
-              : <table className="table table-responsive table-striped table-bordered table-sm">
+              : <table className="table table-responsive table-striped table-bordered table-sm table-compact">
                     <thead className="thead-default">
                         <tr>
                             {PERFORMANCE_COLUMNS.map(column => {

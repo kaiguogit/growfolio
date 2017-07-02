@@ -2,16 +2,12 @@ import { date, capitalize, currency, coloredCell } from '../../utils';
 
 export const TSCS_COLUMNS = [
     {
-        selector: 'name',
-        title: 'Name'
+        selector: 'symbol',
+        title: 'Symbol'
     },
     {
         selector: 'exch',
         title: 'Exchange'
-    },
-    {
-        selector: 'symbol',
-        title: 'Symbol'
     },
     {
         selector: 'type',

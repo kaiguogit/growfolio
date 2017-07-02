@@ -56,7 +56,7 @@ const ExchangeRate = ({title, rate}) => (
             <h2>{round(rate, 3)}</h2>
         </div>
     </div>
-)
+);
 
 ExchangeRate.propTypes = {
     title: PropTypes.string.isRequired,

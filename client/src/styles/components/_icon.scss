@@ -1,3 +1,4 @@
+// From Trello site
 .icon-lg {
     height: 30px;
     font-size: 20px;
@@ -7,7 +8,6 @@
 
 .icon-lg, .icon-sm {
     display: inline-block;
-    font-family: trellicons;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-style: normal;
@@ -15,4 +15,8 @@
     text-align: center;
     text-decoration: none;
     color: #999;
+}
+
+i+span {
+    margin-left: .3em;
 }

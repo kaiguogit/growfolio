@@ -24,7 +24,6 @@ class TscsContainer extends React.Component {
     render() {
         const { isFetching, holdings, formOpened, actions } = this.props;
         const isEmpty = holdings.length === 0;
-        const itemsArray = holdings.reduce((acc, holding) => acc.concat(holding.transactions), []);
         return (
             <div>
                 <button className={`btn btn-sm ${formOpened ? "btn-info" : "btn-info "}`} onClick={formOpened ? actions.closeTscsForm : actions.openTscsForm}>
@@ -39,7 +38,7 @@ class TscsContainer extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable tscs={itemsArray} removeTscs={actions.removeTscs} isFetching={isFetching}/>
+                      <TscsTable holdings={holdings} removeTscs={actions.removeTscs} isFetching={isFetching}/>
                     </div>
                 }
             </div>

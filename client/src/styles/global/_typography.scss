@@ -10,6 +10,11 @@
 
 // Typography
 
+body, html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 button, html, input, select, textarea {
   font-family: "jaf-facitweb", -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
