@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,6 +13,12 @@ import * as Utils from '../utils';
 
 import NProgress from 'nprogress';
 
+import Performance from './performance/Performance.jsx';
+import TscsContainer from './tscs/TscsContainer.jsx';
+import Balance from './balance/Balance.jsx';
+import PerformanceSetting from './performance/PerformanceSetting.jsx';
+import NotFoundPage from './NotFoundPage.jsx';
+
 class Portfolio extends React.Component {
     static propTypes = {
         selectedTab: PropTypes.string.isRequired,
@@ -19,7 +26,8 @@ class Portfolio extends React.Component {
         tscs: PropTypes.object,
         isFetching: PropTypes.bool.isRequired,
         isTscsFetching: PropTypes.bool.isRequired,
-        children: PropTypes.element
+        children: PropTypes.element,
+        history: PropTypes.object.isRequired
     };
 
     componentDidMount() {
@@ -68,7 +76,14 @@ class Portfolio extends React.Component {
                         </span>
                     </div>
                     <div className={isTscsFetching ? 'u-hidden' : ''}>
-                        {this.props.children}
+                        <Switch>
+                            <Route exact path="/portfolio/" render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
+                            <Route exact path={url + "performance"} component={Performance}/>
+                            <Route exact path={url + "transactions"} component={TscsContainer}/>
+                            <Route exact path={url + "setting"} component={PerformanceSetting}/>
+                            <Route exact path={url + "balance"} component={Balance}/>
+                            <Route component={NotFoundPage}/>
+                        </Switch>
                     </div>
                 </div>
             </div>

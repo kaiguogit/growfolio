@@ -22,7 +22,6 @@ export const PERFORMANCE_COLUMNS = [
         selector: 'mkt_value',
         filter: currency(2),
         title: 'Market Value',
-        className: 'hidden-sm-down'
     },
     {
         selector: 'average_cost',
@@ -38,7 +37,6 @@ export const PERFORMANCE_COLUMNS = [
     {
         selector: 'shares',
         title: 'Shares',
-        className: 'hidden-sm-down'
     },
     {
         selector: 'change',

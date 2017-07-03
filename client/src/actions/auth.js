@@ -1,9 +1,6 @@
 import types from '../constants/actionTypes';
 import { errorHandler } from '../utils';
 import Auth from '../services/Auth';
-import { browserHistory } from 'react-router';
-
-export const logout = () => ({type: types.USER_LOGOUT});
 
 const requestSignUp = () => ({type: types.REQUEST_SIGNUP});
 
@@ -43,25 +40,24 @@ export const submitSignUp = (data) => dispatch => {
     .catch(errorHandler);
 };
 
-export const submitLogin = data => (dispatch, getState) => {
+/**
+ * submit Login
+ * @param {object} payLoad - the user object
+ * @param {func} cb - callback function after successful login
+ */
+export const submitLogin = (payLoad, cb) => (dispatch, /*getState*/) => {
     dispatch(requestLogin());
     return fetch(__HOST_URL__ + "login", {
         method: 'POST',
         headers: headers,
-        body: JSON.stringify(data)
+        body: JSON.stringify(payLoad)
     })
     .then(response => response.json())
     .then((data) => {
         if (data.success) {
             // save the token
             Auth.authenticateUser(data.token, data.user);
-            // Redirect to previous intended page if applicable
-            const location = getState().routing.locationBeforeTransitions;
-            if (location.state && location.state.nextPathname) {
-                browserHistory.push(location.state.nextPathname);
-            } else {
-                browserHistory.push('/');
-            }
+            cb();
         }
         dispatch(receiveLogin(data));
     })

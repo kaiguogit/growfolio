@@ -1,8 +1,8 @@
 import React from 'react';
 import NavLink from './NavLink.jsx';
 import Auth from '../services/Auth';
-
-const Header = () => (
+import {withRouter, Link} from 'react-router-dom';
+const Header = withRouter(({history}) => (
     <div className="global-header mod-trello-blue mod-dark-background u-clearfix">
 
         <div className="global-header-section mod-left">
@@ -17,21 +17,24 @@ const Header = () => (
                 }/>
             </NavLink>
             <div className="global-header-section-links">
-                <NavLink className="global-header-section-link" to="/portfolio" indexOnly={false}><span>Portfolio</span></NavLink>
+                <NavLink className="global-header-section-link" to="/portfolio"><span>Portfolio</span></NavLink>
             </div>
         </div>
         {Auth.loggedIn() ? (
             <div className="global-header-section mod-right">
                 <span className="navbar-text">Hello, {Auth.getUser().name}</span>
-                <NavLink className="global-header-section-button" to="/logout"><span>Log out</span></NavLink>
+                <a className="global-header-section-button" href="#" onClick={() => {
+                    Auth.deauthenticateUser();
+                    history.push('/');
+                    }}><span>Log out</span></a>
             </div>
         ) : (
             <div className="global-header-section mod-right">
-                <NavLink className="global-header-section-button" to="/login">Log In</NavLink>
-                <NavLink className="global-header-section-button mod-primary" to="/signup">Sign Up</NavLink>
+                <Link className="global-header-section-button" to="/login">Log In</Link>
+                <Link className="global-header-section-button mod-primary" to="/signup">Sign Up</Link>
             </div>
         )}
     </div>
-);
+));
 
 export default Header;

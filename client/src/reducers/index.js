@@ -1,6 +1,5 @@
 // Set up your root reducer here...
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
 import authReducer from './authReducer';
 import balanceReducer from './balanceReducer';
 import currencyReducer from './currencyReducer';
@@ -16,7 +15,6 @@ const appReducer = combineReducers({
     currency: currencyReducer,
     portfolio: portfolioReducer,
     quotes: quotesReducer,
-    routing: routerReducer,
     symbols: symbolsReducer,
     tscs: tscsReducer
 });

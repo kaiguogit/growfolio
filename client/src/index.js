@@ -2,11 +2,14 @@
 
 import React from 'react';
 import { render } from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
-import routes from './routes';
 import configureStore from './store/configureStore';
-import { syncHistoryWithStore } from 'react-router-redux';
+
+import App from './components/App.jsx';
 
  // Tell webpack to load favicon.ico
 require('./favicon.ico');
@@ -25,11 +28,11 @@ import './styles/vendor/bootstrap/bootstrap';
 import './styles/application.scss';
 
 const store = configureStore();
-// Create an enhanced history that syncs navigation events with the store
-const history = syncHistoryWithStore(browserHistory, store);
 
 render(
     <Provider store={store}>
-        <Router history={history} routes={routes(store)} />
+        <Router>
+            <Route path="/" component={App}/>
+        </Router>
     </Provider>, document.getElementById('app')
 );

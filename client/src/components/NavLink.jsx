@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Link } from 'react-router';
-
-class NavLink extends React.Component {
+import { NavLink } from 'react-router-dom';
+class NavLinkWrapper extends React.Component {
     static contextTypes = {
         router: PropTypes.object
     };
     static propTypes = {
         to: PropTypes.string,
-        children: PropTypes.element,
+        children: PropTypes.node,
         // indexOnly: default is true
         //  ture: only match the exact path.
         //  false: every route in the route branch will be matched
@@ -19,13 +18,12 @@ class NavLink extends React.Component {
 
     render() {
         const {to, children, indexOnly, className} = this.props;
-        let isActive = this.context.router.isActive(to, indexOnly === undefined ? true : indexOnly);
         return (
-            <Link className={`${className} ${(isActive ? 'active' : '')}`} to={to}>
+            <NavLink className={className} exact={indexOnly} activeClassName="active" to={to}>
                 {children}
-            </Link>
+            </NavLink>
         );
     }
 }
 
-export default NavLink;
+export default NavLinkWrapper;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { browserHistory } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/portfolio';
@@ -9,19 +9,22 @@ import * as actions from '../../actions/portfolio';
 import CurrencySelector from './CurrencySelector.jsx';
 import {CheckBox} from '../shared/index.jsx';
 
-const onClick = () => {
-    browserHistory.push('/portfolio');
-};
+// Programmatically navigate using react routerv4
+// https://stackoverflow.com/a/42121109
+const GoBackButton = withRouter(({ history }) => {
+    const onClick = () => {
+        history.push('/portfolio');
+    };
 
-const GoBackButton = () => (
-    <div>
-        <button type="button" className="btn btn-outline-primary" onClick={onClick}>
-            <i className="fa fa-arrow-left fa-lg" aria-hidden="true"/>
-            {' '}
-            Go back
-        </button>
-    </div>
-);
+    return (
+        <div>
+            <button onClick={onClick}>
+                <i className="fa fa-arrow-left fa-lg" aria-hidden="true"/>
+                <span>Go back</span>
+            </button>
+        </div>
+    );
+});
 
 class PerformanceSetting extends React.Component {
     static propTypes = {

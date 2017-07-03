@@ -1,20 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/auth';
 import LoginForm from './LoginForm.jsx';
 import NProgress from 'nprogress';
 
-class LoginPage extends Component {
+class LoginPage extends React.Component {
 
     static propTypes = {
         actions: PropTypes.object.isRequired,
         errors: PropTypes.object,
         message: PropTypes.string,
         success: PropTypes.bool,
-        isFetching: PropTypes.bool
+        isFetching: PropTypes.bool,
+        history: PropTypes.object
     }
     /**
     * Class constructor.
@@ -47,7 +49,16 @@ class LoginPage extends Component {
     processForm(event) {
       // prevent default action. in this case, action is the form submission event
       event.preventDefault();
-      this.props.actions.submitLogin(this.state.user);
+      this.props.actions.submitLogin(this.state.user, () => {
+            // Redirect to previous intended page if applicable
+            const history = this.props.history;
+            const location = history.location;
+            if (location.state && location.state.from) {
+                history.replace(location.state.from);
+            } else {
+                history.replace('/');
+            }
+      });
     }
 
     /**
@@ -91,4 +102,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
