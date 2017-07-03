@@ -1,11 +1,13 @@
-import React, {Component, PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import SignUpForm from './SignUpForm.jsx';
 import * as actions from '../../actions/auth';
 import NProgress from 'nprogress';
 
-class SignUpPage extends Component {
+class SignUpPage extends React.Component {
 
     static propTypes = {
         actions: PropTypes.object.isRequired,

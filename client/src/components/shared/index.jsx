@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Bootstrap 4 custom input
 // https://v4-alpha.getbootstrap.com/components/forms/#checkboxes

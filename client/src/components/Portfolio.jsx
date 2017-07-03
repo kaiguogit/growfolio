@@ -1,11 +1,10 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as rootActions from '../actions';
 import * as tscsActions from '../actions/tscs';
-import Performance from './performance/Performance.jsx';
-import TscsContainer from './tscs/TscsContainer.jsx';
-import Balance from './balance/Balance.jsx';
 import NavLink from './NavLink.jsx';
 
 import {PERFORMANCE, TSCS, BALANCE} from '../constants/navigation';

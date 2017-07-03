@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Link } from 'react-router';
 
 class NavLink extends React.Component {
     static contextTypes = {
-        router: React.PropTypes.object
+        router: PropTypes.object
     };
     static propTypes = {
         to: PropTypes.string,

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 import {Input, FormGroup, Select} from '../shared/index.jsx';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import PerformanceTableRow from './PerformanceTableRow.jsx';

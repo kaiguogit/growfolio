@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import Header from './Header.jsx';
 // This is a class-based component because the current
 // version of hot reloading won't hot reload a stateless

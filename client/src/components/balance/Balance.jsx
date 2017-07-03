@@ -1,4 +1,6 @@
-import React, { PropTypes, Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as quotesActions from '../../actions/quotes';
@@ -9,7 +11,7 @@ import TargetAllocationWithDrilldown from './TargetAllocationWithDrilldown.jsx';
 import CurrenAllocationWithDrilldown from './CurrenAllocationWithDrilldown.jsx';
 import BalanceForm from './BalanceForm.jsx';
 
-class Balance extends Component {
+class Balance extends React.Component {
     static propTypes = {
         holdings: PropTypes.array.isRequired,
         actions: PropTypes.object.isRequired,

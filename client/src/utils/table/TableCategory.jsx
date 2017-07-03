@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Create a collapsible row to show/hide its children
 class TableCategory extends React.Component {
