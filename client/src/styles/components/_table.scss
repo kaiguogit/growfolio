@@ -56,3 +56,19 @@ tbody {
     word-wrap: break-word;
   }
 }
+
+.table-sticky-first-column {
+    tr:not(.table-category) {
+      background: inherit;
+      td:first-child, th:first-child{
+          position: sticky;
+          left: 0;
+          background: inherit;
+      }
+    }
+    &.table-striped {
+      tbody tr:nth-of-type(odd) td:first-child {
+        background-color: $light-gray-100;
+      }
+    }
+}

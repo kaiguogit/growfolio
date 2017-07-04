@@ -8,7 +8,7 @@ import DeleteTscButton from './DeleteTscButton.jsx';
 
 const TscsTable = ({holdings}) => {
     return (
-        <table className="table table-responsive table-bordered table-sm table-compact">
+        <table className="table table-sticky-first-column table-responsive table-bordered table-sm table-compact">
             <thead>
                 <tr>
                     {TSCS_COLUMNS.map(column => {
