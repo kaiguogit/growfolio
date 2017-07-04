@@ -40,11 +40,6 @@ const renderSuggestion = suggestion => (
 );
 
 class SymbolAutoComplete extends React.Component {
-    static propTypes = {
-        onSelected: PropTypes.func.isRequired,
-        actions: PropTypes.object.isRequired
-    };
-
     constructor() {
         super();
 
@@ -57,17 +52,21 @@ class SymbolAutoComplete extends React.Component {
             value: '',
             suggestions: []
         };
+        this.onChange = this.onChange.bind(this);
+        this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
+        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     }
 
-    onChange = (event, { newValue, /*method*/ }) => {
+    onChange(event, { newValue, /*method*/ }) {
         this.setState({
             value: newValue
         });
-    };
+    }
 
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
-    onSuggestionsFetchRequested = ({ value }) => {
+    onSuggestionsFetchRequested({ value }) {
         // TODO: Add logic to cancel previous request.
         // https://codepen.io/moroshko/pen/EPZpev
         const DEBOUNCE_TIMEOUT = 800;
@@ -79,16 +78,16 @@ class SymbolAutoComplete extends React.Component {
             });
         }, DEBOUNCE_TIMEOUT);
         debounceFn(value);
-    };
+    }
 
     // Autosuggest will call this function every time you need to clear suggestions.
-    onSuggestionsClearRequested = () => {
+    onSuggestionsClearRequested() {
         this.setState({
             suggestions: []
         });
-    };
+    }
 
-    onSuggestionSelected = (event, data) => {
+    onSuggestionSelected(event, data) {
         this.props.onSelected(data.suggestion);
     }
 
@@ -117,6 +116,11 @@ class SymbolAutoComplete extends React.Component {
         );
     }
 }
+
+SymbolAutoComplete.propTypes = {
+    onSelected: PropTypes.func.isRequired,
+    actions: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({state});
 

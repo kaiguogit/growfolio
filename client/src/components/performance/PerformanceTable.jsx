@@ -6,10 +6,6 @@ import PerformanceTableRow from './PerformanceTableRow.jsx';
 import PerformanceTableRowTotal from './PerformanceTableRowTotal.jsx';
 
 class PerformanceTable extends React.Component {
-    static propTypes = {
-        symbols: PropTypes.array.isRequired
-    };
-
     render() {
         const { symbols } = this.props;
         const isEmpty = symbols.length === 0;
@@ -42,5 +38,9 @@ class PerformanceTable extends React.Component {
         );
     }
 }
+
+PerformanceTable.propTypes = {
+    symbols: PropTypes.array.isRequired
+};
 
 export default PerformanceTable;

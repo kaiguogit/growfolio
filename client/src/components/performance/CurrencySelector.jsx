@@ -7,12 +7,12 @@ import * as actions from '../../actions/portfolio';
 import { Select } from '../shared/index.jsx';
 
 class CurrencySelector extends React.Component {
-    static propTypes = {
-        displayCurrency: PropTypes.string.isRequired,
-        actions: PropTypes.object.isRequired
+    constructor(props) {
+        super(props);
+        this.handleSelectCurrency = this.handleSelectCurrency.bind(this);
     }
 
-    handleSelectCurrency = e => {
+    handleSelectCurrency(e) {
         this.props.actions.selectDisplayCurrency(e.target.value);
     }
 
@@ -32,6 +32,11 @@ class CurrencySelector extends React.Component {
         );
     }
 }
+
+CurrencySelector.propTypes = {
+    displayCurrency: PropTypes.string.isRequired,
+    actions: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
     displayCurrency: state.portfolio.displayCurrency

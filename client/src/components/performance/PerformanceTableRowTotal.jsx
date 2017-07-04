@@ -12,8 +12,9 @@ const validColumn = ['cost', 'mkt_value', 'change_percent', 'days_gain', 'gain',
 'gain_percent', 'gain_overall', 'gain_overall_percent', 'realized_gain', 'dividend', 'cost_overall'];
 
 class PerformanceTableRowTotal extends React.Component {
-    static propTypes = {
-        total: PropTypes.object.isRequired
+    constructor(props) {
+        super(props);
+        this.renderValidCell = this.renderValidCell.bind(this);
     }
 
     /**
@@ -49,6 +50,10 @@ class PerformanceTableRowTotal extends React.Component {
         );
     }
 }
+
+PerformanceTableRowTotal.propTypes = {
+    total: PropTypes.object.isRequired
+};
 
 const mapStateToProps = (state) => {
   return {

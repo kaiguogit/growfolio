@@ -8,16 +8,11 @@ import Modal from '../../utils/modal/Modal.jsx';
 import TscsForm from './TscsForm.jsx';
 
 class AddTscModal extends React.Component {
-    static propTypes = {
-        isOpened: PropTypes.bool.isRequired,
-        actions: PropTypes.object.isRequired,
-        isFetching: PropTypes.bool.isRequired,
-    }
-
     constructor () {
         super();
-        this.handleCloseModal = this.handleCloseModal.bind(this);
         this.state = {secModal: false}
+        this.handleCloseModal = this.handleCloseModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleCloseModal() {
@@ -44,6 +39,12 @@ class AddTscModal extends React.Component {
         );
     }
 }
+
+AddTscModal.propTypes = {
+    isOpened: PropTypes.bool.isRequired,
+    actions: PropTypes.object.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+};
 
 const mapStateToProps = state => {
     return {

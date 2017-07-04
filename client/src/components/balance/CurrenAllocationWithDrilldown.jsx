@@ -6,12 +6,6 @@ import { getHoldingsPerformance } from '../../selectors';
 import PieChart from '../../components/PieChart.jsx';
 
 class CurrenAllocationWithDrilldown extends React.Component {
-
-    static propTypes = {
-        holdings: PropTypes.array.isRequired,
-        balance: PropTypes.object.isRequired
-    }
-
     render() {
         const { holdings, balance } = this.props;
 
@@ -90,6 +84,11 @@ class CurrenAllocationWithDrilldown extends React.Component {
         );
     }
 }
+
+CurrenAllocationWithDrilldown.propTypes = {
+    holdings: PropTypes.array.isRequired,
+    balance: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
     holdings: getHoldingsPerformance(state),

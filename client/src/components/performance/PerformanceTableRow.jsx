@@ -10,11 +10,6 @@ import { PERFORMANCE_COLUMNS } from './columns.jsx';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 
 class PerformanceTableRow extends React.Component {
-    static propTypes = {
-        symbol: PropTypes.string.isRequired,
-        holding: PropTypes.object.isRequired
-    }
-
     render() {
         const {holding} = this.props;
         return (
@@ -48,5 +43,10 @@ class PerformanceTableRow extends React.Component {
      };
      return mapStateToProps;
  };
+
+PerformanceTableRow.propTypes = {
+    symbol: PropTypes.string.isRequired,
+    holding: PropTypes.object.isRequired
+};
 
 export default connect(makeMapStateToProps)(PerformanceTableRow);

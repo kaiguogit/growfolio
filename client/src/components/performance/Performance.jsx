@@ -12,11 +12,9 @@ import SummaryBar from './SummaryBar.jsx';
 import SettingButton from './SettingButton.jsx';
 
 class Performance extends React.Component {
-    static propTypes = {
-        holdings: PropTypes.array.isRequired,
-        actions: PropTypes.object.isRequired,
-        displayCurrency: PropTypes.string.isRequired,
-        showZeroShareHolding: PropTypes.bool.isRequired
+    constructor(props) {
+        super(props);
+        this.refreshQuotes = this.refreshQuotes.bind(this);
     }
 
     componentDidMount() {
@@ -31,7 +29,7 @@ class Performance extends React.Component {
         }
     }
 
-    refreshQuotes = e => {
+    refreshQuotes(e) {
         if (e) {
             e.preventDefault();
         }
@@ -56,6 +54,13 @@ class Performance extends React.Component {
         );
     }
 }
+
+Performance.propTypes = {
+    holdings: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired,
+    displayCurrency: PropTypes.string.isRequired,
+    showZeroShareHolding: PropTypes.bool.isRequired
+};
 
 const mapStateToProps = state => {
     return {

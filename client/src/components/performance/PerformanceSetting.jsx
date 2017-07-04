@@ -27,11 +27,6 @@ const GoBackButton = withRouter(({ history }) => {
 });
 
 class PerformanceSetting extends React.Component {
-    static propTypes = {
-        showZeroShareHolding: PropTypes.bool.isRequired,
-        actions: PropTypes.object.isRequired
-    }
-
     render() {
         return (
             <div className="card">
@@ -49,6 +44,11 @@ class PerformanceSetting extends React.Component {
         );
     }
 }
+
+PerformanceSetting.propTypes = {
+    showZeroShareHolding: PropTypes.bool.isRequired,
+    actions: PropTypes.object.isRequired
+};
 
 const mapStateToProps = (state) => ({
     showZeroShareHolding: state.portfolio.showZeroShareHolding

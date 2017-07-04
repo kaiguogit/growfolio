@@ -6,15 +6,6 @@ import drilldown from 'highcharts/modules/drilldown';
 import isEqual from 'lodash.isequal';
 
 class PieChart extends React.Component {
-
-    static propTypes = {
-        data: PropTypes.array.isRequired,
-        container: PropTypes.string.isRequired,
-        title: PropTypes.string,
-        subtitle: PropTypes.string,
-        drilldownArray: PropTypes.array
-    }
-
     shouldComponentUpdate(nextProps) {
         // only update the chart when data is changed.
         // The actual change rely on the key passed to Chart.
@@ -80,5 +71,13 @@ class PieChart extends React.Component {
         );
     }
 }
+
+PieChart.propTypes = {
+    data: PropTypes.array.isRequired,
+    container: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    drilldownArray: PropTypes.array
+};
 
 export default PieChart;

@@ -3,21 +3,13 @@ import PropTypes from 'prop-types';
 
 // Create a collapsible row to show/hide its children
 class TableCategory extends React.Component {
-    static propTypes = {
-        title: PropTypes.string.isRequired,
-        columnsCount: PropTypes.number.isRequired,
-        children: PropTypes.oneOfType([
-            PropTypes.arrayOf(PropTypes.node),
-            PropTypes.node
-        ])
-    };
-
     constructor(props) {
         super(props);
         this.state = {collapse: true};
+        this.toggleCollapse = this.toggleCollapse.bind(this);
     }
 
-    toggleCollapse = () => {
+    toggleCollapse() {
         this.setState({collapse: !this.state.collapse});
     }
 
@@ -38,5 +30,14 @@ class TableCategory extends React.Component {
         );
     }
 }
+
+TableCategory.propTypes = {
+    title: PropTypes.string.isRequired,
+    columnsCount: PropTypes.number.isRequired,
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ])
+};
 
 export default TableCategory;

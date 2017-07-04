@@ -69,9 +69,9 @@ ExchangeRate.propTypes = {
  * Show change summary and exchange rate watch list
  */
 class SummaryBar extends React.Component {
-    static propTypes = {
-        performance: PropTypes.object.isRequired,
-        currencyRates: PropTypes.array.isRequired,
+    constructor(props) {
+        super(props);
+        this.totalValue = this.totalValue.bind(this);
     }
 
     totalValue() {
@@ -112,6 +112,11 @@ class SummaryBar extends React.Component {
         );
     }
 }
+
+SummaryBar.propTypes = {
+    performance: PropTypes.object.isRequired,
+    currencyRates: PropTypes.array.isRequired,
+};
 
 const mapStateToProps = state => ({
     performance: getTotalPerformance(state),

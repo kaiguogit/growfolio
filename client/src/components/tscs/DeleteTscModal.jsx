@@ -7,17 +7,10 @@ import { bindActionCreators } from 'redux';
 import Modal from '../../utils/modal/Modal.jsx';
 
 class DeleteTscModal extends React.Component {
-    static propTypes = {
-        isOpened: PropTypes.bool.isRequired,
-        isFetching: PropTypes.bool.isRequired,
-        actions: PropTypes.object.isRequired,
-        tscId: PropTypes.string
-    }
-
     constructor () {
         super();
-        this.handleCloseModal = this.handleCloseModal.bind(this);
         this.state = {secModal: false}
+        this.handleCloseModal = this.handleCloseModal.bind(this);
     }
     handleCloseModal() {
         this.props.actions.toggleTscsDeleteModal(false);
@@ -39,6 +32,13 @@ class DeleteTscModal extends React.Component {
         );
     }
 }
+
+DeleteTscModal.propTypes = {
+    isOpened: PropTypes.bool.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    actions: PropTypes.object.isRequired,
+    tscId: PropTypes.string
+};
 
 const mapStateToProps = state => {
     return {

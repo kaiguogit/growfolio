@@ -5,11 +5,6 @@ import { connect } from 'react-redux';
 import PieChart from '../../components/PieChart.jsx';
 
 class TargetAllocationWithDrilldown extends React.Component {
-
-    static propTypes = {
-        balance: PropTypes.object.isRequired,
-    }
-
     render() {
         const { balance } = this.props;
 
@@ -61,6 +56,10 @@ class TargetAllocationWithDrilldown extends React.Component {
         );
     }
 }
+
+TargetAllocationWithDrilldown.propTypes = {
+    balance: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = state => ({
     balance: state.balance

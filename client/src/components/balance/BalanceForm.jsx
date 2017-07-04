@@ -11,12 +11,6 @@ import { getTotalPerformance } from '../../selectors';
 import { percentage, currency, redOrGreen } from '../../utils';
 
 class BalanceForm extends React.Component {
-    static propTypes = {
-        total: PropTypes.object.isRequired,
-        actions: PropTypes.object.isRequired,
-        balance: PropTypes.object.isRequired,
-    }
-
     constructor(props) {
         super(props);
         // To be able to type 1.01
@@ -24,6 +18,15 @@ class BalanceForm extends React.Component {
         // This way we can type decimal percentage without being overridden by new props.
         // http://stackoverflow.com/questions/28072727/translating-between-cents-and-dollars-in-html-input-in-react
         this.state = {investAmount: 0, balance: props.balance};
+
+        this.handlePercentageChange = this.handlePercentageChange.bind(this);
+        this.handleInvestAmountChange = this.handleInvestAmountChange.bind(this);
+        this.handleLabelChange = this.handleLabelChange.bind(this);
+        this.cloneAllPercentage = this.cloneAllPercentage.bind(this);
+        this.resetAllLabel = this.resetAllLabel.bind(this);
+        this.resetAllPercentage = this.resetAllPercentage.bind(this);
+        this.renderLabelSelector = this.renderLabelSelector.bind(this);
+        this.saveBalance = this.saveBalance.bind(this);
     }
 
     componentDidMount() {
@@ -36,7 +39,7 @@ class BalanceForm extends React.Component {
         }
     }
 
-    handlePercentageChange = e => {
+    handlePercentageChange(e) {
         let newBalance = Object.assign({}, this.state.balance);
         let newHolding = Object.assign({}, newBalance[e.target.name]);
         newHolding.percentage = e.target.value;
@@ -48,20 +51,20 @@ class BalanceForm extends React.Component {
         });
     }
 
-    handleInvestAmountChange = e => {
+    handleInvestAmountChange(e) {
         this.setState({
             investAmount: + e.target.value
         });
     }
 
-    handleLabelChange = e => {
+    handleLabelChange(e) {
         this.props.actions.updateBalanceLabel({
             symbol: e.target.name,
             label: e.target.value
         });
     }
 
-    cloneAllPercentage = () => {
+    cloneAllPercentage() {
         this.props.total.holdings.forEach(holding => {
             this.props.actions.updateBalancePercentage({
                 symbol: holding.symbol,
@@ -70,7 +73,7 @@ class BalanceForm extends React.Component {
         });
     }
 
-    resetAllLabel = () => {
+    resetAllLabel() {
         this.props.total.holdings.forEach(holding => {
             this.props.actions.updateBalanceLabel({
                 symbol: holding.symbol,
@@ -79,7 +82,7 @@ class BalanceForm extends React.Component {
         });
     }
 
-    resetAllPercentage = () => {
+    resetAllPercentage() {
         this.props.total.holdings.forEach(holding => {
             this.props.actions.updateBalancePercentage({
                 symbol: holding.symbol,
@@ -88,7 +91,7 @@ class BalanceForm extends React.Component {
         });
     }
 
-    renderLabelSelector = (symbol) => {
+    renderLabelSelector(symbol) {
         let label = '';
         let holding = this.props.balance[symbol];
         if (holding && holding.label) {
@@ -110,7 +113,7 @@ class BalanceForm extends React.Component {
         );
     }
 
-    saveBalance = () => {
+    saveBalance() {
         this.props.actions.createAllocations(this.props.balance);
     }
 
@@ -206,6 +209,12 @@ class BalanceForm extends React.Component {
         );
     }
 }
+
+BalanceForm.propTypes = {
+    total: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
+    balance: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = state => {
     const total = getTotalPerformance(state);

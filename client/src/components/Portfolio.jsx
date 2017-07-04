@@ -20,16 +20,6 @@ import PerformanceSetting from './performance/PerformanceSetting.jsx';
 import NotFoundPage from './NotFoundPage.jsx';
 
 class Portfolio extends React.Component {
-    static propTypes = {
-        selectedTab: PropTypes.string.isRequired,
-        actions: PropTypes.object.isRequired,
-        tscs: PropTypes.object,
-        isFetching: PropTypes.bool.isRequired,
-        isTscsFetching: PropTypes.bool.isRequired,
-        children: PropTypes.element,
-        history: PropTypes.object.isRequired
-    };
-
     componentDidMount() {
         const tscs = this.props.tscs;
         if (Object.keys(tscs).length === 0) {
@@ -90,6 +80,15 @@ class Portfolio extends React.Component {
         );
     }
 }
+
+Portfolio.propTypes = {
+    selectedTab: PropTypes.string.isRequired,
+    actions: PropTypes.object.isRequired,
+    tscs: PropTypes.object,
+    isFetching: PropTypes.bool.isRequired,
+    isTscsFetching: PropTypes.bool.isRequired,
+    children: PropTypes.element
+};
 
 const mapStateToProps = state => {
     return {

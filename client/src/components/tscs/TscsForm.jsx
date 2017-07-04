@@ -1,51 +1,43 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 import SymbolAutoComplete from './SymbolAutoComplete.jsx';
 import {Input, FormGroup, Select} from '../shared/index.jsx';
 
 class TscsForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            type: 'buy',
+            name: '',
+            symbol: '',
+            exch: '',
+            currency: 'CAD',
+            date: '',
+            shares: '',
+            price: '',
+            commission: '',
+            notes: ''
+        };
+        this.getState = this.getState.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSymbolChange = this.handleSymbolChange.bind(this);
+    }
 
-    static propTypes = {
-        onSubmit: PropTypes.func,
-        isFetching: PropTypes.bool
-    };
-
-    state = {
-        type: 'buy',
-        name: '',
-        symbol: '',
-        exch: '',
-        currency: 'CAD',
-        date: '',
-        shares: '',
-        price: '',
-        commission: '',
-        notes: ''
-    };
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        let temp = Object.assign({}, this.state);
-        temp.date = new Date(this.state.date);
-        this.props.onSubmit(temp);
-    };
-
-    getState = () => {
+    getState() {
         let temp = Object.assign({}, this.state);
         temp.date = new Date(this.state.date);
         return temp;
     }
 
-    handleInputChange = e => {
+    handleInputChange(e) {
         this.setState({[e.target.name]: e.target.value});
-    };
+    }
 
-    handleSymbolChange = data => {
+    handleSymbolChange(data) {
         let {symbol, name, exch} = data;
         this.setState({symbol, name, exch});
-    };
+    }
 
     render() {
         let {type, currency, shares, price, commission, notes} = this.state;

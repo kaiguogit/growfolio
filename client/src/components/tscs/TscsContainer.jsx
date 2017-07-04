@@ -11,12 +11,6 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 import AddTscModal from './AddTscModal.jsx';
 
 class TscsContainer extends React.Component {
-    static propTypes = {
-      holdings: PropTypes.array.isRequired,
-      isFetching: PropTypes.bool.isRequired,
-      actions: PropTypes.object.isRequired
-    }
-
     render() {
         const { isFetching, holdings, actions } = this.props;
         const isEmpty = holdings.length === 0;
@@ -37,6 +31,12 @@ class TscsContainer extends React.Component {
         );
     }
 }
+
+TscsContainer.propTypes = {
+    holdings: PropTypes.array.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    actions: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => {
     return {

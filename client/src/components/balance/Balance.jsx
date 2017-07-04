@@ -12,12 +12,6 @@ import CurrenAllocationWithDrilldown from './CurrenAllocationWithDrilldown.jsx';
 import BalanceForm from './BalanceForm.jsx';
 
 class Balance extends React.Component {
-    static propTypes = {
-        holdings: PropTypes.array.isRequired,
-        actions: PropTypes.object.isRequired,
-        displayCurrency: PropTypes.string.isRequired
-    }
-
     render() {
         return (
             <div className="container-fluid">
@@ -36,6 +30,12 @@ class Balance extends React.Component {
         );
     }
 }
+
+Balance.propTypes = {
+    holdings: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired,
+    displayCurrency: PropTypes.string.isRequired
+};
 
 const mapStateToProps = state => {
     return {

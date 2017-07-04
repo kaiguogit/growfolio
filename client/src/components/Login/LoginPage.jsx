@@ -9,15 +9,6 @@ import LoginForm from './LoginForm.jsx';
 import NProgress from 'nprogress';
 
 class LoginPage extends React.Component {
-
-    static propTypes = {
-        actions: PropTypes.object.isRequired,
-        errors: PropTypes.object,
-        message: PropTypes.string,
-        success: PropTypes.bool,
-        isFetching: PropTypes.bool,
-        history: PropTypes.object
-    }
     /**
     * Class constructor.
     */
@@ -90,6 +81,15 @@ class LoginPage extends React.Component {
         );
     }
 }
+
+
+LoginPage.propTypes = {
+    actions: PropTypes.object.isRequired,
+    errors: PropTypes.object,
+    message: PropTypes.string,
+    success: PropTypes.bool,
+    isFetching: PropTypes.bool
+};
 
 const mapStateToProps = state => {
     const {errors, message, success, isFetching} = state.auth.login;

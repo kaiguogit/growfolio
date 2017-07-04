@@ -8,15 +8,6 @@ import * as actions from '../../actions/auth';
 import NProgress from 'nprogress';
 
 class SignUpPage extends React.Component {
-
-    static propTypes = {
-        actions: PropTypes.object.isRequired,
-        errors: PropTypes.object,
-        message: PropTypes.string,
-        success: PropTypes.bool,
-        isFetching: PropTypes.bool
-    }
-
     /**
      * Class constructor.
      */
@@ -80,6 +71,14 @@ class SignUpPage extends React.Component {
         );
     }
 }
+
+SignUpPage.propTypes = {
+    actions: PropTypes.object.isRequired,
+    errors: PropTypes.object,
+    message: PropTypes.string,
+    success: PropTypes.bool,
+    isFetching: PropTypes.bool
+};
 
 const mapStateToProps = state => {
   const {errors, message, success, isFetching} = state.auth.signup;

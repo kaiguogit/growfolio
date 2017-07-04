@@ -4,10 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 class RefreshButton extends React.Component {
-    static propTypes = {
-        refreshFn: PropTypes.func.isRequired,
-        isFetching: PropTypes.bool.isRequired
-    }
     render() {
         const { isFetching, refreshFn } = this.props;
         return(
@@ -22,6 +18,11 @@ class RefreshButton extends React.Component {
         );
     }
 }
+
+RefreshButton.propTypes = {
+    refreshFn: PropTypes.func.isRequired,
+    isFetching: PropTypes.bool.isRequired
+};
 
 const mapStateToProps = state => {
     return {

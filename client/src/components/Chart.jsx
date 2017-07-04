@@ -4,13 +4,6 @@ import PropTypes from 'prop-types';
 import Highcharts from 'highcharts';
 
 class Chart extends React.Component {
-    static propTypes = {
-        type: PropTypes.string,
-        container: PropTypes.string.isRequired,
-        options: PropTypes.object.isRequired,
-        modules: PropTypes.array
-    }
-
     componentDidMount() {
         // Extend Highcharts with modules
         if (this.props.modules) {
@@ -32,5 +25,12 @@ class Chart extends React.Component {
         return React.createElement('div', { id: this.props.container });
     }
 }
+
+Chart.propTypes = {
+    type: PropTypes.string,
+    container: PropTypes.string.isRequired,
+    options: PropTypes.object.isRequired,
+    modules: PropTypes.array
+};
 
 export default Chart;

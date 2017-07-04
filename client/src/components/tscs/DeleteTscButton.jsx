@@ -6,9 +6,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 class DeleteTscButton extends React.Component {
-    static propTypes = {
-        actions: PropTypes.object.isRequired,
-        tscId: PropTypes.string.isRequired
+    constructor(props) {
+        super(props);
+        this.handleOpenModal = this.handleOpenModal.bind(this);
     }
 
     handleOpenModal() {
@@ -23,6 +23,11 @@ class DeleteTscButton extends React.Component {
         );
     }
 }
+
+DeleteTscButton.propTypes = {
+    actions: PropTypes.object.isRequired,
+    tscId: PropTypes.string.isRequired
+};
 
 const mapDispatchToProps = dispatch => {
     return {

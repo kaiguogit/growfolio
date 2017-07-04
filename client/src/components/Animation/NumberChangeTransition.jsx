@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class NumberChangeTransition extends React.Component {
-    static propTypes = {
-        children: PropTypes.node,
-        upOrDown: PropTypes.bool
+
+    constructor(props) {
+        super(props);
+        this.transitionUpOrDown = this.transitionUpOrDown.bind(this);
     }
 
     transitionUpOrDown() {
@@ -36,5 +37,10 @@ class NumberChangeTransition extends React.Component {
         );
     }
 }
+
+NumberChangeTransition.propTypes = {
+    children: PropTypes.node,
+    upOrDown: PropTypes.bool
+};
 
 export default NumberChangeTransition;
