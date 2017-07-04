@@ -20,17 +20,16 @@ export const deleteTscs = () => ({
     type: types.DELETE_TSCS,
     receivedAt: Date.now()
 });
-export const openTscsForm = () => ({
-    type: types.OPEN_TSCS_FORM
-});
-export const closeTscsForm = () => ({
-    type: types.CLOSE_TSCS_FORM
-});
 
 export const toggleTscsDeleteModal = (showModal, tscId) => ({
     type: types.TOGGLE_TSCS_DELETE_MODAL,
     showModal,
     tscId
+});
+
+export const toggleTscsAddModal = (showModal) => ({
+    type: types.TOGGLE_TSCS_ADD_MODAL,
+    showModal
 });
 
 // Fake API version

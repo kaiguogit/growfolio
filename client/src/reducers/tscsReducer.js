@@ -17,16 +17,6 @@ const tscsReducer = (state = initialState.tscs, action) => {
                 items: action.tscs,
                 lastUpdated: action.receivedAt
             };
-        case types.OPEN_TSCS_FORM:
-            return {
-                ...state,
-                formOpened: true
-            };
-        case types.CLOSE_TSCS_FORM:
-            return {
-                ...state,
-                formOpened: false
-            };
         case types.TOGGLE_TSCS_DELETE_MODAL:
             return {
                 ...state,
@@ -34,6 +24,11 @@ const tscsReducer = (state = initialState.tscs, action) => {
                     isOpened: action.showModal,
                     tscId: action.tscId
                 }
+            };
+        case types.TOGGLE_TSCS_ADD_MODAL:
+            return {
+                ...state,
+                addTscModalOpened: action.showModal
             };
         default:
             return state;

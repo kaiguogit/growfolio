@@ -32,7 +32,13 @@ const makeSymbolUrl = input => {
 const processSymbols = data => {
     let symbols = [];
     if (data.ResultSet && Array.isArray(data.ResultSet.Result)) {
-        symbols = data.ResultSet.Result;
+        symbols = data.ResultSet.Result.map(symbol => ({
+            //Remove symbol suffix, e.g ZPR.TO -> ZPR
+            symbol: symbol.symbol.replace(/\..*/, ''),
+            label: `${symbol.symbol}     ${symbol.name}       ${symbol.exchDisp}`,
+            exch: symbol.exchDisp,
+            name: symbol.name
+        }));
     }
     return symbols;
 };

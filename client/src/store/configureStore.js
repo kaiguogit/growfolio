@@ -23,14 +23,16 @@ function configureStoreProd(initialState) {
 function configureStoreDev(initialState) {
   const middlewares = [
     // Add other middleware on this line...
-    // logger
-    createLogger(),
     // Redux middleware that spits an error on you when you try to mutate your state either inside a dispatch or between dispatches.
     reduxImmutableStateInvariant(),
 
     // thunk middleware can also accept an extra argument to be passed to each thunk action
     // https://github.com/gaearon/redux-thunk#injecting-a-custom-argument
     thunk,
+    // logger
+    // Place logger at bottom to fix issue that fires undefined actions
+    // https://stackoverflow.com/questions/39271923/redux-thunk-dispatch-method-fires-undefined-action
+    createLogger(),
   ];
 
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // add support for Redux dev tools

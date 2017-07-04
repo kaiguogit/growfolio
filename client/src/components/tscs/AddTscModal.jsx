@@ -5,13 +5,13 @@ import * as actions from '../../actions/tscs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Modal from '../../utils/modal/Modal.jsx';
+import TscsForm from './TscsForm.jsx';
 
-class DeleteTscModal extends React.Component {
+class AddTscModal extends React.Component {
     static propTypes = {
         isOpened: PropTypes.bool.isRequired,
-        isFetching: PropTypes.bool.isRequired,
         actions: PropTypes.object.isRequired,
-        tscId: PropTypes.string
+        isFetching: PropTypes.bool.isRequired,
     }
 
     constructor () {
@@ -19,22 +19,27 @@ class DeleteTscModal extends React.Component {
         this.handleCloseModal = this.handleCloseModal.bind(this);
         this.state = {secModal: false}
     }
+
     handleCloseModal() {
-        this.props.actions.toggleTscsDeleteModal(false);
+        this.props.actions.toggleTscsAddModal(false);
+    }
+
+    handleSubmit() {
+        return this.props.actions.createTscs(this.refs.tscsForm.getState());
     }
 
     render() {
-        let {isOpened, isFetching, actions, tscId} = this.props;
+        let {isOpened, isFetching} = this.props;
         // modal modal-dialog classes are from bootstrap _modal.scss
         return (
             <Modal
                 isOpen={isOpened}
-                contentLabel="Delete Transaction"
+                contentLabel="Add Transaction"
                 onClose={this.handleCloseModal}
-                onSubmit={() => actions.removeTscs(tscId)}
+                onSubmit={this.handleSubmit.bind(this)}
                 isFetching={isFetching}
             >
-                {"Do you want to delete this transaction?"}
+                <TscsForm ref="tscsForm"/>
             </Modal>
         );
     }
@@ -42,8 +47,7 @@ class DeleteTscModal extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        isOpened: state.tscs.deleteTscModalData.isOpened,
-        tscId: state.tscs.deleteTscModalData.tscId,
+        isOpened: state.tscs.addTscModalOpened,
         isFetching: state.tscs.isFetching
     };
 };
@@ -54,4 +58,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteTscModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddTscModal);

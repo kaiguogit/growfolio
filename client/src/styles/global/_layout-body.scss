@@ -2,6 +2,16 @@
 // There may be some times where we want it flush. In that case, use
 // `.mod-flush`. You could also just drop this component for your project.
 
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 body {
   margin-top: 4em;
 }

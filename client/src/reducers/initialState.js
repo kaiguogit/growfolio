@@ -8,11 +8,11 @@ export default {
     tscs: {
         isFetching: false,
         items: {},
-        formOpened: false,
         deleteTscModalData: {
             isOpened: false,
             tscId: ''
         },
+        addTscModalOpened: false,
         lastUpdated: Date.now()
     },
     quotes: {

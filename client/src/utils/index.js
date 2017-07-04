@@ -74,9 +74,16 @@ export const date = dateStr => {
 export const capitalize = str => {
     return str[0].toUpperCase() + str.slice(1);
 };
+
 /**
  * Utilities
  */
+
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
+export const escapeRegexCharacters = (str) => {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 export const errorHandler = error => {
     console.log(error);
 };
