@@ -66,6 +66,10 @@ tbody {
           background: inherit;
       }
     }
+    tr.table-category > td > .table-category-title {
+      position: sticky;
+      left: 0;
+    }
     &.table-striped {
       tbody tr:nth-of-type(odd) td:first-child {
         background-color: $light-gray-100;

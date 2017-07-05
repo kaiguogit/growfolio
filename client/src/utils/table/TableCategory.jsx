@@ -21,8 +21,10 @@ class TableCategory extends React.Component {
             <tbody>
                 <tr className="table-category">
                     <td colSpan={this.props.columnsCount} onClick={this.toggleCollapse} className="toggle-label">
-                        <i className={"fa " + (this.state.collapse ? "fa-plus-square" : "fa-minus-square")} aria-hidden="true"/>
-                        <span>{this.props.title}</span>
+                        <span className="table-category-title">
+                            <i className={"fa " + (this.state.collapse ? "fa-plus-square" : "fa-minus-square")} aria-hidden="true"/>
+                            <span>{this.props.title}</span>
+                        </span>
                     </td>
                 </tr>
                 {this.state.collapse || this.props.children}
