@@ -35,7 +35,9 @@ const processSymbols = data => {
         symbols = data.ResultSet.Result.map(symbol => ({
             //Remove symbol suffix, e.g ZPR.TO -> ZPR
             symbol: symbol.symbol.replace(/\..*/, ''),
-            label: `${symbol.symbol}     ${symbol.name}       ${symbol.exchDisp}`,
+            // Save original symbol
+            $symbol: symbol.symbol,
+            label: `${symbol.symbol} (${symbol.name} Exchange: ${symbol.exchDisp})`,
             exch: symbol.exchDisp,
             name: symbol.name
         }));

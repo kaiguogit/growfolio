@@ -21,16 +21,14 @@ const getMatchingSymbol = (value, symbols) => {
     const regex = new RegExp('^' + escapedValue, 'i');
 
     return symbols.filter(symbol => {
-        return regex.test(symbol.name) || regex.test(symbol.symbol);
+        return regex.test(symbol.$symbol);
     });
 };
 
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = suggestion => {
-    return suggestion.symbol + ' (' + suggestion.name + ')';
-};
+const getSuggestionValue = suggestion => suggestion.label;
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
@@ -56,6 +54,9 @@ class SymbolAutoComplete extends React.Component {
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        // https://codepen.io/moroshko/pen/EPZpev
+        const DEBOUNCE_TIMEOUT = 800;
+        this.debouncedLoadSuggestions = debounce(this.loadSuggestions, DEBOUNCE_TIMEOUT);
     }
 
     onChange(event, { newValue, /*method*/ }) {
@@ -64,20 +65,18 @@ class SymbolAutoComplete extends React.Component {
         });
     }
 
+    loadSuggestions(value) {
+        this.props.actions.fetchSymbols(value).then(symbols => {
+            this.setState({
+                suggestions: getMatchingSymbol(value, symbols)
+            });
+        });
+    }
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested({ value }) {
         // TODO: Add logic to cancel previous request.
-        // https://codepen.io/moroshko/pen/EPZpev
-        const DEBOUNCE_TIMEOUT = 800;
-        const debounceFn = debounce(() => {
-            this.props.actions.fetchSymbols(value).then(symbols => {
-                this.setState({
-                    suggestions: getMatchingSymbol(value, symbols)
-                });
-            });
-        }, DEBOUNCE_TIMEOUT);
-        debounceFn(value);
+        this.debouncedLoadSuggestions(value);
     }
 
     // Autosuggest will call this function every time you need to clear suggestions.
