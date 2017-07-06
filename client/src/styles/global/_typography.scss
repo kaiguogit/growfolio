@@ -160,10 +160,35 @@ hr {
 
 // Smaller Screens
 
-@media #{$small} {
+// @media #{$small} {
 
+//   body {
+//     font-size: 16px;
+//   }
+
+// }
+
+// https://v4-alpha.getbootstrap.com/layout/overview/
+@include media-breakpoint-down(sm) {
+    body {
+      font-size: 16px;
+    }
+}
+
+@include media-breakpoint-between(sm, md) {
   body {
-    font-size: 16px;
+    font-size: 18px;
   }
+}
 
+@include media-breakpoint-between(md, lg) {
+  body {
+    font-size: 20px;
+  }
+}
+
+@include media-breakpoint-between(lg, xl) {
+  body {
+    font-size: 22px;
+  }
 }
