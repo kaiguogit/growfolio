@@ -68,7 +68,7 @@ tbody {
     }
     tr.table-category > td > .table-category-title {
       position: sticky;
-      left: 0;
+      left: 5px;
     }
     &.table-striped {
       tbody tr:nth-of-type(odd) td:first-child {
