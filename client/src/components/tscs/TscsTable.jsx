@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { TSCS_COLUMNS } from './columns';
 import { renderCell } from '../../utils';
-import TableCategory from '../../utils/table/TableCategory.jsx';
+import TableCategory from '../shared/table/TableCategory.jsx';
 import DeleteTscButton from './DeleteTscButton.jsx';
 
 const TscsTable = ({holdings}) => {

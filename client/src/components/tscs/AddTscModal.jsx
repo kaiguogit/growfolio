@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as actions from '../../actions/tscs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Modal from '../../utils/modal/Modal.jsx';
+import Modal from '../shared/modal/Modal.jsx';
 import TscsForm from './TscsForm.jsx';
 
 class AddTscModal extends React.Component {
