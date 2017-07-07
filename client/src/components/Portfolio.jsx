@@ -39,7 +39,7 @@ class Portfolio extends React.Component {
         const tabButton = 'tabbed-pane-nav-item-button';
         const url = '/portfolio/';
         return (
-            <div>
+            <div className="layout-center-xl">
                 <div className="tabbed-pane-nav mod-left u-clearfix">
                     <ul>
                         <li className={tabItem}>
@@ -59,22 +59,20 @@ class Portfolio extends React.Component {
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <div className={`tabbed-pane-main-col-loading ${isTscsFetching ? '' : 'u-hidden'}`}>
-                        <span className="tabbed-pane-main-col-loading-spinner">
-                            <i className="fa fa-spinner fa-2x fa-spin" aria-hidden="true"/>
-                        </span>
-                    </div>
-                    <div className={isTscsFetching ? 'u-hidden' : ''}>
-                        <Switch>
-                            <Route exact path="/portfolio/" render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
-                            <Route exact path={url + "performance"} component={Performance}/>
-                            <Route exact path={url + "transactions"} component={TscsContainer}/>
-                            <Route exact path={url + "setting"} component={PerformanceSetting}/>
-                            <Route exact path={url + "balance"} component={Balance}/>
-                            <Route component={NotFoundPage}/>
-                        </Switch>
-                    </div>
+                <div className={`tabbed-pane-main-col-loading ${isTscsFetching ? '' : 'u-hidden'}`}>
+                    <span className="tabbed-pane-main-col-loading-spinner">
+                        <i className="fa fa-spinner fa-2x fa-spin" aria-hidden="true"/>
+                    </span>
+                </div>
+                <div className={isTscsFetching ? 'u-hidden' : ''}>
+                    <Switch>
+                        <Route exact path="/portfolio/" render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
+                        <Route exact path={url + "performance"} component={Performance}/>
+                        <Route exact path={url + "transactions"} component={TscsContainer}/>
+                        <Route exact path={url + "setting"} component={PerformanceSetting}/>
+                        <Route exact path={url + "balance"} component={Balance}/>
+                        <Route component={NotFoundPage}/>
+                    </Switch>
                 </div>
             </div>
         );
