@@ -20,7 +20,7 @@ class AddTscModal extends React.Component {
     }
 
     handleSubmit() {
-        return this.props.actions.createTscs(this.refs.tscsForm.getState());
+        return this.props.actions.createTscs(this.tscsForm.getState());
     }
 
     render() {
@@ -34,7 +34,11 @@ class AddTscModal extends React.Component {
                 onSubmit={this.handleSubmit.bind(this)}
                 isFetching={isFetching}
             >
-                <TscsForm ref="tscsForm"/>
+            {/* Use callback instead of string in ref according to React documentation.
+                https://facebook.github.io/react/docs/refs-and-the-dom.html#legacy-api-string-refs
+                https://github.com/facebook/react/pull/8333#issuecomment-271648615
+            */}
+                <TscsForm ref={tscsForm => this.tscsForm = tscsForm}/>
             </Modal>
         );
     }
