@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import debounce from 'lodash.debounce';
 import {escapeRegexCharacters} from '../../utils';
+import IsolatedScroll from 'react-isolated-scroll';
 
 // Teach Autosuggest how to calculate suggestions for any given input value.
 // Match name or symbol
@@ -36,6 +37,23 @@ const renderSuggestion = suggestion => (
         {getSuggestionValue(suggestion)}
     </div>
 );
+
+// How do I limit the scrolling of the suggestions container to the container itself?
+// https://github.com/moroshko/react-autosuggest/blob/master/FAQ.md#how-do-i-limit-the-scrolling-of-the-suggestions-container-to-the-container-itself
+const renderSuggestionsContainer = ({ containerProps, children }) => {
+  const { ref, ...restContainerProps } = containerProps;
+  const callRef = isolatedScroll => {
+    if (isolatedScroll !== null) {
+      ref(isolatedScroll.component);
+    }
+  };
+
+  return (
+    <IsolatedScroll ref={callRef} {...restContainerProps}>
+      {children}
+    </IsolatedScroll>
+  );
+};
 
 class SymbolAutoComplete extends React.Component {
     constructor() {
@@ -105,6 +123,7 @@ class SymbolAutoComplete extends React.Component {
         return (
             <Autosuggest
                 suggestions={suggestions}
+                renderSuggestionsContainer={renderSuggestionsContainer}
                 onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                 getSuggestionValue={getSuggestionValue}
