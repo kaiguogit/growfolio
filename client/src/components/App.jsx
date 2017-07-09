@@ -11,7 +11,6 @@ import Auth from '../services/Auth';
 
 // https://reacttraining.com/react-router/web/example/auth-workflow
 const PrivateRoute = ({ component: Component, ...rest }) => {
-    console.log(rest);
     return (
         <Route {...rest} render={props => (
             Auth.loggedIn() ? (
