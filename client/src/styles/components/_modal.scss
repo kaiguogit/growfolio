@@ -1,8 +1,14 @@
-/* Remove scroll on the body when react-modal is open */
-.ReactModal__Body--open {
-    overflow: hidden;
+.modal-dialog.modal-dialog-show {
+    transform: translate(0, 0) !important;
 }
 
+.modal-dialog.modal-dialog-leave {
+    transform: translate(0, -25%) !important;
+}
+
+.react-modal {
+    display: block;
+}
 .modal {
     background-color: rgba(255, 255, 255, 0.75);
 }
@@ -10,34 +16,7 @@
 .modal-dialog {
     max-height: 100%;
     overflow-y: auto;
-
     &:focus {
         outline: 0;
     }
 }
-
-.modal.show {
-    display: block;
-}
-
-// Used for ReactCSSTransitionGroup
-// Same animation in from bootstrap _modal.scss
-.modal-show {
-    &-appear, &-enter {
-        @include transition(transform .3s ease-out);
-        transform: translate(0, -25%);
-        &-active {
-            transform: translate(0, 0);
-        }
-    }
-}
-
-// Used for ReactCSSTransitionGroup
-.modal-show-leave {
-    @include transition(transform .3s ease-out);
-    transform: translate(0, 0);
-    &-active {
-        transform: translate(0, -25%) !important;
-    }
-}
-
