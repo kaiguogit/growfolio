@@ -187,7 +187,7 @@ hr {
   }
 }
 
-@include media-breakpoint-between(lg, xl) {
+@include media-breakpoint-up(lg) {
   body {
     font-size: 22px;
   }
