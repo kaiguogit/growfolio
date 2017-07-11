@@ -16,6 +16,7 @@ class TscsForm extends React.Component {
             date: '',
             shares: '',
             price: '',
+            totalOrPerShare: 'true',
             commission: '',
             notes: ''
         };
@@ -40,7 +41,7 @@ class TscsForm extends React.Component {
     }
 
     render() {
-        let {type, currency, shares, price, commission, notes} = this.state;
+        let {type, currency, shares, price, commission, notes, totalOrPerShare} = this.state;
         return (
             <form className="tscs-form">
                 <FormGroup>
@@ -80,6 +81,12 @@ class TscsForm extends React.Component {
                     <label htmlFor="price">Price</label>
                     <Input type="number" name="price" id="price"
                         value={price} onChange={this.handleInputChange}/>
+                    <Select placeholder="select" name="totalOrPerShare" id="totalOrPerShare"
+                        value={totalOrPerShare}
+                        onChange={this.handleInputChange}>
+                        <option value="true">Total</option>
+                        <option value="false">Per Share</option>
+                    </Select>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="commission">Commission</label>

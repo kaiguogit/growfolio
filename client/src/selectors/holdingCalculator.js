@@ -78,7 +78,8 @@ const _calcHoldingCost = holding => {
     holding.transactions.forEach(tsc => {
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
-                tsc.total = tsc.shares * tsc.price + tsc.commission;
+                tsc.total = tsc.totalOrPerShare === 'true' ? tsc.price :
+                    (tsc.shares * tsc.price + tsc.commission);
                 tsc.acbChange = tsc.total;
 
                 // Accumulate all buy cost or overall return.
@@ -86,7 +87,8 @@ const _calcHoldingCost = holding => {
                 holding.shares += tsc.shares;
 
             } else if (tsc.type === 'sell') {
-                tsc.total = tsc.shares * tsc.price - tsc.commission;
+                tsc.total = tsc.totalOrPerShare === 'true' ? tsc.price :
+                    (tsc.shares * tsc.price - tsc.commission);
                 // acb change is cost * (sold shares / holding shares)
                 tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
                 tsc.realized_gain = tsc.total + tsc.acbChange;
@@ -109,7 +111,8 @@ const _calcHoldingCost = holding => {
             }
 
         } else if (tsc.type === 'dividend') {
-            tsc.total = tsc.price * tsc.shares + tsc.commission;
+            tsc.total = tsc.totalOrPerShare  === 'true' ? tsc.price :
+                (tsc.price * tsc.shares + tsc.commission);
             holding.realized_gain += tsc.total;
             holding.dividend += tsc.total;
         }
