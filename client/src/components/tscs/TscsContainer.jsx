@@ -9,8 +9,14 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 
 class TscsContainer extends React.Component {
     render() {
-        const { isFetching, holdings } = this.props;
+        let { isFetching, holdings, showZeroShareHolding } = this.props;
         const isEmpty = holdings.length === 0;
+
+        // Hide holding with 0 share.
+        if (!showZeroShareHolding) {
+            holdings = holdings.filter(holding => holding.shares);
+        }
+
         return (
             <div>
                 {isEmpty
@@ -27,13 +33,15 @@ class TscsContainer extends React.Component {
 
 TscsContainer.propTypes = {
     holdings: PropTypes.array.isRequired,
-    isFetching: PropTypes.bool.isRequired
+    isFetching: PropTypes.bool.isRequired,
+    showZeroShareHolding: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {
     return {
         holdings: getHoldings(state),
         isFetching: state.tscs.isFetching,
+        showZeroShareHolding: state.portfolio.showZeroShareHolding
     };
 };
 

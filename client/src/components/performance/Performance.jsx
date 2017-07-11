@@ -21,6 +21,7 @@ class Performance extends React.Component {
 
     render() {
         let { holdings, showZeroShareHolding } = this.props;
+        // Hide holding with 0 share.
         if (!showZeroShareHolding) {
             holdings = holdings.filter(holding => holding.shares);
         }
