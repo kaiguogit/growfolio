@@ -12,28 +12,13 @@ import SummaryBar from './SummaryBar.jsx';
 import SettingButton from './SettingButton.jsx';
 
 class Performance extends React.Component {
-    constructor(props) {
-        super(props);
-        this.refreshQuotes = this.refreshQuotes.bind(this);
-    }
-
-    componentDidMount() {
-        this.props.actions.setIntervalRefreshQuotes();
-    }
 
     componentDidUpdate(prevProps) {
         //Only refresh quotes when holdings or display currency changed
         if (!(isEqual(prevProps.holdings, this.props.holdings) &&
             prevProps.displayCurrency === this.props.displayCurrency)) {
-            this.refreshQuotes();
+            this.props.actions.refreshQuotes();
         }
-    }
-
-    refreshQuotes(e) {
-        if (e) {
-            e.preventDefault();
-        }
-        this.props.actions.refreshQuotes();
     }
 
     render() {
@@ -45,7 +30,7 @@ class Performance extends React.Component {
         return(
             <div>
                 <div>
-                    <RefreshButton refreshFn={this.refreshQuotes}/>
+                    <RefreshButton/>
                     <SettingButton/>
                 </div>
                 <SummaryBar/>

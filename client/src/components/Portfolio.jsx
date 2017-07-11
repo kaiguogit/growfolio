@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as rootActions from '../actions';
 import * as tscsActions from '../actions/tscs';
+import * as quotesActions from '../actions/quotes';
+
 import NavLink from './NavLink.jsx';
 
 import {PERFORMANCE, TSCS, BALANCE} from '../constants/navigation';
@@ -23,8 +25,10 @@ class Portfolio extends React.Component {
     componentDidMount() {
         const tscs = this.props.tscs;
         if (Object.keys(tscs).length === 0) {
-            this.props.actions.fetchTscs();
+            this.props.actions.fetchTscs().then(
+                this.props.actions.refreshQuotes);
         }
+        this.props.actions.setIntervalRefreshQuotes();
     }
 
     componentWillUnmount() {
@@ -99,7 +103,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        actions: bindActionCreators(Object.assign(rootActions, tscsActions), dispatch)
+        actions: bindActionCreators(Object.assign(rootActions, tscsActions, quotesActions), dispatch)
     };
 };
 
