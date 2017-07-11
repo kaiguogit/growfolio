@@ -9,11 +9,9 @@ import * as actions from '../../actions/portfolio';
 import CurrencySelector from './CurrencySelector.jsx';
 import {CheckBox} from '../shared/index.jsx';
 
-// Programmatically navigate using react routerv4
-// https://stackoverflow.com/a/42121109
 const GoBackButton = withRouter(({ history }) => {
     const onClick = () => {
-        history.push('/portfolio');
+        history.goBack();
     };
 
     return (
