@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Header from './Header.jsx';
-import Portfolio from './Portfolio.jsx';
+import Portfolio from './portfolio/Portfolio.jsx';
 import SignUpPage from './SignUp/SignUpPage.jsx';
 import LoginPage from './Login/LoginPage.jsx';
 import NotFoundPage from './NotFoundPage.jsx';

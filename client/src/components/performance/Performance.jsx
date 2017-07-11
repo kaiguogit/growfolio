@@ -6,10 +6,8 @@ import { connect } from 'react-redux';
 import * as quotesActions from '../../actions/quotes';
 import isEqual from 'lodash.isequal';
 import { getHoldings } from '../../selectors';
-import RefreshButton from './RefreshButton.jsx';
 import PerformanceTable from './PerformanceTable.jsx';
 import SummaryBar from './SummaryBar.jsx';
-import SettingButton from './SettingButton.jsx';
 
 class Performance extends React.Component {
 
@@ -29,10 +27,6 @@ class Performance extends React.Component {
 
         return(
             <div>
-                <div>
-                    <RefreshButton/>
-                    <SettingButton/>
-                </div>
                 <SummaryBar/>
                 <PerformanceTable symbols={holdings.map(x => x.symbol)}/>
             </div>

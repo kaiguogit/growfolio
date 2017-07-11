@@ -4,22 +4,24 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as rootActions from '../actions';
-import * as tscsActions from '../actions/tscs';
-import * as quotesActions from '../actions/quotes';
+import * as rootActions from '../../actions';
+import * as tscsActions from '../../actions/tscs';
+import * as quotesActions from '../../actions/quotes';
 
-import NavLink from './NavLink.jsx';
+import NavLink from '../NavLink.jsx';
 
-import {PERFORMANCE, TSCS, BALANCE} from '../constants/navigation';
-import * as Utils from '../utils';
+import {PERFORMANCE, TSCS, BALANCE} from '../../constants/navigation';
+import * as Utils from '../../utils';
 
 import NProgress from 'nprogress';
 
-import Performance from './performance/Performance.jsx';
-import TscsContainer from './tscs/TscsContainer.jsx';
-import Balance from './balance/Balance.jsx';
-import PerformanceSetting from './performance/PerformanceSetting.jsx';
-import NotFoundPage from './NotFoundPage.jsx';
+import Performance from '../performance/Performance.jsx';
+import TscsContainer from '../tscs/TscsContainer.jsx';
+import Balance from '../balance/Balance.jsx';
+import PerformanceSetting from '../performance/PerformanceSetting.jsx';
+import ActionBar from './ActionBar.jsx';
+import NotFoundPage from '../NotFoundPage.jsx';
+import AddTscModal from '../tscs/AddTscModal.jsx';
 
 class Portfolio extends React.Component {
     componentDidMount() {
@@ -69,6 +71,7 @@ class Portfolio extends React.Component {
                     </span>
                 </div>
                 <div className={isTscsFetching ? 'u-hidden' : ''}>
+                    <ActionBar/>
                     <Switch>
                         <Route exact path="/portfolio/" render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
                         <Route exact path={url + "performance"} component={Performance}/>
@@ -78,6 +81,7 @@ class Portfolio extends React.Component {
                         <Route component={NotFoundPage}/>
                     </Switch>
                 </div>
+                <AddTscModal/>
             </div>
         );
     }
