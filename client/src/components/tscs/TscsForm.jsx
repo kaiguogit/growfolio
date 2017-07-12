@@ -16,13 +16,14 @@ class TscsForm extends React.Component {
             date: '',
             shares: '',
             price: '',
-            totalOrPerShare: 'true',
+            totalOrPerShare: true,
             commission: '',
             notes: ''
         };
         this.getState = this.getState.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSymbolChange = this.handleSymbolChange.bind(this);
+        this.handleTotalOrPerShareChange = this.handleTotalOrPerShareChange.bind(this);
     }
 
     getState() {
@@ -33,6 +34,10 @@ class TscsForm extends React.Component {
 
     handleInputChange(e) {
         this.setState({[e.target.name]: e.target.value});
+    }
+
+    handleTotalOrPerShareChange(e) {
+        this.setState({[e.target.name]: e.target.value === 'true'});
     }
 
     handleSymbolChange(data) {
@@ -82,8 +87,8 @@ class TscsForm extends React.Component {
                     <Input type="number" name="price" id="price"
                         value={price} onChange={this.handleInputChange}/>
                     <Select placeholder="select" name="totalOrPerShare" id="totalOrPerShare"
-                        value={totalOrPerShare}
-                        onChange={this.handleInputChange}>
+                        value={totalOrPerShare ? "true" : "false"}
+                        onChange={this.handleTotalOrPerShareChange}>
                         <option value="true">Total</option>
                         <option value="false">Per Share</option>
                     </Select>

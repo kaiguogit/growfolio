@@ -82,6 +82,11 @@ const validateTransactionForm = (payload) => {
     errors.price = 'Price is invalid';
   }
 
+  if (typeof payload.totalOrPerShare !== 'boolean') {
+    isFormValid = false;
+    errors.totalOrPerShare = 'TotalOrPerShare can only be true or false';
+  }
+
   if (!isValidNum(payload.commission)) {
     isFormValid = false;
     errors.commission = 'Commission is invalid';
@@ -105,9 +110,7 @@ const validateTransactionForm = (payload) => {
 };
 
 exports.createTransactions = (req, res) => {
-
-
-  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'price', 'type', 'commission', 'date', 'notes'];
+  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'price', 'totalOrPerShare', 'type', 'commission', 'date', 'notes'];
   const data = {};
   keys.forEach((key) => {
     data[key] = req.body[key];

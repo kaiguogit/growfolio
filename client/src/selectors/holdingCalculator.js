@@ -1,4 +1,5 @@
 import { round, divide, avoidNaN } from '../utils';
+import Transaction from './transaction';
 
 /**
  * generate an array of holdings based on transactions
@@ -18,7 +19,7 @@ const _loadTransactionsToHolding = tscsMap => {
         let transactions = tscsMap[symbol];
         transactions.forEach((tsc) => {
             // new object
-            tsc = Object.assign({}, tsc);
+            tsc = new Transaction(tsc);
             // Create holding and add tsc to it.
             let holding = holdings.find(x => x.symbol === tsc.symbol);
             if (!holding) {
@@ -78,8 +79,6 @@ const _calcHoldingCost = holding => {
     holding.transactions.forEach(tsc => {
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
-                tsc.total = tsc.totalOrPerShare === 'true' ? tsc.price :
-                    (tsc.shares * tsc.price + tsc.commission);
                 tsc.acbChange = tsc.total;
 
                 // Accumulate all buy cost or overall return.
@@ -87,8 +86,6 @@ const _calcHoldingCost = holding => {
                 holding.shares += tsc.shares;
 
             } else if (tsc.type === 'sell') {
-                tsc.total = tsc.totalOrPerShare === 'true' ? tsc.price :
-                    (tsc.shares * tsc.price - tsc.commission);
                 // acb change is cost * (sold shares / holding shares)
                 tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
                 tsc.realized_gain = tsc.total + tsc.acbChange;
@@ -109,14 +106,10 @@ const _calcHoldingCost = holding => {
                 tsc.newAcb = 0;
                 tsc.newAverageCost = 0;
             }
-
         } else if (tsc.type === 'dividend') {
-            tsc.total = tsc.totalOrPerShare  === 'true' ? tsc.price :
-                (tsc.price * tsc.shares + tsc.commission);
             holding.realized_gain += tsc.total;
             holding.dividend += tsc.total;
         }
-
         tsc.total = round(tsc.total, 3);
     });
 

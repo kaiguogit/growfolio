@@ -46,6 +46,10 @@ export const percentage = number => {
     }
 };
 
+/** Create function that round number return string value
+ * @param {number} decimal - number of decimal digit to round
+ * @return {function}
+ */
 export const currency = decimal => number => {
     if (decimal === undefined) {
         decimal = 2;
@@ -105,22 +109,6 @@ export const getHeaders = () => new Headers({
     Authorization: `Bearer ${Auth.getToken()}`
 });
 
-export const renderCell = (entry, column) => {
-    let value = entry[column.selector];
-    let content;
-    let filteredValue = column.filter ? column.filter(value) : value;
-    if (column.formatFunction) {
-        content = column.formatFunction(entry, column);
-    } else {
-        content = filteredValue;
-    }
-    return (
-        <span style={column.style} key={filteredValue}>
-            {content}
-        </span>
-    );
-};
-
 // Safely divide
 // https://stackoverflow.com/questions/8072323/best-way-to-prevent-handle-divide-by-0-in-javascript
 export const divide = (a, b) => {
@@ -154,6 +142,22 @@ export const coloredCell = (entry, column) => {
     return (
         <span style={redOrGreen(refValue)}>
             {column.filter ? column.filter(value) : value}
+        </span>
+    );
+};
+
+export const renderCell = (entry, column) => {
+    let value = entry[column.selector];
+    let content;
+    let filteredValue = column.filter ? column.filter(value) : value;
+    if (column.formatFunction) {
+        content = column.formatFunction(entry, column);
+    } else {
+        content = filteredValue;
+    }
+    return (
+        <span style={column.style} key={filteredValue}>
+            {content}
         </span>
     );
 };
