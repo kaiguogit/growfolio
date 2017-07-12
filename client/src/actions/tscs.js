@@ -80,7 +80,7 @@ export const fetchTscs = () => dispatch => {
             let symbol = tsc.symbol;
             tsc.symbol = symbol.toUpperCase();
             tsc.type = tsc.type.toLowerCase();
-            avoidNaN(['shares', 'price', 'commission'], tsc);
+            avoidNaN(['shares', 'amount', 'commission'], tsc);
             tscsMap[symbol] = tscsMap[symbol] || [];
             tscsMap[symbol].push(tsc);
         });

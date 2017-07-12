@@ -77,9 +77,9 @@ const validateTransactionForm = (payload) => {
     errors.shares = 'Shares is invalid';
   }
 
-  if (!isValidNum(payload.price)) {
+  if (!isValidNum(payload.amount)) {
     isFormValid = false;
-    errors.price = 'Price is invalid';
+    errors.amount = 'Amount is invalid';
   }
 
   if (typeof payload.totalOrPerShare !== 'boolean') {
@@ -110,7 +110,7 @@ const validateTransactionForm = (payload) => {
 };
 
 exports.createTransactions = (req, res) => {
-  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'price', 'totalOrPerShare', 'type', 'commission', 'date', 'notes'];
+  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'amount', 'totalOrPerShare', 'type', 'commission', 'date', 'notes'];
   const data = {};
   keys.forEach((key) => {
     data[key] = req.body[key];

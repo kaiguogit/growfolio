@@ -19,7 +19,7 @@ export const TSCS_COLUMNS = [
         title: 'Currency'
     },
     {
-        selector: 'pricePerShare',
+        selector: 'price',
         title: 'Price',
         filter: currency(4)
     },
