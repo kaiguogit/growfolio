@@ -16,7 +16,7 @@ button {
     background: linear-gradient(to bottom, $light-gray-100 0%, $light-gray-200 100%);
     border: 0;
     border-radius: .3em;
-    box-shadow: 0 2px 0 $light-gray-700;
+    box-shadow: 0 1px 0 $light-gray-700;
     color: $default-font-color;
     cursor: pointer;
     display: inline-block;
@@ -79,7 +79,7 @@ button[disabled] {
   input[type="submit"].mod-primary,
   button.mod-primary {
     background: linear-gradient(to bottom, $green-500 0%, $green-600 100%);
-    box-shadow: 0 2px 0 $green-900;
+    box-shadow: 0 1px 0 $green-900;
     color: #fff;
     padding-left: 1.8em;
     padding-right: 1.8em;
@@ -120,7 +120,7 @@ button[disabled] {
     button.mod-danger:not([disabled]):focus,
     button.mod-danger:not([disabled]):hover {
       background: linear-gradient(to bottom, $red-500 0%, $red-600 100%);
-      box-shadow: 0 2px 0 $red-900;
+      box-shadow: 0 1px 0 $red-900;
       color: #fff;
     }
 
@@ -128,7 +128,7 @@ button[disabled] {
     input[type="submit"].mod-danger:not([disabled]):active,
     button.mod-danger:not([disabled]):active {
       background: linear-gradient(to bottom, $red-600 0%, $red-700 100%);
-      box-shadow: 0 2px 0 $red-900;
+      box-shadow: 0 1px 0 $red-900;
       color: #fff;
     }
 
