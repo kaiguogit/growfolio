@@ -82,16 +82,23 @@ class TscsForm extends React.Component {
                     <Input type="number" name="shares" id="shares"
                         value={shares} onChange={this.handleInputChange}/>
                 </FormGroup>
+
                 <FormGroup>
                     <label htmlFor="amount">Amount</label>
-                    <Input type="number" name="amount" id="amount"
-                        value={amount} onChange={this.handleInputChange}/>
-                    <Select placeholder="select" name="totalOrPerShare" id="totalOrPerShare"
-                        value={totalOrPerShare ? "true" : "false"}
-                        onChange={this.handleTotalOrPerShareChange}>
-                        <option value="true">Total</option>
-                        <option value="false">Per Share</option>
-                    </Select>
+                    <div className="row no-gutters">
+                        <div className="col-8">
+                            <Input type="number" name="amount" id="amount"
+                                value={amount} onChange={this.handleInputChange}/>
+                        </div>
+                        <div className="col-4">
+                            <Select placeholder="select" name="totalOrPerShare" id="totalOrPerShare"
+                                value={totalOrPerShare ? "true" : "false"}
+                                onChange={this.handleTotalOrPerShareChange}>
+                                <option value="true">Total</option>
+                                <option value="false">Per Share</option>
+                            </Select>
+                        </div>
+                    </div>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="commission">Commission</label>
