@@ -58,7 +58,7 @@ const Modal = (props) => {
                     <button type="button" className="btn mod-secondary" onClick={props.onClose}>
                         Cancel
                     </button>
-                    <button type="button" className="btn mod-danger" onClick={handleSubmit} disabled={props.isFetching}>
+                    <button type="button" className={"btn " + props.submitButtonClass} onClick={handleSubmit} disabled={props.isFetching}>
                         Yes
                     </button>
                 </div>
@@ -73,6 +73,7 @@ Modal.propTypes = {
     contentLabel: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func,
+    submitButtonClass: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node

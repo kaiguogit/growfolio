@@ -32,6 +32,7 @@ class AddTscModal extends React.Component {
                 contentLabel="Add Transaction"
                 onClose={this.handleCloseModal}
                 onSubmit={this.handleSubmit.bind(this)}
+                submitButtonClass="mod-primary"
                 isFetching={isFetching}
             >
             {/* Use callback instead of string in ref according to React documentation.

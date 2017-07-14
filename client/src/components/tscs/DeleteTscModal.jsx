@@ -25,6 +25,7 @@ class DeleteTscModal extends React.Component {
                 contentLabel="Delete Transaction"
                 onClose={this.handleCloseModal}
                 onSubmit={() => actions.removeTscs(tscId)}
+                submitButtonClass="mod-danger"
                 isFetching={isFetching}
             >
                 {"Do you want to delete this transaction?"}
