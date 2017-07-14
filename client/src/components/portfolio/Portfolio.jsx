@@ -45,32 +45,34 @@ class Portfolio extends React.Component {
         const tabButton = 'tabbed-pane-nav-item-button';
         const url = '/portfolio/';
         return (
-            <div className="layout-center-xl">
+            <div>
                 <div className="tabbed-pane-nav mod-left u-clearfix">
-                    <ul>
-                        <li className={tabItem}>
-                            <NavLink className={tabButton} to={`${url}performance`} role="tab">
-                                <span>{cap(PERFORMANCE)}</span>
-                            </NavLink>
-                        </li>
-                        <li className={tabItem}>
-                            <NavLink className={tabButton} to={`${url}transactions`} role="tab">
-                                <span>{cap(TSCS)}</span>
-                            </NavLink>
-                        </li>
-                        <li className={tabItem}>
-                            <NavLink className={tabButton} to={`${url}balance`} role="tab">
-                                <span>{cap(BALANCE)}</span>
-                            </NavLink>
-                        </li>
-                    </ul>
+                    <div className="layout-center-xl">
+                        <ul>
+                            <li className={tabItem}>
+                                <NavLink className={tabButton} to={`${url}performance`} role="tab">
+                                    <span>{cap(PERFORMANCE)}</span>
+                                </NavLink>
+                            </li>
+                            <li className={tabItem}>
+                                <NavLink className={tabButton} to={`${url}transactions`} role="tab">
+                                    <span>{cap(TSCS)}</span>
+                                </NavLink>
+                            </li>
+                            <li className={tabItem}>
+                                <NavLink className={tabButton} to={`${url}balance`} role="tab">
+                                    <span>{cap(BALANCE)}</span>
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div className={`tabbed-pane-main-col-loading ${isTscsFetching ? '' : 'u-hidden'}`}>
                     <span className="tabbed-pane-main-col-loading-spinner">
                         <i className="fa fa-spinner fa-2x fa-spin" aria-hidden="true"/>
                     </span>
                 </div>
-                <div className={isTscsFetching ? 'u-hidden' : ''}>
+                <div className={(isTscsFetching ? 'u-hidden' : '') + 'layout-center-xl'}>
                     <ActionBar/>
                     <Switch>
                         <Route exact path="/portfolio/" render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
