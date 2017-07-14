@@ -8,13 +8,10 @@ import * as rootActions from '../../actions';
 import * as tscsActions from '../../actions/tscs';
 import * as quotesActions from '../../actions/quotes';
 
-import NavLink from '../NavLink.jsx';
-
-import {PERFORMANCE, TSCS, BALANCE} from '../../constants/navigation';
-import * as Utils from '../../utils';
-
 import NProgress from 'nprogress';
+import isEqual from 'lodash.isequal';
 
+import NavLink from '../NavLink.jsx';
 import Performance from '../performance/Performance.jsx';
 import TscsContainer from '../tscs/TscsContainer.jsx';
 import Balance from '../balance/Balance.jsx';
@@ -27,10 +24,17 @@ class Portfolio extends React.Component {
     componentDidMount() {
         const tscs = this.props.tscs;
         if (Object.keys(tscs).length === 0) {
-            this.props.actions.fetchTscs().then(
-                this.props.actions.refreshQuotes);
+            this.props.actions.fetchTscs();
         }
         this.props.actions.setIntervalRefreshQuotes();
+    }
+
+    componentDidUpdate(prevProps) {
+        //Only refresh quotes when holdings or display currency changed
+        if (!(isEqual(prevProps.tscs, this.props.tscs) &&
+            prevProps.portfolio.displayCurrency === this.props.portfolio.displayCurrency)) {
+            this.props.actions.refreshQuotes();
+        }
     }
 
     componentWillUnmount() {
@@ -40,7 +44,6 @@ class Portfolio extends React.Component {
     render() {
         let {isTscsFetching, isFetching} = this.props;
         isFetching ? NProgress.start() : NProgress.done();
-        const cap = Utils.capitalize;
         const tabItem = 'tabbed-pane-nav-item';
         const tabButton = 'tabbed-pane-nav-item-button';
         const url = '/portfolio/';
@@ -51,17 +54,17 @@ class Portfolio extends React.Component {
                         <ul>
                             <li className={tabItem}>
                                 <NavLink className={tabButton} to={`${url}performance`} role="tab">
-                                    <span>{cap(PERFORMANCE)}</span>
+                                    <span>Performance</span>
                                 </NavLink>
                             </li>
                             <li className={tabItem}>
                                 <NavLink className={tabButton} to={`${url}transactions`} role="tab">
-                                    <span>{cap(TSCS)}</span>
+                                    <span>Transactions</span>
                                 </NavLink>
                             </li>
                             <li className={tabItem}>
                                 <NavLink className={tabButton} to={`${url}balance`} role="tab">
-                                    <span>{cap(BALANCE)}</span>
+                                    <span>Balance</span>
                                 </NavLink>
                             </li>
                         </ul>
@@ -90,7 +93,7 @@ class Portfolio extends React.Component {
 }
 
 Portfolio.propTypes = {
-    selectedTab: PropTypes.string.isRequired,
+    portfolio: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     tscs: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
@@ -100,7 +103,7 @@ Portfolio.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        selectedTab: state.portfolio.tab,
+        portfolio: state.portfolio,
         isTscsFetching: state.tscs.isFetching,
         isFetching: state.tscs.isFetching || state.quotes.isFetching,
         tscs: state.tscs.items
