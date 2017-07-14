@@ -9,7 +9,7 @@ class RefreshButton extends React.Component {
     render() {
         const { isFetching, actions } = this.props;
         return(
-            <button type="button" className={`btn d-inline-block mr-2 ${isFetching ? "btn-outline-danger" : "btn-outline-primary"}`}
+            <button type="button" className="mod-small"
                 onClick={actions.refreshQuotes}
                 disabled={isFetching}>
                 <i className={`fa fa-refresh${isFetching ? ' fa-spin' : ''}`} aria-hidden="true"/>

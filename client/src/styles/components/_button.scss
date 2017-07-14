@@ -31,26 +31,33 @@ button {
   }
 }
 
-  a.button:focus,
-  a.button:hover,
-  input[type="submit"]:focus,
-  input[type="submit"]:hover,
-  button:not([disabled]):focus,
-  button:not([disabled]):hover {
-    &:not(.mod-bare) {
-      background: linear-gradient(to bottom, $light-gray-200 0%, $light-gray-300 100%);
-      color: $default-font-color;
-    }
-  }
+a.button.mod-small,
+input[type="submit"].mod-small,
+button.mod-small {
+    font-size: .7em;
+    padding: .54em 0.93em;
+}
 
-  a.button:active,
-  input[type="submit"]:active,
-  button:not([disabled]):active {
+a.button:focus,
+a.button:hover,
+input[type="submit"]:focus,
+input[type="submit"]:hover,
+button:not([disabled]):focus,
+button:not([disabled]):hover {
+    &:not(.mod-bare) {
+        background: linear-gradient(to bottom, $light-gray-200 0%, $light-gray-300 100%);
+        color: $default-font-color;
+    }
+}
+
+a.button:active,
+input[type="submit"]:active,
+button:not([disabled]):active {
     &:not(.mod-bare) {
       background: linear-gradient(to bottom, $light-gray-300 0%, $light-gray-400 100%);
       color: $default-font-color;
     }
-  }
+}
 
 
 
