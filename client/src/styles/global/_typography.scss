@@ -26,19 +26,15 @@
 body, html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: $default-font-color;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 button, html, input, select, textarea {
   font-family: Lato, "jaf-facitweb", -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
-body {
-  color: $default-font-color;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
 
 // Headers
 
@@ -170,25 +166,25 @@ hr {
 
 // https://v4-alpha.getbootstrap.com/layout/overview/
 @include media-breakpoint-down(sm) {
-    body {
-      font-size: 16px;
-    }
+  body, html {
+    font-size: 16px;
+  }
 }
 
 @include media-breakpoint-between(sm, md) {
-  body {
+  body, html {
     font-size: 18px;
   }
 }
 
 @include media-breakpoint-between(md, lg) {
-  body {
+  body, html {
     font-size: 20px;
   }
 }
 
 @include media-breakpoint-up(lg) {
-  body {
+  body, html {
     font-size: 22px;
   }
 }
