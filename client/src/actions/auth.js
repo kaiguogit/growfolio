@@ -1,5 +1,5 @@
 import types from '../constants/actionTypes';
-import { errorHandler } from '../utils';
+import { log } from '../utils';
 import Auth from '../services/Auth';
 
 const requestSignUp = () => ({type: types.REQUEST_SIGNUP});
@@ -37,7 +37,7 @@ export const submitSignUp = (data) => dispatch => {
     })
     .then(response => response.json())
     .then(data => dispatch(receiveSignUp(data)))
-    .catch(errorHandler);
+    .catch(log.error);
 };
 
 /**
@@ -61,5 +61,5 @@ export const submitLogin = (payLoad, cb) => (dispatch, /*getState*/) => {
         }
         dispatch(receiveLogin(data));
     })
-    .catch(errorHandler);
+    .catch(log.error);
 };

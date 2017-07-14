@@ -1,7 +1,7 @@
 import types from '../constants/actionTypes';
 import $ from 'jquery';
 import Auth from '../services/Auth';
-import { num } from '../utils';
+import { num, log } from '../utils';
 
 import * as currencyActions from './currency';
 import { batchActions } from './';
@@ -178,7 +178,8 @@ export const refreshQuotes = () => (dispatch, getState) => {
             receiveQuotes(quotes),
             currencyActions.receiveCurrency(currency)
         ]));
-    }).catch((/*error*/) => {
+    }).catch((error) => {
+        log.error(error);
         dispatch(batchActions([
             requestQuotesTimeout(),
             currencyActions.requestCurrencyTimeout()

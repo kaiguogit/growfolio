@@ -3,6 +3,9 @@ import numeral from 'numeral';
 import Auth from '../services/Auth';
 import styles from '../styles';
 import './promise';
+import log from './log';
+
+export {log};
 /**
  * round number by digits
  * http://www.javascriptkit.com/javatutors/round.shtml
@@ -86,10 +89,6 @@ export const capitalize = str => {
 // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
 export const escapeRegexCharacters = (str) => {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-};
-
-export const errorHandler = error => {
-    console.log(error);
 };
 
 const queryParams = (params) => {

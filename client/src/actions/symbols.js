@@ -1,7 +1,7 @@
 import types from '../constants/actionTypes';
 import $ from 'jquery';
 
-import { makeUrl, errorHandler } from '../utils';
+import { makeUrl, log } from '../utils';
 export const requestSymbols = () => ({
     type: types.REQUEST_SYMBOLS
 });
@@ -76,5 +76,5 @@ export const fetchSymbols = input => dispatch => {
         dispatch(receiveSymbols(symbols, input));
         return symbols;
     })
-    .catch(errorHandler);
+    .catch(log.error);
 };

@@ -1,5 +1,5 @@
 import types from '../constants/actionTypes';
-import { errorHandler, getHeaders, avoidNaN } from '../utils';
+import { log, getHeaders, avoidNaN } from '../utils';
 
 /*
  * Actions
@@ -87,7 +87,7 @@ export const fetchTscs = () => dispatch => {
         return tscsMap;
     })
     .then(data => dispatch(receiveTscs(data)))
-    .catch(errorHandler);
+    .catch(log.error);
 };
 
 export const createTscs = (tsc) => dispatch => {
@@ -100,7 +100,7 @@ export const createTscs = (tsc) => dispatch => {
     .then(response => response.json())
     // TODO add logic to check result is successful or not
     .then(() => fetchTscs()(dispatch))
-    .catch(errorHandler);
+    .catch(log.error);
 };
 
 export const removeTscs = (id) => dispatch => {
@@ -113,5 +113,5 @@ export const removeTscs = (id) => dispatch => {
     .then(response => response.json())
     // TODO add logic to check result is successful or not
     .then(() => fetchTscs()(dispatch))
-    .catch(errorHandler);
+    .catch(log.error);
 };

@@ -1,5 +1,5 @@
 import types from '../constants/actionTypes';
-import { errorHandler, getHeaders } from '../utils';
+import { log, getHeaders } from '../utils';
 
 export const updateBalancePercentage = holding => ({
     type: types.UPDATE_BALANCE_PERCENTAGE,
@@ -53,7 +53,7 @@ export const fetchAllocations = () => dispatch => {
     })
     .then(response => response.json())
     .then(data => dispatch(receiveAllocations(data.result)))
-    .catch(errorHandler);
+    .catch(log.error);
 };
 
 export const createAllocations = (allocations) => dispatch => {
@@ -67,7 +67,7 @@ export const createAllocations = (allocations) => dispatch => {
     })
     .then(response => response.json())
     .then(data => dispatch(addAllocations(data.result)))
-    .catch(errorHandler);
+    .catch(log.error);
 };
 
 export const removeAllocations = (id) => dispatch => {
@@ -79,5 +79,5 @@ export const removeAllocations = (id) => dispatch => {
     })
     .then(response => response.json())
     .then(() => dispatch(deleteAllocations(id)))
-    .catch(errorHandler);
+    .catch(log.error);
 };
