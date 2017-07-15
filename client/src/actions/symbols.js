@@ -37,7 +37,6 @@ const processSymbols = data => {
             symbol: symbol.symbol.replace(/\..*/, ''),
             // Save original symbol
             $symbol: symbol.symbol,
-            label: `${symbol.symbol} (${symbol.name} Exchange: ${symbol.exchDisp})`,
             exch: symbol.exchDisp,
             name: symbol.name
         }));

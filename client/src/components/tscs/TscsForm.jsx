@@ -12,10 +12,7 @@ class TscsForm extends React.Component {
     constructor(props) {
         super(props);
         if (this.props.tsc) {
-            // this.props.tsc.date = new Date(this.props.tsc.date);
-            let newTsc = Object.assign({}, props.tsc);
-            newTsc.date = moment(newTsc.date);
-            this.state = newTsc;
+            this.state = Object.assign({}, props.tsc);
         } else {
             this.state = {
                 type: 'buy',
@@ -64,11 +61,13 @@ class TscsForm extends React.Component {
 
     render() {
         let {type, currency, shares, amount, commission, notes, totalOrPerShare} = this.state;
+        let {tsc} = this.props;
         return (
             <form className="tscs-form">
                 <FormGroup>
                     <label htmlFor="symbol">Symbol</label>
-                    <SymbolAutoComplete onSelected={this.handleSymbolChange}/>
+                    <SymbolAutoComplete data={tsc}
+                        onSelected={this.handleSymbolChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="date">Date</label>

@@ -29,7 +29,7 @@ const getMatchingSymbol = (value, symbols) => {
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = suggestion => suggestion.label;
+const getSuggestionValue = suggestion => `${suggestion.symbol} (${suggestion.name} Exchange: ${suggestion.exch})`;
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
@@ -56,8 +56,8 @@ const renderSuggestionsContainer = ({ containerProps, children }) => {
 };
 
 class SymbolAutoComplete extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         // Autosuggest is a controlled component.
         // This means that you need to provide an input value
@@ -65,7 +65,7 @@ class SymbolAutoComplete extends React.Component {
         // Suggestions also need to be provided to the Autosuggest,
         // and they are initially empty because the Autosuggest is closed.
         this.state = {
-            value: '',
+            value: props.data ? getSuggestionValue(props.data) : '',
             suggestions: []
         };
         this.onChange = this.onChange.bind(this);
@@ -136,6 +136,8 @@ class SymbolAutoComplete extends React.Component {
 }
 
 SymbolAutoComplete.propTypes = {
+    // Data is used as default value of input.
+    data: PropTypes.object,
     onSelected: PropTypes.func.isRequired,
     actions: PropTypes.object.isRequired
 };

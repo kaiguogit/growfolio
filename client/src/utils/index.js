@@ -33,7 +33,7 @@ export const avoidNaN = (keys, obj) => {
     keys.forEach(key => {
         if (key in obj) {
             result = num(obj[key]);
-            obj[key] = isFinite(result) ? result : 0;
+            obj[key] = isFinite(result) && result ? result : 0;
         }
     });
 };
