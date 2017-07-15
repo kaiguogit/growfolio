@@ -119,6 +119,7 @@ app.post('/login', userController.postLogin);
 app.route('/api/transactions')
   .get(transactionController.getTransactions)
   .post(transactionController.createTransactions)
+  .put(transactionController.editTransactions)
   .delete(transactionController.deleteTransactions);
 
 app.route('/api/allocations')

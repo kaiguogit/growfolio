@@ -109,28 +109,50 @@ const validateTransactionForm = (payload) => {
   };
 };
 
-exports.createTransactions = (req, res) => {
-  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'amount', 'totalOrPerShare', 'type', 'commission', 'date', 'notes'];
+const returnError = (message, errors) => ({
+  success: false,
+  message,
+  errors
+});
+
+const createOrEditTransactions = isEdit => (req, res) => {
+  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'totalOrPerShare', 'amount', 'type', 'commission', 'date', 'notes'];
   const data = {};
   keys.forEach((key) => {
     data[key] = req.body[key];
   });
+  data.totalOrPerShare = !!req.body.totalOrPerShare;
 
-  const validationResult = validateTransactionForm(req.body);
+  const validationResult = validateTransactionForm(data);
   if (!validationResult.success) {
-    return res.status(400).json({
-      success: false,
-      message: validationResult.message,
-      errors: validationResult.errors
-    });
+    return res.status(400).json(returnError(validationResult.message, validationResult.errors));
   }
 
   data._user = req.user._id;
-  const trsc = new Transaction(data);
-  trsc.save((err, data) => {
-    res.json({ result: data });
-  });
+
+  if (!isEdit) {
+    new Transaction(data).save((err, savedTsc) => {
+      return res.json({ result: savedTsc });
+    });
+  } else {
+    Transaction.findById(req.body._id, (error, tsc) => {
+      if (error) {
+        return res.status(400).json(returnError(`Cannot find transaction ${req.body._id}`, error));
+      }
+
+      Object.assign(tsc, data);
+      tsc.save((error, updatedTsc) => {
+        if (error) {
+          return res.status(400).json(returnError(`Cannot update transaction ${req.body._id}`, error));
+        }
+        return res.json({ result: updatedTsc });
+      });
+    });
+  }
 };
+
+exports.createTransactions = createOrEditTransactions(false);
+exports.editTransactions = createOrEditTransactions(true);
 
 exports.deleteTransactions = (req, res) => {
   Transaction.remove({ _id: req.body.id, _user: req.user._id }, (err) => {
