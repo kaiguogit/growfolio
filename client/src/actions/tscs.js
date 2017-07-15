@@ -13,23 +13,27 @@ export const receiveTscs = (data) => ({
     receivedAt: Date.now()
 });
 export const addTscs = () => ({
-    type: types.ADD_TSCS,
-    receivedAt: Date.now()
+    type: types.ADD_TSCS
 });
+export const editTscAction = () => ({
+    type: types.EDIT_TSCS
+});
+
 export const deleteTscs = () => ({
     type: types.DELETE_TSCS,
     receivedAt: Date.now()
 });
 
-export const toggleTscsDeleteModal = (showModal, tscId) => ({
+export const toggleTscsDeleteModal = (showModal, tsc) => ({
     type: types.TOGGLE_TSCS_DELETE_MODAL,
     showModal,
-    tscId
+    tsc
 });
 
-export const toggleTscsAddModal = (showModal) => ({
-    type: types.TOGGLE_TSCS_ADD_MODAL,
-    showModal
+export const toggleTscsModal = (showModal, tsc) => ({
+    type: types.TOGGLE_TSCS_MODAL,
+    showModal,
+    tsc
 });
 
 // Fake API version
@@ -90,7 +94,7 @@ export const fetchTscs = () => dispatch => {
     .catch(log.error);
 };
 
-export const createTscs = (tsc) => dispatch => {
+export const createTsc = (tsc) => dispatch => {
     dispatch(addTscs());
     return fetch(__MY_API__ + "transactions", {
         method: 'POST',
@@ -103,12 +107,25 @@ export const createTscs = (tsc) => dispatch => {
     .catch(log.error);
 };
 
-export const removeTscs = (id) => dispatch => {
+export const editTsc = (tsc) => dispatch => {
+    dispatch(editTscAction());
+    return fetch(__MY_API__ + "transactions", {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(tsc)
+    })
+    .then(response => response.json())
+    // TODO add logic to check result is successful or not
+    .then(() => fetchTscs()(dispatch))
+    .catch(log.error);
+};
+
+export const removeTscs = (tsc) => dispatch => {
     dispatch(deleteTscs());
     return fetch(__MY_API__ + 'transactions', {
         method: 'DELETE',
         headers: getHeaders(),
-        body: JSON.stringify({'id': id}),
+        body: JSON.stringify({'id': tsc._id}),
     })
     .then(response => response.json())
     // TODO add logic to check result is successful or not

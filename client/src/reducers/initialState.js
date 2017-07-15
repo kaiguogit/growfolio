@@ -8,9 +8,12 @@ export default {
         items: {},
         deleteTscModalData: {
             isOpened: false,
-            tscId: ''
+            tsc: null
         },
-        addTscModalOpened: false,
+        dialogModal: {
+            isOpened: false,
+            tsc: null
+        },
         lastUpdated: Date.now()
     },
     quotes: {

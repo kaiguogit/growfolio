@@ -7,9 +7,13 @@ import { bindActionCreators } from 'redux';
 
 
 class AddTscButton extends React.Component {
+    handleClick() {
+        this.props.actions.toggleTscsModal(true);
+    }
+
     render() {
         return (
-            <button className="mod-small" onClick={this.props.actions.toggleTscsAddModal.bind(null, true)}>
+            <button className="mod-small" onClick={this.handleClick.bind(this)}>
                 <i className="fa fa-plus fa-lg" aria-hidden="true"/>
                 <span className="ml-2">
                     Add Transaction

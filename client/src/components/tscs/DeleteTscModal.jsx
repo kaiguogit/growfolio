@@ -17,14 +17,14 @@ class DeleteTscModal extends React.Component {
     }
 
     render() {
-        let {isOpened, isFetching, actions, tscId} = this.props;
+        let {isOpened, isFetching, actions, tsc} = this.props;
         // modal modal-dialog classes are from bootstrap _modal.scss
         return (
             <Modal
                 isOpen={isOpened}
                 contentLabel="Delete Transaction"
                 onClose={this.handleCloseModal}
-                onSubmit={() => actions.removeTscs(tscId)}
+                onSubmit={() => actions.removeTscs(tsc)}
                 submitButtonClass="mod-danger"
                 isFetching={isFetching}
             >
@@ -38,13 +38,13 @@ DeleteTscModal.propTypes = {
     isOpened: PropTypes.bool.isRequired,
     isFetching: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
-    tscId: PropTypes.string
+    tsc: PropTypes.object
 };
 
 const mapStateToProps = state => {
     return {
         isOpened: state.tscs.deleteTscModalData.isOpened,
-        tscId: state.tscs.deleteTscModalData.tscId,
+        tsc: state.tscs.deleteTscModalData.tsc,
         isFetching: state.tscs.isFetching
     };
 };

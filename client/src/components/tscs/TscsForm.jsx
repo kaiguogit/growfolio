@@ -1,4 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 // import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 import SymbolAutoComplete from './SymbolAutoComplete.jsx';
@@ -7,21 +11,30 @@ import {Input, FormGroup, Select} from '../shared/index.jsx';
 class TscsForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            type: 'buy',
-            name: '',
-            symbol: '',
-            exch: '',
-            currency: 'CAD',
-            date: '',
-            shares: '',
-            amount: '',
-            totalOrPerShare: true,
-            commission: '',
-            notes: ''
-        };
+        if (this.props.tsc) {
+            // this.props.tsc.date = new Date(this.props.tsc.date);
+            let newTsc = Object.assign({}, props.tsc);
+            newTsc.date = moment(newTsc.date);
+            this.state = newTsc;
+        } else {
+            this.state = {
+                type: 'buy',
+                name: '',
+                symbol: '',
+                exch: '',
+                currency: 'CAD',
+                date: moment(),
+                shares: '',
+                amount: '',
+                totalOrPerShare: true,
+                commission: '',
+                notes: ''
+            };
+        }
+
         this.getState = this.getState.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
         this.handleSymbolChange = this.handleSymbolChange.bind(this);
         this.handleTotalOrPerShareChange = this.handleTotalOrPerShareChange.bind(this);
     }
@@ -34,6 +47,10 @@ class TscsForm extends React.Component {
 
     handleInputChange(e) {
         this.setState({[e.target.name]: e.target.value});
+    }
+
+    handleDateChange(date) {
+        this.setState({date: date});
     }
 
     handleTotalOrPerShareChange(e) {
@@ -55,8 +72,11 @@ class TscsForm extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="date">Date</label>
-                    <Input type="date" name="date" id="date"
-                        onChange={this.handleInputChange}/>
+                    <DatePicker
+                        selected={this.state.date}
+                        onChange={this.handleDateChange}
+                        className="form-control"
+                    />
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="type">Type</label>
@@ -114,5 +134,9 @@ class TscsForm extends React.Component {
         );
     }
 }
+
+TscsForm.propTypes = {
+    tsc: PropTypes.object
+};
 
 export default TscsForm;

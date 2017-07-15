@@ -1,4 +1,5 @@
 import { divide } from '../utils';
+import moment from 'moment';
 
 class Transaction {
     constructor(data) {
@@ -25,6 +26,7 @@ class Transaction {
                 divide(amount + commission, shares) :
                 amount;
         }
+        this.date = moment(this.date);
     }
 }
 

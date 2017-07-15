@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { TSCS_COLUMNS } from './columns';
 import { renderCell } from '../../utils';
 import TableCategory from '../shared/table/TableCategory.jsx';
-import DeleteTscButton from './DeleteTscButton.jsx';
+import TscActionButton from './TscActionButton.jsx';
 
 const TscsTable = ({holdings}) => {
     return (
@@ -53,7 +53,10 @@ const TscsRow = ({tsc}) => {
                 );
             })}
             <td>
-                <DeleteTscButton tscId={tsc._id}/>
+                <div className="tscs-action-buttons">
+                    <TscActionButton type="edit" tsc={tsc}/>
+                    <TscActionButton type="delete" tsc={tsc}/>
+                </div>
             </td>
         </tr>
     );

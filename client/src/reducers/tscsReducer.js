@@ -5,6 +5,7 @@ const tscsReducer = (state = initialState.tscs, action) => {
     switch (action.type) {
         case types.REQUEST_TSCS:
         case types.ADD_TSCS:
+        case types.EDIT_TSCS:
         case types.DELETE_TSCS:
             return {
                 ...state,
@@ -21,14 +22,17 @@ const tscsReducer = (state = initialState.tscs, action) => {
             return {
                 ...state,
                 deleteTscModalData: {
-                    isOpened: action.showModal,
-                    tscId: action.tscId
+                    isOpened: !!action.showModal,
+                    tsc: action.tsc ? Object.assign({}, action.tsc) : null
                 }
             };
-        case types.TOGGLE_TSCS_ADD_MODAL:
+        case types.TOGGLE_TSCS_MODAL:
             return {
                 ...state,
-                addTscModalOpened: action.showModal
+                dialogModal: {
+                    isOpened: !!action.showModal,
+                    tsc: action.tsc ? Object.assign({}, action.tsc) : null
+                }
             };
         default:
             return state;
