@@ -76,9 +76,14 @@ class Portfolio extends React.Component {
                     </span>
                 </div>
                 <div className={(isTscsFetching ? 'u-hidden' : '') + 'layout-center-xl'}>
-                    <ActionBar/>
+                    <Route path={url} render={({location}) => {
+                        if (location.pathname !== url + 'setting') {
+                            return <ActionBar/>;
+                        }
+                        return null;
+                    }}/>
                     <Switch>
-                        <Route exact path="/portfolio/" render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
+                        <Route exact path={url} render={() => <Redirect to="/portfolio/performance" component={Performance}/>}/>
                         <Route exact path={url + "performance"} component={Performance}/>
                         <Route exact path={url + "transactions"} component={TscsContainer}/>
                         <Route exact path={url + "setting"} component={PerformanceSetting}/>
