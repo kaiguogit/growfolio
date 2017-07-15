@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { makeGetHoldingPerformance } from '../../selectors';
 import { renderCell } from '../../utils';
 
-import { PERFORMANCE_COLUMNS } from './columns.jsx';
+import { PERFORMANCE_COLUMNS } from './columns';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 
 class PerformanceTableRow extends React.Component {

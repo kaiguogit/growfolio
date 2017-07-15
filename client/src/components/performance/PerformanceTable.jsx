@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { PERFORMANCE_COLUMNS } from './columns.jsx';
+import { PERFORMANCE_COLUMNS } from './columns';
 import PerformanceTableRow from './PerformanceTableRow.jsx';
 import PerformanceTableRowTotal from './PerformanceTableRowTotal.jsx';
 

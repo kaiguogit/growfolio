@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getTotalPerformance } from '../../selectors';
 
-import { PERFORMANCE_COLUMNS } from './columns.jsx';
+import { PERFORMANCE_COLUMNS } from './columns';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
 import { renderCell } from '../../utils';
 
