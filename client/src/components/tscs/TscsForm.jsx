@@ -37,9 +37,7 @@ class TscsForm extends React.Component {
     }
 
     getState() {
-        let temp = Object.assign({}, this.state);
-        temp.date = new Date(this.state.date);
-        return temp;
+        return this.state;
     }
 
     handleInputChange(e) {

@@ -67,15 +67,22 @@ export const currency = decimal => number => {
 
 // http://stackoverflow.com/questions/7556591/javascript-date-object-always-one-day-off#answer-14569783
 // Convert UTC to local date
-export const date = dateStr => {
-    try {
-        let doo = new Date(dateStr);
-        let adjustedTime = new Date(doo.getTime() + Math.abs(doo.getTimezoneOffset()*60000));
-        return adjustedTime.toLocaleDateString();
-    }
-    catch(e) {
-        return dateStr;
-    }
+// Datepicker use momentjs to parse and set the time.
+// By default moment use local timezone
+// so selecting 4-27 in PDT browser will create a 4-27 17:00 PDT date
+// which is 4-28 00:00 GMT. It's fine as long as we display it as 4-27 as
+// well.
+// Therefore, remove the old timeoffset workaround.
+export const date = date => {
+    // try {
+    //     let doo = new Date(dateStr);
+    //     let adjustedTime = new Date(doo.getTime() + Math.abs(doo.getTimezoneOffset()*60000));
+    //     return adjustedTime.toLocaleDateString();
+    // }
+    // catch(e) {
+    //     return dateStr;
+    // }
+    return date.format('YYYY-MM-DD');
 };
 
 export const capitalize = str => {
