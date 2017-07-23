@@ -1,6 +1,10 @@
 import { percentage, currency, coloredCell } from '../../utils';
 
-export const PERFORMANCE_COLUMNS = [
+const defaultColumn = {
+    ref_selector: 'days_gain'
+};
+
+const PERFORMANCE_COLUMNS = [
     {
         selector: 'symbol',
         title: 'Symbol',
@@ -105,3 +109,11 @@ export const PERFORMANCE_COLUMNS = [
         className: 'hidden-sm-down'
     }
 ];
+
+PERFORMANCE_COLUMNS.forEach(column => {
+    Object.keys(defaultColumn).forEach(key => {
+        column[key] = column[key] || defaultColumn[key];
+    });
+});
+
+export default PERFORMANCE_COLUMNS;

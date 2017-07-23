@@ -1,5 +1,5 @@
 import types from '../constants/actionTypes';
-import { makeUrl, num} from '../utils';
+import { makeUrl, num, log} from '../utils';
 import { getHoldings } from '../selectors';
 
 export const requestCurrency = () => ({
@@ -83,8 +83,10 @@ export const fetchCurrency = (state) => {
         return Promise.resolve([]);
     }
     return fetch(makeCurrencyUrl(currencyPairs))
-        .then(response => response.json())
-        .then(data => {
-            return processRate(data);
-        });
+    .then(response => response.json())
+    .then(data => {
+        return processRate(data);
+    }).catch(error => {
+        log.error(error);
+    });
 };

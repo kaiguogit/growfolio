@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 import { getTotalPerformance } from '../../selectors';
 import styles from '../../styles';
@@ -28,7 +27,7 @@ const Change = (props) => {
     return (
         <div className="col-12 col-sm-6 col-md-auto mr-md-3">
             <div>{title}</div>
-            <NumberChangeTransition upOrDown={change > 0}>
+            <NumberChangeTransition data={change}>
                 <div className="d-inline-block">
                     <h2 style={numStyle}>
                         {currency(2)(change)}

@@ -3,7 +3,7 @@
 }
 
 .background-green-fade-out-enter.background-green-fade-out-enter-active {
-  background-color: #FFF;
+  background-color: inherit;
   transition: background-color 1s ease-out;
 }
 
@@ -13,7 +13,7 @@
 }
 
 .background-red-fade-out-enter.background-red-fade-out-enter-active {
-  background-color: #FFF;
+  background-color: inherit;
   transition: background-color 1s ease-out;
 }
 

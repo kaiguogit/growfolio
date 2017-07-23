@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 import { getTotalPerformance } from '../../selectors';
-
-import { PERFORMANCE_COLUMNS } from './columns';
-import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
-import { renderCell } from '../../utils';
+import PERFORMANCE_COLUMNS from './columns';
+import TableCell from '../shared/table/TableCell.jsx';
 
 const validColumn = ['cost', 'mkt_value', 'change_percent', 'days_gain', 'gain',
 'gain_percent', 'gain_overall', 'gain_overall_percent', 'realized_gain', 'dividend', 'cost_overall'];
@@ -22,20 +19,20 @@ class PerformanceTableRowTotal extends React.Component {
       * a new component on update to trigger 'Appear' animation
       */
     renderValidCell(column) {
-        if (validColumn.indexOf(column.selector) !== -1) {
+        let {selector, className} = column;
+        let total = this.props.total;
+        if (validColumn.indexOf(selector) !== -1) {
             return (
-                <td className={column.className} key={`${column.selector}-${this.props.total[column.selector]}`}>
-                    <NumberChangeTransition upOrDown={this.props.total[column.selector] > 0}>
-                        <div>
-                            {renderCell(this.props.total, column)}
-                        </div>
-                    </NumberChangeTransition>
-                </td>
+                <TableCell
+                    key={selector}
+                    entry={total}
+                    column={column}
+                />
             );
         }
         return (
-            <td className={column.className} key={column.selector}>
-                {column.selector ==='symbol' ? 'Total' : ''}
+            <td className={className} key={selector}>
+                {selector ==='symbol' ? 'Total' : ''}
             </td>
         );
     }

@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
-
 import { makeGetHoldingPerformance } from '../../selectors';
-import { renderCell } from '../../utils';
-
-import { PERFORMANCE_COLUMNS } from './columns';
-import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
+import PERFORMANCE_COLUMNS from './columns';
+import TableCell from '../shared/table/TableCell.jsx';
 
 class PerformanceTableRow extends React.Component {
     render() {
@@ -15,18 +11,12 @@ class PerformanceTableRow extends React.Component {
         return (
             <tr>
                 {PERFORMANCE_COLUMNS.map(column => {
-                        {/**
-                          * We generate a unique key, e.g 'change-0.55' to make sure React create
-                          * a new component on update to trigger 'Appear' animation
-                          */}
                     return (
-                        <td className={column.className}
-                            key={column.selector}>
-                            <NumberChangeTransition
-                                upOrDown={column.ref_selector ? holding[column.ref_selector] > 0 : holding[column.selector] > 0}>
-                                {renderCell(holding, column)}
-                            </NumberChangeTransition>
-                        </td>
+                        <TableCell
+                            key={column.selector}
+                            entry={holding}
+                            column={column}
+                        />
                     );
                 })}
             </tr>

@@ -1,16 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransition from 'react-transition-group/CSSTransition';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
+
+const transitionUpOrDown = (upOrDown) => {
+    return upOrDown ? "background-green-fade-out" : "background-red-fade-out";
+}
+
+const MyTransition = ({children, upOrDown, ...props}) => (
+    <CSSTransition {...props}
+        classNames={transitionUpOrDown(upOrDown)}
+        timeout={1000}
+        exit={false}>
+        {children}
+    </CSSTransition>
+);
+
+MyTransition.propTypes = {
+    upOrDown: PropTypes.bool,
+    children: PropTypes.node
+};
+
 
 class NumberChangeTransition extends React.Component {
 
     constructor(props) {
         super(props);
-        this.transitionUpOrDown = this.transitionUpOrDown.bind(this);
-    }
-
-    transitionUpOrDown() {
-        return this.props.upOrDown ? "background-green-fade-out" : "background-red-fade-out";
     }
 
     render() {
@@ -26,21 +41,23 @@ class NumberChangeTransition extends React.Component {
               * https://facebook.github.io/react/docs/animation.html#animate-initial-mounting
               */}
         return(
-            <ReactCSSTransitionGroup
-                transitionName={this.transitionUpOrDown()}
-                transitionEnter={true}
-                transitionEnterTimeout={1000}
-                transitionLeave={false}
-            >
-                {this.props.children}
-            </ReactCSSTransitionGroup>
+            <TransitionGroup>
+                <MyTransition upOrDown={this.props.data > 0}
+                    key={this.props.data}>
+                    {this.props.children}
+                </MyTransition>
+            </TransitionGroup>
         );
     }
 }
 
 NumberChangeTransition.propTypes = {
-    children: PropTypes.node,
-    upOrDown: PropTypes.bool
+    // Data is used as key, changing data will trigger animation.
+    data: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
+    children: PropTypes.node
 };
 
 export default NumberChangeTransition;
