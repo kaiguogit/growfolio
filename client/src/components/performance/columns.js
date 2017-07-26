@@ -1,7 +1,7 @@
 import { percentage, currency, coloredCell } from '../../utils';
 
 const defaultColumn = {
-    ref_selector: 'days_gain'
+    // ref_selector: 'days_gain'
 };
 
 const PERFORMANCE_COLUMNS = [
@@ -54,7 +54,8 @@ const PERFORMANCE_COLUMNS = [
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Change Percent',
-        className: 'font-weight-bold'
+        className: 'font-weight-bold',
+        ref_selector: 'change'
     },
     {
         selector: 'days_gain',
