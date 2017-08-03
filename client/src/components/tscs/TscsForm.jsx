@@ -58,7 +58,7 @@ class TscsForm extends React.Component {
     }
 
     render() {
-        let {type, currency, shares, amount, commission, notes, totalOrPerShare} = this.state;
+        let {type, name, currency, exch, shares, amount, commission, notes, totalOrPerShare} = this.state;
         let {tsc} = this.props;
         return (
             <form className="tscs-form">
@@ -66,6 +66,16 @@ class TscsForm extends React.Component {
                     <label htmlFor="symbol">Symbol</label>
                     <SymbolAutoComplete data={tsc}
                         onSelected={this.handleSymbolChange}/>
+                </FormGroup>
+                <FormGroup>
+                    <label htmlFor="name">Name</label>
+                    <Input name="name" id="name"
+                        value={name} onChange={this.handleInputChange}/>
+                </FormGroup>
+                <FormGroup>
+                    <label htmlFor="exch">Exchange Market</label>
+                    <Input name="exch" id="exch"
+                        value={exch} onChange={this.handleInputChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="date">Date</label>
