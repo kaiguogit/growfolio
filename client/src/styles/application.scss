@@ -15,10 +15,13 @@
 // @import "libs/library-variable-overrides";
 
 // -- bootstrap 4
-@import 'vendor/bootstrap/bootstrap';
+@import 'vendor/bootstrap/main';
 
 // - - reset - normalize.css v3.0.2
 @import 'vendor/normalize';
+
+// -- react-dd-menu
+@import 'vendor/react-dd-menu/main';
 
 
 // @import ../../../node_modules/bourbon/app/assets/stylesheets/bourbon
@@ -28,14 +31,14 @@
 
 // - - - - - - - - - - - - - - - - - - -
 // Variables
-@import 'variables/variables';
+@import 'variables/main';
 
 // - - - - - - - - - - - - - - - - - - -
 // - - global
 
 // - - global/utilities
 // extends, functions, and mixins
-@import 'utils/utils';
+@import 'utils/main';
 
 // - - global/base
 // base-level tags (body, p, etc.)
@@ -55,7 +58,7 @@
 // @import 'modules/modules';
 
 // - - components
-@import 'components/components';
+@import 'components/main';
 
 // - - - - - - - - - - - - - - - - - - -
 // - - inbox
