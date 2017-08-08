@@ -14,9 +14,6 @@ class NavLinkWrapper extends React.Component {
     }
 }
 
-NavLink.contextTypes = {
-    router: PropTypes.object
-};
 NavLink.propTypes = {
     to: PropTypes.string,
     children: PropTypes.element,
