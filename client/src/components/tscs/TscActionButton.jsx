@@ -34,7 +34,7 @@ class TscActionButton extends React.Component {
         const {type} = this.props;
         return (
             <button className={buttonClass[type] + " mod-no-margin mod-icon"}
-                onClick={this.handleOpenModal.bind(this)}>
+                onClick={this.handleOpenModal}>
                 <i className={iconClass[type]} aria-hidden="true"/>
             </button>
         );
