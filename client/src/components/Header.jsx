@@ -2,7 +2,6 @@ import React from 'react';
 import NavLink from './NavLink.jsx';
 import Auth from '../services/Auth';
 import {withRouter, Link} from 'react-router-dom';
-import DropdownMenu from './shared/dropdown-menu/dropdown-menu.jsx';
 
 const Header = withRouter(({history}) => (
     <div className="global-header mod-trello-blue mod-dark-background u-clearfix">
@@ -24,24 +23,6 @@ const Header = withRouter(({history}) => (
         </div>
         {Auth.loggedIn() ? (
             <div className="global-header-section mod-right">
-                 <DropdownMenu toggle={({onClick}) =>
-                    <a className="global-header-section-button" onClick={onClick}>
-                        {Auth.getUser().name}
-                    </a>
-                }>
-                    <a onClick={() => {
-                        history.push('/profile');
-                        }}>
-                        <span>Profile</span>
-                    </a>
-                    <a onClick={() => {
-                        Auth.deauthenticateUser();
-                        history.push('/');
-                        }}>
-                        <i className="fa fa-sign-out" aria-hidden="true"/>
-                        <span>Log out</span>
-                    </a>
-                </DropdownMenu>
                 <div className="dropdown d-inline-block">
                     <a className="global-header-section-button dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
                         {Auth.getUser().name}
