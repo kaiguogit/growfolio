@@ -24,7 +24,7 @@ const Header = withRouter(({history}) => (
         </div>
         {Auth.loggedIn() ? (
             <div className="global-header-section mod-right">
-                <DropdownMenu toggle={({onClick}) =>
+                 <DropdownMenu toggle={({onClick}) =>
                     <a className="global-header-section-button" onClick={onClick}>
                         {Auth.getUser().name}
                     </a>
@@ -42,6 +42,25 @@ const Header = withRouter(({history}) => (
                         <span>Log out</span>
                     </a>
                 </DropdownMenu>
+                <div className="dropdown d-inline-block">
+                    <a className="global-header-section-button dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+                        {Auth.getUser().name}
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <a href="#" className="dropdown-item" onClick={() => {
+                            history.push('/profile');
+                        }}>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#" className="dropdown-item" onClick={() => {
+                            Auth.deauthenticateUser();
+                            history.push('/');
+                        }}>
+                            <i className="fa fa-sign-out" aria-hidden="true"/>
+                            <span>Log out</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         ) : (
             <div className="global-header-section mod-right">

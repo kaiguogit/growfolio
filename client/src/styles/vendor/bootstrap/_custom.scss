@@ -1,0 +1,13 @@
+.dropdown-item {
+    font-weight: 700;
+    font-size: .8em;
+
+    &:hover {
+        background-color: $trello-blue-400;
+        color: #fff !important;
+    }
+}
+
+.dropdown-menu {
+    box-shadow: 0 1px 6px rgba(0,0,0,.15);
+}
