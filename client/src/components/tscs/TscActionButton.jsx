@@ -15,6 +15,11 @@ const buttonClass = {
     edit: ''
 };
 
+const title = {
+    edit: 'Edit',
+    delete: 'Delete'
+};
+
 class TscActionButton extends React.Component {
     constructor(props) {
         super(props);
@@ -34,6 +39,7 @@ class TscActionButton extends React.Component {
         const {type} = this.props;
         return (
             <button className={buttonClass[type] + " mod-no-margin mod-icon"}
+                title={title[type]}
                 onClick={this.handleOpenModal}>
                 <i className={iconClass[type]} aria-hidden="true"/>
             </button>

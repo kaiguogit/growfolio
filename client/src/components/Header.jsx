@@ -28,11 +28,9 @@ const Header = withRouter(({history}) => (
                         {Auth.getUser().name}
                     </a>
                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                        <a href="#" className="dropdown-item" onClick={() => {
-                            history.push('/profile');
-                        }}>
+                        <Link to="/profile" className="dropdown-item">
                             <span>Profile</span>
-                        </a>
+                        </Link>
                         <a href="#" className="dropdown-item" onClick={() => {
                             Auth.deauthenticateUser();
                             history.push('/');

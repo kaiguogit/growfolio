@@ -1,6 +1,7 @@
 .dropdown-item {
-    font-weight: 700;
+    font-weight: bold;
     font-size: .8em;
+    text-decoration: none;
 
     &:hover {
         background-color: $trello-blue-400;
