@@ -11,6 +11,14 @@ const HOLDING_PROPERTIES = [
     'dividend'
 ];
 
+const TSCS_PROPERTIES = [
+    'transactions',
+    'buyTransactions',
+    'sellTransactions'
+];
+const compareDate = (a, b) => {
+    return new Date(a.date) - new Date(b.date);
+};
 /**
  * generate an array of holdings based on transactions
  * holdings map will be
@@ -53,13 +61,11 @@ const _calcHoldings = tscs => {
             holding.dividendTransactions.push(tsc);
         }
     });
-    const compareDate = (a, b) => {
-        return new Date(a.date) - new Date(b.date);
-    };
+
     holdings.forEach(holding => {
-        holding.buyTransactions.sort(compareDate);
-        holding.sellTransactions.sort(compareDate);
-        holding.dividendTransactions.sort(compareDate);
+        TSCS_PROPERTIES.forEach(property =>
+            holding[property].sort(compareDate)
+        );
         _calcHoldingCost(holding);
     });
     return holdings;
@@ -167,6 +173,9 @@ export const generateAccountHoldingsMap = (tscs) => {
                 HOLDING_PROPERTIES.forEach(property =>
                     combinedHolding[property] += holding[property]
                 );
+                TSCS_PROPERTIES.forEach(property =>
+                    combinedHolding[property] = combinedHolding[property].concat(holding[property])
+                );
             } else {
                 combinedHolding = Object.assign({}, holding);
                 result.push(combinedHolding);
@@ -174,6 +183,11 @@ export const generateAccountHoldingsMap = (tscs) => {
         });
         return result;
     }, []);
+    holdingAccountMap.all.forEach(holding =>
+        TSCS_PROPERTIES.forEach(property =>
+            holding[property].sort(compareDate)
+        )
+    );
     return holdingAccountMap;
 };
 

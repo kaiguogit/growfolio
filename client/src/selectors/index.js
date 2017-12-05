@@ -85,7 +85,7 @@ export const getAccountHoldingsMap = createDeepEqualSelector([getTscs], generate
  */
 export const getHoldings = createDeepEqualSelector(
     [getDisplayAccount, getAccountHoldingsMap],
-    (account, accountHoldingsMap) => accountHoldingsMap[account]
+    (account, accountHoldingsMap) => accountHoldingsMap[account] || []
 );
 
 /**
