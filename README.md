@@ -10,4 +10,10 @@ It is intended to add some features that Yahoo Finance and Google Finance don't 
 ## How to build
 `npm run build`
 ## How to deploy
+### How to attach heroku
+`heroku login`
+`heroku git:remote -a <appname>`
+### Push to heroku
 `git push heroku <currentbranchname>:master --force`
+### See heroku logs
+`heroku logs --tail`
