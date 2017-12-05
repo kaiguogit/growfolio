@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions/portfolio';
 
 import CurrencySelector from './CurrencySelector.jsx';
+import AccountSelector from './AccountSelector.jsx';
 import {CheckBox} from '../shared/index.jsx';
 
 const GoBackButton = withRouter(({ history }) => {
@@ -30,6 +31,7 @@ class PerformanceSetting extends React.Component {
             <div className="card">
                 <div className="card-block">
                     <CurrencySelector/>
+                    <AccountSelector/>
                     <div>
                         <CheckBox
                             title="Show 0-share holdings"

@@ -1,11 +1,12 @@
 export default {
     portfolio: {
         displayCurrency: 'CAD',
+        displayAccount: 'all',
         showZeroShareHolding: false
     },
     tscs: {
         isFetching: false,
-        items: {},
+        items: [],
         deleteTscModalData: {
             isOpened: false,
             tsc: null

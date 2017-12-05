@@ -1,5 +1,5 @@
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import { generateHolding,
+import { generateAccountHoldingsMap,
          calculateHoldingPerformance,
          calculateTotalPerformance
 } from './holdingCalculator';
@@ -28,7 +28,8 @@ export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isE
 export const getTscs = state => state.tscs.items;
 export const getQuotes = state => state.quotes.items;
 export const getQuote = (state, props) => state.quotes.items[props.symbol];
-export const getSymbolFromProps = (state, props) => props.symbol;
+export const getSymbolFromProps = (state, props) => props && props.symbol;
+export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getCurrency = state => state.currency.rate;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
@@ -64,19 +65,40 @@ export const getBalance = state => state.balance;
  *
  * @param {object} pass the global state here
  * @param {object} props
- * @return {Array}: calculated holdings based on transactions.
+ * @return {object}: key-value map, key is account, value is holdings array
  */
-export const getHoldings = createDeepEqualSelector([getTscs], generateHolding);
+export const getAccountHoldingsMap = createDeepEqualSelector([getTscs], generateAccountHoldingsMap);
+
+/**
+ * Get holdings for single account.
+ * Usage.
+ * const mapStateToProps = (state, props) => {
+ *      return {
+ *          holdings: getHoldings(state, props)
+ *      }
+ * }
+ * export default connect(mapStateToProps, mapDispatchToProps)(Portfolio)
+ * @param {object} pass the global state here
+ * @param {object} props pass component props
+   @param {string} props.account Account name.
+ * @return {Array}: calculated holdings for the account.
+ */
+export const getHoldings = createDeepEqualSelector(
+    [getDisplayAccount, getAccountHoldingsMap],
+    (account, accountHoldingsMap) => accountHoldingsMap[account]
+);
 
 /**
  * Selector function for 1 holding.
  * @param {object} pass the global state here
  * @param {object} props with props.symbol
+ * @param {string} props.symbol Holding's symbol.
+ * @param {string} props.account Account name.
  * @return {object} holding
  */
-export const getHolding = createDeepEqualSelector(
+export const getSingleHolding = createDeepEqualSelector(
     [getHoldings, getSymbolFromProps],
-    (holdings, symbol) => holdings.find(x => x.symbol === symbol)
+    (holdings, symbol) => (holdings || []).find(x => x.symbol === symbol)
 );
 
 /**
@@ -99,7 +121,7 @@ export const getHolding = createDeepEqualSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createDeepEqualSelector([getHolding, getQuote, getCurrency, getDisplayCurrency], calculateHoldingPerformance);
+    return createDeepEqualSelector([getSingleHolding, getQuote, getCurrency, getDisplayCurrency], calculateHoldingPerformance);
 };
 
 /**
@@ -107,9 +129,10 @@ export const makeGetHoldingPerformance = () => {
  * @param {object} pass the global state here
  * @return {Array}: calculated holdings with performance data.
  */
-export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQuotes, getCurrency, getDisplayCurrency],
+export const getHoldingsPerformance = createDeepEqualSelector(
+    [getHoldings, getQuotes, getCurrency, getDisplayCurrency],
     (holdings, quotes, currencyRates, displayCurrency) => {
-        return holdings.map(holding => {
+        return (holdings || []).map(holding => {
             return calculateHoldingPerformance(holding, quotes[holding.symbol], currencyRates, displayCurrency);
         });
     }
@@ -120,8 +143,6 @@ export const getHoldingsPerformance = createDeepEqualSelector([getHoldings, getQ
  * @param {object} pass the global state here
  * @return {object}: calculated total performance.
  */
-
-
 export const getTotalPerformance = createDeepEqualSelector([getHoldingsPerformance], calculateTotalPerformance);
 
 export const getBalanceArray = createDeepEqualSelector([getBalance], balance => {

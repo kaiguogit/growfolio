@@ -67,6 +67,18 @@ const validateTransactionForm = (payload) => {
     errors.currency = 'Currency can only be CAD or USD';
   }
 
+  if (!isString(payload.account) ||
+    (payload.account !== 'kai-tfsa' &&
+      payload.account !== 'kai-rrsp' &&
+      payload.account !== 'kai-spouse-rrsp' &&
+      payload.account !== 'kai-non-registered' &&
+      payload.account !== 'crystal-tfsa' &&
+      payload.account !== 'crystal-rrsp' &&
+      payload.account !== 'crystal-non-registered')) {
+    isFormValid = false;
+    errors.account = 'Account name is not valid.';
+  }
+
   // if (!isString(payload.notes)) {
   //   isFormValid = false;
   //   errors.notes = 'Notes has to be string';
@@ -116,7 +128,8 @@ const returnError = (message, errors) => ({
 });
 
 const createOrEditTransactions = isEdit => (req, res) => {
-  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'totalOrPerShare', 'amount', 'type', 'commission', 'date', 'notes'];
+  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'totalOrPerShare', 'amount', 'type',
+    'account', 'commission', 'date', 'notes'];
   const data = {};
   keys.forEach((key) => {
     data[key] = req.body[key];

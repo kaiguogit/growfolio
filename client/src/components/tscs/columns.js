@@ -15,6 +15,10 @@ export const TSCS_COLUMNS = [
         title: 'Type'
     },
     {
+        selector: 'account',
+        title: 'Account'
+    },
+    {
         selector: 'currency',
         title: 'Currency'
     },

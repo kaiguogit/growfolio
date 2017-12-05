@@ -23,7 +23,7 @@ import TscModal from '../tscs/TscModal.jsx';
 class Portfolio extends React.Component {
     componentDidMount() {
         const tscs = this.props.tscs;
-        if (Object.keys(tscs).length === 0) {
+        if (tscs.length === 0) {
             this.props.actions.fetchTscs();
         }
         this.props.actions.setIntervalRefreshQuotes();
@@ -100,7 +100,7 @@ class Portfolio extends React.Component {
 Portfolio.propTypes = {
     portfolio: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    tscs: PropTypes.object,
+    tscs: PropTypes.array,
     isFetching: PropTypes.bool.isRequired,
     isTscsFetching: PropTypes.bool.isRequired,
     children: PropTypes.element

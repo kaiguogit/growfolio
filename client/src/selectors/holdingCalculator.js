@@ -1,5 +1,15 @@
 import { round, divide, avoidNaN } from '../utils';
 import Transaction from './transaction';
+import ACCOUNTS from '../constants/accounts';
+
+const HOLDING_PROPERTIES = [
+    'cost',
+    'cost_overall',
+    'shares',
+    'average_cost',
+    'realized_gain',
+    'dividend'
+];
 
 /**
  * generate an array of holdings based on transactions
@@ -10,40 +20,38 @@ import Transaction from './transaction';
  *  },
  *  ...
  * ]
+ * @param {array} tscs transactions
  */
-const _loadTransactionsToHolding = tscsMap => {
+const _calcHoldings = tscs => {
     let holdings = [];
     // TODO verify tscs by date. Such as whether there is enough shares to
     // sell
-    Object.keys(tscsMap).forEach(symbol => {
-        let transactions = tscsMap[symbol];
-        transactions.forEach((tsc) => {
-            // new object
-            tsc = new Transaction(tsc);
-            // Create holding and add tsc to it.
-            let holding = holdings.find(x => x.symbol === tsc.symbol);
-            if (!holding) {
-                holding = {
-                    name: tsc.name,
-                    symbol: tsc.symbol,
-                    currency: tsc.currency,
-                    exch: tsc.exch,
-                    transactions: [],
-                    sellTransactions: [],
-                    buyTransactions: [],
-                    dividendTransactions: []
-                };
-                holdings.push(holding);
-            }
-            holding.transactions.push(tsc);
-            if (tsc.type === 'buy') {
-                holding.buyTransactions.push(tsc);
-            } else if (tsc.type === 'sell') {
-                holding.sellTransactions.push(tsc);
-            } else if (tsc.type === 'dividend') {
-                holding.dividendTransactions.push(tsc);
-            }
-        });
+    tscs.forEach(tsc => {
+        // new object
+        tsc = new Transaction(tsc);
+        // Create holding and add tsc to it.
+        let holding = holdings.find(x => x.symbol === tsc.symbol);
+        if (!holding) {
+            holding = {
+                name: tsc.name,
+                symbol: tsc.symbol,
+                currency: tsc.currency,
+                exch: tsc.exch,
+                transactions: [],
+                sellTransactions: [],
+                buyTransactions: [],
+                dividendTransactions: []
+            };
+            holdings.push(holding);
+        }
+        holding.transactions.push(tsc);
+        if (tsc.type === 'buy') {
+            holding.buyTransactions.push(tsc);
+        } else if (tsc.type === 'sell') {
+            holding.sellTransactions.push(tsc);
+        } else if (tsc.type === 'dividend') {
+            holding.dividendTransactions.push(tsc);
+        }
     });
     const compareDate = (a, b) => {
         return new Date(a.date) - new Date(b.date);
@@ -52,6 +60,7 @@ const _loadTransactionsToHolding = tscsMap => {
         holding.buyTransactions.sort(compareDate);
         holding.sellTransactions.sort(compareDate);
         holding.dividendTransactions.sort(compareDate);
+        _calcHoldingCost(holding);
     });
     return holdings;
 };
@@ -68,12 +77,7 @@ const _loadTransactionsToHolding = tscsMap => {
     *     realized_gain (sold value - holding cost * (sold shares / holding shares))
     */
 const _calcHoldingCost = holding => {
-    holding.cost = 0;
-    holding.cost_overall = 0;
-    holding.shares = 0;
-    holding.average_cost = 0;
-    holding.realized_gain = 0;
-    holding.dividend = 0;
+    HOLDING_PROPERTIES.forEach(property => holding[property] = 0);
 
     // Assuming the transactions here are already sorted by date.
     holding.transactions.forEach(tsc => {
@@ -122,25 +126,55 @@ const _calcHoldingCost = holding => {
     }
 
     holding.average_cost = divide(holding.cost, holding.shares);
-    avoidNaN([
-        'cost',
-        'cost_overall',
-        'shares',
-        'average_cost',
-        'realized_gain'
-    ], holding);
-    return holding;
+    avoidNaN(HOLDING_PROPERTIES, holding);
+};
+
+const _getTscAccountMap = (tscs) => {
+    return (tscs || []).reduce((map, tsc) => {
+        let accountName = tsc.account || 'default';
+        map[accountName] = map[accountName] || [];
+        map[accountName].push(tsc);
+        return map;
+    }, {});
 };
 
 /**
  * calculate holdings based on transactions
- * @param {object} transactions map
- * @returns {array} holdings array
+ * @param {object} tscs transactions
+ * @returns {object} key-value map, key is account, value is holdings array
  */
-export const generateHolding = (transactions) => {
-    let holdings = _loadTransactionsToHolding(transactions);
-    holdings.forEach(_calcHoldingCost);
-    return holdings;
+export const generateAccountHoldingsMap = (tscs) => {
+    let tscAccountMap = _getTscAccountMap(tscs);
+    // Generate holdings for each account
+    let holdingAccountMap = ACCOUNTS.reduce((map, account) => {
+        if (account === 'all') {
+            return map;
+        }
+        if (tscAccountMap[account]) {
+            map[account] = _calcHoldings(tscAccountMap[account]);
+        }
+        return map;
+    }, {});
+
+    // Combine holdings of each account and same as "all" account.
+    holdingAccountMap.all = Object.keys(holdingAccountMap).reduce((result, account) => {
+        let holdings = holdingAccountMap[account];
+        holdings.forEach((holding) => {
+            let combinedHolding = result.find(h =>
+                h.symbol === holding.symbol
+            );
+            if (combinedHolding) {
+                HOLDING_PROPERTIES.forEach(property =>
+                    combinedHolding[property] += holding[property]
+                );
+            } else {
+                combinedHolding = Object.assign({}, holding);
+                result.push(combinedHolding);
+            }
+        });
+        return result;
+    }, []);
+    return holdingAccountMap;
 };
 
 /**
@@ -153,7 +187,7 @@ const convertHoldingCurrency = (holding, currencyRates, displayCurrency) => {
     let rate = 1;
     if (holding.currency !== displayCurrency) {
         let pair = (currencyRates || []).find(x => x.id === holding.currency + displayCurrency);
-        if (pair) {
+        if (pair && pair.Rate) {
             rate = pair.Rate;
             const props = [
                 // Properties before quote calculation

@@ -35,7 +35,7 @@ const makeCurrencyUrl = currencyPairs => {
 };
 
 const processRate = data => {
-    let rates = data.query.results.rate;
+    let rates = data && data.query && data.query.results && data.query.results.rate || [];
     // always return an Array.
     rates = Array.isArray(rates) ? rates : [rates];
     rates.forEach((rate) => {

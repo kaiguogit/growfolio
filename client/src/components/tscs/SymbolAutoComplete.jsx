@@ -21,7 +21,7 @@ const getMatchingSymbol = (value, symbols) => {
 
     const regex = new RegExp('^' + escapedValue, 'i');
 
-    return symbols.filter(symbol => {
+    return (symbols || []).filter(symbol => {
         return regex.test(symbol.$symbol);
     });
 };
@@ -29,7 +29,7 @@ const getMatchingSymbol = (value, symbols) => {
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = suggestion => `${suggestion.symbol} (${suggestion.name} Exchange: ${suggestion.exch})`;
+const getSuggestionValue = suggestion => suggestion.symbol;
 
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
@@ -78,6 +78,7 @@ class SymbolAutoComplete extends React.Component {
     }
 
     onChange(event, { newValue, /*method*/ }) {
+        this.props.onChange(newValue);
         this.setState({
             value: newValue
         });
@@ -85,9 +86,11 @@ class SymbolAutoComplete extends React.Component {
 
     loadSuggestions(value) {
         this.props.actions.fetchSymbols(value).then(symbols => {
-            this.setState({
-                suggestions: getMatchingSymbol(value, symbols)
-            });
+            if (Array.isArray(symbols) && symbols.length) {
+                this.setState({
+                    suggestions: getMatchingSymbol(value, symbols)
+                });
+            }
         });
     }
     // Autosuggest will call this function every time you need to update suggestions.
@@ -139,6 +142,7 @@ SymbolAutoComplete.propTypes = {
     // Data is used as default value of input.
     data: PropTypes.object,
     onSelected: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     actions: PropTypes.object.isRequired
 };
 

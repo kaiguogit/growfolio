@@ -113,10 +113,13 @@ export const receiveQuotes = (quotes) => ({
  * yld Dividend Yield
  */
 const processQuotes = quotes => {
-    // always return an Array.
-    quotes = Array.isArray(quotes) ? quotes : [quotes];
     // convert to object map
     const result = {};
+    if (!quotes) {
+        return result;
+    }
+    // always return an Array.
+    quotes = Array.isArray(quotes) ? quotes : [quotes];
     quotes.forEach(quote => {
         const { t: symbol, l: current_price, c: change, cp: change_percent} = quote;
         result[symbol] = {
@@ -150,7 +153,7 @@ const fetchQuotes = symbols => {
         timeout: 3000
     }).then(data => {
         if (!data.success) {
-            return null;
+            return {};
         }
         return processQuotes(data.result);
     });

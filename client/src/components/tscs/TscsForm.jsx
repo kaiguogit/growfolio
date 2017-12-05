@@ -23,6 +23,7 @@ class TscsForm extends React.Component {
                 date: moment(),
                 shares: '',
                 amount: '',
+                account: '',
                 totalOrPerShare: true,
                 commission: '',
                 notes: ''
@@ -52,20 +53,25 @@ class TscsForm extends React.Component {
         this.setState({[e.target.name]: e.target.value === 'true'});
     }
 
-    handleSymbolChange(data) {
+    handleSymbolSuggestionSelected(data) {
         let {symbol, name, exch} = data;
         this.setState({symbol, name, exch});
     }
 
+    handleSymbolChange(symbol) {
+        this.setState({symbol});
+    }
+
     render() {
-        let {type, name, currency, exch, shares, amount, commission, notes, totalOrPerShare} = this.state;
+        let {type, name, currency, exch, shares, amount, account, commission, notes, totalOrPerShare} = this.state;
         let {tsc} = this.props;
         return (
             <form className="tscs-form">
                 <FormGroup>
                     <label htmlFor="symbol">Symbol</label>
                     <SymbolAutoComplete data={tsc}
-                        onSelected={this.handleSymbolChange}/>
+                        onSelected={this.handleSymbolSuggestionSelected}
+                        onChange={this.handleSymbolChange}/>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="name">Name</label>
@@ -93,6 +99,22 @@ class TscsForm extends React.Component {
                         <option value="buy">Buy</option>
                         <option value="sell">Sell</option>
                         <option value="dividend">Dividend</option>
+                    </Select>
+                </FormGroup>
+                <FormGroup>
+                    <label htmlFor="account">Account</label>
+                    <Select name="account" id="account"
+                        value={account}
+                        defaultValue=""
+                        onChange={this.handleInputChange}>
+                        <option disabled value="">-- Select an account --</option>
+                        <option value="kai-tfsa">Kai TFSA</option>
+                        <option value="kai-rrsp">Kai RRSP</option>
+                        <option value="kai-spouse-rrsp">Kai Spouse RRSP</option>
+                        <option value="kai-non-registered">Kai Non Registered</option>
+                        <option value="crystal-tfsa">Crystal TFSA</option>
+                        <option value="crystal-rrsp">Crystal RRSP</option>
+                        <option value="crystal-non-registered">Crystal Non Registered</option>
                     </Select>
                 </FormGroup>
                 <FormGroup>

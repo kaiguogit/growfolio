@@ -86,7 +86,7 @@ class SummaryBar extends React.Component {
         const {performance, currencyRates} = this.props;
         //TODO hard coded exchange rate for now.
         // use watch list in future
-        const exchangeWatchList = currencyRates.filter(rate => {
+        const exchangeWatchList = (currencyRates || []).filter(rate => {
             return ['CADCNY', 'CADUSD', 'USDCAD'].includes(rate.id);
         });
 

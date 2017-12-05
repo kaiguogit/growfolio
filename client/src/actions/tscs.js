@@ -65,7 +65,6 @@ export const fetchTscs = () => dispatch => {
     .then(response => response.json())
     .then(data => {
         let tscs = data.result;
-        let tscsMap = {};
         if (!Array.isArray(tscs)) {
             return Promise.reject();
         }
@@ -85,10 +84,8 @@ export const fetchTscs = () => dispatch => {
             tsc.symbol = symbol.toUpperCase();
             tsc.type = tsc.type.toLowerCase();
             avoidNaN(['shares', 'amount', 'commission'], tsc);
-            tscsMap[symbol] = tscsMap[symbol] || [];
-            tscsMap[symbol].push(tsc);
         });
-        return tscsMap;
+        return tscs;
     })
     .then(data => dispatch(receiveTscs(data)))
     .catch(log.error);

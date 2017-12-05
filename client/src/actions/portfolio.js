@@ -5,6 +5,11 @@ export const selectDisplayCurrency = displayCurrency => ({
     displayCurrency
 });
 
+export const selectDisplayAccount = displayAccount => ({
+    type: types.SELECT_DISPLAY_ACCOUNT,
+    displayAccount
+});
+
 export const showZeroShareHolding = value => ({
     type: types.SHOW_ZERO_SHARE_HOLDING,
     showZeroShareHolding: value

@@ -10,6 +10,7 @@ const transactionSchema = new mongoose.Schema({
   // Is amount for total or pershare?
   totalOrPerShare: Boolean,
   type: String,
+  account: String,
   commission: Number,
   date: Date,
   notes: String,

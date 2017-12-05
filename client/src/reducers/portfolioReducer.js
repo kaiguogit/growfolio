@@ -8,6 +8,11 @@ const portfolioReducer = (state = initialState.portfolio, action) => {
                 ...state,
                 displayCurrency: action.displayCurrency
             };
+        case types.SELECT_DISPLAY_ACCOUNT:
+            return {
+                ...state,
+                displayAccount: action.displayAccount
+            };
         case types.SHOW_ZERO_SHARE_HOLDING:
             return {
                 ...state,
