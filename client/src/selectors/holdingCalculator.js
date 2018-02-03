@@ -8,7 +8,9 @@ const HOLDING_PROPERTIES = [
     'shares',
     'average_cost',
     'realized_gain',
-    'dividend'
+    'dividend',
+    'realizedGainCAD',
+    'dividendCAD'
 ];
 
 const TSCS_PROPERTIES = [
@@ -30,7 +32,7 @@ const compareDate = (a, b) => {
  * ]
  * @param {array} tscs transactions
  */
-const _calcHoldings = tscs => {
+const _calcHoldings = (tscs, historicalRate) => {
     let holdings = [];
     // TODO verify tscs by date. Such as whether there is enough shares to
     // sell
@@ -66,27 +68,38 @@ const _calcHoldings = tscs => {
         TSCS_PROPERTIES.forEach(property =>
             holding[property].sort(compareDate)
         );
-        _calcHoldingCost(holding);
+        _calcHoldingCost(holding, historicalRate);
     });
     return holdings;
 };
 
-/*
-    * Calculate the cost of holding for specified symbol based on transcations.
-    * Add keys: shares, cost.
-    * @param holding: The holding for specified symbol
-    * @return holding with calculated
-    *     cost (current holding cost),
-    *     average_cost (current holding's cost per share),
-    *     cost_overall (accumulated buying cost),
-    *     shares (current holding cost),
-    *     realized_gain (sold value - holding cost * (sold shares / holding shares))
-    */
-const _calcHoldingCost = holding => {
-    HOLDING_PROPERTIES.forEach(property => holding[property] = 0);
+const _setZero = (properties, value) => {
+    properties.forEach(property => value[property] = 0);
+};
 
+    /**
+     * Calculate the cost of holding for specified symbol based on transcations.
+     * Add keys: shares, cost.
+     * @param {object} holding: The holding for specified symbol
+     * @param {object} historicalRate historical exchange rate to calculate realized gain.
+     * @return holding with calculated
+     *     cost (current holding cost),
+     *     average_cost (current holding's cost per share),
+     *     cost_overall (accumulated buying cost),
+     *     shares (current holding cost),
+     *     realized_gain (sold value - holding cost * (sold shares / holding shares))
+    */
+const _calcHoldingCost = (holding, historicalRate) => {
+    _setZero(HOLDING_PROPERTIES, holding);
+    const currency = holding.currency;
     // Assuming the transactions here are already sorted by date.
     holding.transactions.forEach(tsc => {
+        let year = tsc.date.year();
+        let rate = 1;
+        if (currency === 'USD') {
+            rate = historicalRate && historicalRate[currency] &&
+                historicalRate[currency][year] || 1;
+        }
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
                 tsc.acbChange = tsc.total;
@@ -99,9 +112,12 @@ const _calcHoldingCost = holding => {
                 // acb change is cost * (sold shares / holding shares)
                 tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
                 tsc.realized_gain = tsc.total + tsc.acbChange;
-
+                if (currency === 'USD') {
+                    tsc.realizedGainCAD = tsc.realized_gain * rate;
+                }
                 holding.shares -= tsc.shares;
                 holding.realized_gain += tsc.realized_gain;
+                holding.realizedGainCAD += tsc.realizedGainCAD;
             }
             holding.cost += tsc.acbChange;
             tsc.acbChange = round(tsc.acbChange, 3);
@@ -117,8 +133,14 @@ const _calcHoldingCost = holding => {
                 tsc.newAverageCost = 0;
             }
         } else if (tsc.type === 'dividend') {
-            holding.realized_gain += tsc.total;
-            holding.dividend += tsc.total;
+            tsc.realized_gain = tsc.total;
+            holding.realized_gain += tsc.realized_gain;
+            holding.dividend += tsc.realized_gain;
+            if (currency === 'USD') {
+                tsc.realizedGainCAD = tsc.total * rate;
+                holding.realizedGainCAD += tsc.realizedGainCAD;
+                holding.dividendCAD += tsc.realizedGainCAD;
+            }
         }
         tsc.total = round(tsc.total, 3);
     });
@@ -149,7 +171,7 @@ const _getTscAccountMap = (tscs) => {
  * @param {object} tscs transactions
  * @returns {object} key-value map, key is account, value is holdings array
  */
-export const generateAccountHoldingsMap = (tscs) => {
+export const generateAccountHoldingsMap = (tscs, historicalRate) => {
     let tscAccountMap = _getTscAccountMap(tscs);
     // Generate holdings for each account
     let holdingAccountMap = ACCOUNTS.reduce((map, account) => {
@@ -157,7 +179,7 @@ export const generateAccountHoldingsMap = (tscs) => {
             return map;
         }
         if (tscAccountMap[account]) {
-            map[account] = _calcHoldings(tscAccountMap[account]);
+            map[account] = _calcHoldings(tscAccountMap[account], historicalRate);
         }
         return map;
     }, {});
@@ -259,7 +281,7 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates, displ
         }
         h.gain_overall = h.gain + h.realized_gain;
         h.gain_overall_percent = divide(h.gain_overall, h.cost_overall);
-        convertHoldingCurrency(h, currencyRates, displayCurrency);
+        // convertHoldingCurrency(h, currencyRates, displayCurrency);
         /** TODO: another way to achieve this is to make a better getQuote selector
          * Currently this calculation is triggered when anything in quote is new.
          * A better getQuote function should filter API response with only the
@@ -285,7 +307,15 @@ export const calculateTotalPerformance = holdings => {
     holdings.forEach(holding => {
         sumProps.forEach(prop => {
             rt[prop] = rt[prop] || 0;
-            rt[prop] += holding[prop];
+            if (holding.currency === 'USD') {
+                if (prop === 'realized_gain') {
+                    rt[prop] += holding.realizedGainCAD;
+                } else if (prop === 'dividend') {
+                    rt[prop] += holding.dividendCAD;
+                }
+            } else {
+                rt[prop] += holding[prop];
+            }
         });
     });
     rt.gain_percent = divide(rt.gain, rt.cost);

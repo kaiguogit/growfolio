@@ -33,6 +33,7 @@ export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getCurrency = state => state.currency.rate;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
+export const getHistoricalRate = state => state.currency.annualAverageRate;
 
 
 /**
@@ -67,7 +68,8 @@ export const getBalance = state => state.balance;
  * @param {object} props
  * @return {object}: key-value map, key is account, value is holdings array
  */
-export const getAccountHoldingsMap = createDeepEqualSelector([getTscs], generateAccountHoldingsMap);
+export const getAccountHoldingsMap = createDeepEqualSelector(
+    [getTscs, getHistoricalRate], generateAccountHoldingsMap);
 
 /**
  * Get holdings for single account.

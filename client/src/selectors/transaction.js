@@ -26,6 +26,7 @@ class Transaction {
                 divide(amount + commission, shares) :
                 amount;
         }
+        this.currency = this.currency.toUpperCase();
         this.date = moment(this.date);
     }
 }

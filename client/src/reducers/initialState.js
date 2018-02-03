@@ -25,6 +25,12 @@ export default {
     currency: {
         isFetching: false,
         rate: [],
+        annualAverageRate: {
+            USD: {
+                2017: 1.2986,
+                2016: 1.2986
+            }
+        },
         // TODO support CRUD watch list
         watchList: ['CNY', 'USD'],
         lastUpdated: Date.now()

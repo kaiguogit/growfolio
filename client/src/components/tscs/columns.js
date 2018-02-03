@@ -41,6 +41,18 @@ export const TSCS_COLUMNS = [
         title: 'Date'
     },
     {
+        selector: 'realized_gain',
+        title: 'Realized Gain',
+        filter: currency(3),
+        formatFunction: coloredCell
+    },
+    {
+        selector: 'realizedGainCAD',
+        title: 'Realized Gain (CAD)',
+        filter: currency(3),
+        formatFunction: coloredCell
+    },
+    {
         selector: 'total',
         title: 'Total',
         filter: currency(3)
