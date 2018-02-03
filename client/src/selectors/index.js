@@ -123,7 +123,7 @@ export const getSingleHolding = createDeepEqualSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createDeepEqualSelector([getSingleHolding, getQuote, getCurrency, getDisplayCurrency], calculateHoldingPerformance);
+    return createDeepEqualSelector([getSingleHolding, getQuote, getCurrency], calculateHoldingPerformance);
 };
 
 /**
@@ -132,10 +132,10 @@ export const makeGetHoldingPerformance = () => {
  * @return {Array}: calculated holdings with performance data.
  */
 export const getHoldingsPerformance = createDeepEqualSelector(
-    [getHoldings, getQuotes, getCurrency, getDisplayCurrency],
-    (holdings, quotes, currencyRates, displayCurrency) => {
+    [getHoldings, getQuotes, getCurrency],
+    (holdings, quotes, currencyRates) => {
         return (holdings || []).map(holding => {
-            return calculateHoldingPerformance(holding, quotes[holding.symbol], currencyRates, displayCurrency);
+            return calculateHoldingPerformance(holding, quotes[holding.symbol], currencyRates);
         });
     }
 );

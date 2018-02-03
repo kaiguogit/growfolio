@@ -77,6 +77,13 @@ const _setZero = (properties, value) => {
     properties.forEach(property => value[property] = 0);
 };
 
+const _getHistoricalRate = (rates, currency, year) => {
+    return rates && rates[currency] && rates[currency][year] || 1;
+};
+
+const _getRealTimeRate = (rates, currency) => {
+    return rates && rates[currency] || 1;
+};
     /**
      * Calculate the cost of holding for specified symbol based on transcations.
      * Add keys: shares, cost.
@@ -97,8 +104,7 @@ const _calcHoldingCost = (holding, historicalRate) => {
         let year = tsc.date.year();
         let rate = 1;
         if (currency === 'USD') {
-            rate = historicalRate && historicalRate[currency] &&
-                historicalRate[currency][year] || 1;
+            rate = _getHistoricalRate(historicalRate, currency, year);
         }
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
@@ -214,31 +220,6 @@ export const generateAccountHoldingsMap = (tscs, historicalRate) => {
 };
 
 /**
- * Output selectors, convert holding's values based on provided displayCurrency setting.
- * @param {object} holding
- * @param {array} currencyRates The currency data in store.
- * @param {string} displayCurrency
- */
-const convertHoldingCurrency = (holding, currencyRates, displayCurrency) => {
-    let rate = 1;
-    if (holding.currency !== displayCurrency) {
-        let pair = (currencyRates || []).find(x => x.id === holding.currency + displayCurrency);
-        if (pair && pair.Rate) {
-            rate = pair.Rate;
-            const props = [
-                // Properties before quote calculation
-                'cost', 'cost_overall', 'realized_gain', 'average_cost', 'dividend',
-                // Properties after quote calculation
-                'price', 'change', 'mkt_value', 'gain', 'days_gain', 'gain_overall'
-            ];
-            props.forEach(prop => {
-                holding[prop] *= rate;
-            });
-        }
-    }
-};
-
-/**
  * Output selectors, add performance data to holdings
  * Add {
  *    price                    (price from quote API),
@@ -257,7 +238,7 @@ const convertHoldingCurrency = (holding, currencyRates, displayCurrency) => {
  * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quote, currencyRates, displayCurrency) => {
+export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
         let h = Object.assign({}, holding);
         if (quote &&
             typeof h.shares === 'number' && typeof h.cost === 'number' &&
@@ -281,7 +262,10 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates, displ
         }
         h.gain_overall = h.gain + h.realized_gain;
         h.gain_overall_percent = divide(h.gain_overall, h.cost_overall);
-        // convertHoldingCurrency(h, currencyRates, displayCurrency);
+        if (holding.currency === 'USD') {
+            h.gainOverallCAD = h.gain * _getRealTimeRate(currencyRates, holding.currency) +
+                h.realizedGainCAD;
+        }
         /** TODO: another way to achieve this is to make a better getQuote selector
          * Currently this calculation is triggered when anything in quote is new.
          * A better getQuote function should filter API response with only the
@@ -312,6 +296,8 @@ export const calculateTotalPerformance = holdings => {
                     rt[prop] += holding.realizedGainCAD;
                 } else if (prop === 'dividend') {
                     rt[prop] += holding.dividendCAD;
+                } else if (prop === 'gain_overall') {
+                    rt[prop] += holding.gainOverallCAD;
                 }
             } else {
                 rt[prop] += holding[prop];
