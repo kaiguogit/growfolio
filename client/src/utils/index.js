@@ -142,8 +142,8 @@ export const redOrGreen = (value) => {
 };
 
 export const coloredCell = (entry, column) => {
-    let refValue = column.ref_selector ? entry[column.ref_selector] : entry[column.selector];
     let value = entry[column.selector];
+    let refValue = column.ref_selector ? entry[column.ref_selector] : value;
 
     return (
         <span style={redOrGreen(refValue)}>
@@ -152,7 +152,7 @@ export const coloredCell = (entry, column) => {
     );
 };
 
-export const renderCell = (entry, column) => {
+export const renderCell = (entry, column, key) => {
     let value = entry[column.selector];
     let content;
     let filteredValue = column.filter ? column.filter(value) : value;
@@ -161,9 +161,13 @@ export const renderCell = (entry, column) => {
     } else {
         content = filteredValue;
     }
+    let cellStyle = column.cellStyle;
+    cellStyle = typeof cellStyle === 'function' ? cellStyle(entry) : cellStyle;
     return (
-        <span style={column.style} key={filteredValue}>
-            {content}
-        </span>
+        <td key={key} style={cellStyle}>
+            <span style={column.style} key={filteredValue}>
+                {content}
+            </span>
+        </td>
     );
 };

@@ -32,7 +32,7 @@ const compareDate = (a, b) => {
  * ]
  * @param {array} tscs transactions
  */
-const _calcHoldings = (tscs, historicalRate) => {
+const _calcHoldings = (tscs) => {
     let holdings = [];
     // TODO verify tscs by date. Such as whether there is enough shares to
     // sell
@@ -68,17 +68,13 @@ const _calcHoldings = (tscs, historicalRate) => {
         TSCS_PROPERTIES.forEach(property =>
             holding[property].sort(compareDate)
         );
-        _calcHoldingCost(holding, historicalRate);
+        _calcHoldingCost(holding);
     });
     return holdings;
 };
 
 const _setZero = (properties, value) => {
     properties.forEach(property => value[property] = 0);
-};
-
-const _getHistoricalRate = (rates, currency, year) => {
-    return rates && rates[currency] && rates[currency][year] || 1;
 };
 
 const _getRealTimeRate = (rates, currency) => {
@@ -88,7 +84,6 @@ const _getRealTimeRate = (rates, currency) => {
      * Calculate the cost of holding for specified symbol based on transcations.
      * Add keys: shares, cost.
      * @param {object} holding: The holding for specified symbol
-     * @param {object} historicalRate historical exchange rate to calculate realized gain.
      * @return holding with calculated
      *     cost (current holding cost),
      *     average_cost (current holding's cost per share),
@@ -96,15 +91,17 @@ const _getRealTimeRate = (rates, currency) => {
      *     shares (current holding cost),
      *     realized_gain (sold value - holding cost * (sold shares / holding shares))
     */
-const _calcHoldingCost = (holding, historicalRate) => {
+const _calcHoldingCost = (holding) => {
     _setZero(HOLDING_PROPERTIES, holding);
-    const currency = holding.currency;
     // Assuming the transactions here are already sorted by date.
     holding.transactions.forEach(tsc => {
-        let year = tsc.date.year();
-        let rate = 1;
-        if (currency === 'USD') {
-            rate = _getHistoricalRate(historicalRate, currency, year);
+        let rate;
+        if (tsc.currency === 'USD') {
+            rate = tsc.rate;
+            if (!rate) {
+                rate = 1;
+                holding.unfoundRate = true;
+            }
         }
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
@@ -118,12 +115,14 @@ const _calcHoldingCost = (holding, historicalRate) => {
                 // acb change is cost * (sold shares / holding shares)
                 tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
                 tsc.realized_gain = tsc.total + tsc.acbChange;
-                if (currency === 'USD') {
+                if (tsc.currency === 'USD') {
                     tsc.realizedGainCAD = tsc.realized_gain * rate;
+                    holding.realizedGainCAD += tsc.realizedGainCAD;
+                } else {
+                    holding.realizedGainCAD += tsc.realized_gain;
                 }
                 holding.shares -= tsc.shares;
                 holding.realized_gain += tsc.realized_gain;
-                holding.realizedGainCAD += tsc.realizedGainCAD;
             }
             holding.cost += tsc.acbChange;
             tsc.acbChange = round(tsc.acbChange, 3);
@@ -142,10 +141,13 @@ const _calcHoldingCost = (holding, historicalRate) => {
             tsc.realized_gain = tsc.total;
             holding.realized_gain += tsc.realized_gain;
             holding.dividend += tsc.realized_gain;
-            if (currency === 'USD') {
+            if (tsc.currency === 'USD') {
                 tsc.realizedGainCAD = tsc.total * rate;
                 holding.realizedGainCAD += tsc.realizedGainCAD;
                 holding.dividendCAD += tsc.realizedGainCAD;
+            } else {
+                holding.realizedGainCAD += tsc.realized_gain;
+                holding.dividendCAD += tsc.realized_gain;
             }
         }
         tsc.total = round(tsc.total, 3);
@@ -204,6 +206,7 @@ export const generateAccountHoldingsMap = (tscs, historicalRate) => {
                 TSCS_PROPERTIES.forEach(property =>
                     combinedHolding[property] = combinedHolding[property].concat(holding[property])
                 );
+                combinedHolding.unfoundRate = combinedHolding.unfoundRate || holding.unfoundRate;
             } else {
                 combinedHolding = Object.assign({}, holding);
                 result.push(combinedHolding);

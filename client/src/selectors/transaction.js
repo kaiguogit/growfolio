@@ -1,5 +1,11 @@
 import { divide } from '../utils';
 import moment from 'moment';
+import historicalDailyExchangeRate from '../constants/dailyExchangeRate';
+
+const _getHistoricalDailyRate = (date) => {
+    return historicalDailyExchangeRate && historicalDailyExchangeRate.observations &&
+        historicalDailyExchangeRate.observations[date];
+};
 
 class Transaction {
     constructor(data) {
@@ -28,6 +34,14 @@ class Transaction {
         }
         this.currency = this.currency.toUpperCase();
         this.date = moment(this.date);
+
+        if (this.currency === 'USD') {
+            this.findRate();
+        }
+    }
+
+    findRate() {
+        this.rate = _getHistoricalDailyRate(this.date.format('YYYY-MM-DD'));
     }
 }
 

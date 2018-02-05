@@ -7,6 +7,25 @@ import TableCategory from '../shared/table/TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 
 const TscsTable = ({holdings}) => {
+    const categoryTitle = holding => {
+        const render = () => {
+            return (
+                <span>
+                    {holding.symbol + ': ' + holding.name}
+                    &nbsp;
+                    {holding.unfoundRate &&
+                        <span style={{color: 'red'}}>
+                            <i className="fa fa-warning" aria-hidden="true"/>
+                            <span>
+                                There is a transaction with unfound rate
+                            </span>
+                        </span>
+                    }
+                </span>
+            );
+        };
+        return render;
+    };
     return (
         <table className="table table-sticky-first-column table-responsive table-bordered table-sm table-compact">
             <thead>
@@ -24,7 +43,7 @@ const TscsTable = ({holdings}) => {
             {holdings.map(holding => {
                 return (
                     <TableCategory
-                        title={holding.symbol + ': ' + holding.name}
+                        titleFn={categoryTitle(holding)}
                         columnsCount={TSCS_COLUMNS.length + 1}
                         key={holding.symbol}
                     >
@@ -46,11 +65,7 @@ const TscsRow = ({tsc}) => {
     return (
         <tr>
             {TSCS_COLUMNS.map(column => {
-                return (
-                    <td key={column.selector}>
-                        {renderCell(tsc, column)}
-                    </td>
-                );
+                return renderCell(tsc, column, column.selector);
             })}
             <td>
                 <div className="tscs-action-buttons">

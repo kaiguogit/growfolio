@@ -53,6 +53,23 @@ export const TSCS_COLUMNS = [
         formatFunction: coloredCell
     },
     {
+        selector: 'rate',
+        title: 'Exchange Rate',
+        formatFunction: entry =>{
+            if (entry.currency === 'USD') {
+                return entry.rate || 'Rate not found';
+            }
+        },
+        cellStyle: entry => {
+            if (entry.currency === 'USD' && !entry.rate) {
+                return {
+                    backgroundColor: 'red',
+                    color: 'white'
+                };
+            }
+        }
+    },
+    {
         selector: 'total',
         title: 'Total',
         filter: currency(3)

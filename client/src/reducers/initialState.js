@@ -25,14 +25,6 @@ export default {
     currency: {
         isFetching: false,
         rate: [],
-        // https://help.simpletax.ca/questions/annual-exchange-rates?version=2015
-        annualAverageRate: {
-            USD: {
-                2017: 1.2986,
-                2016: 1.324806,
-                2015: 1.278711
-            }
-        },
         // TODO support CRUD watch list
         watchList: ['CNY', 'USD'],
         lastUpdated: Date.now()

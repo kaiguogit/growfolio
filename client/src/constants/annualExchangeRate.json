@@ -1,0 +1,10 @@
+{
+    "seriesDetail":{
+    "FXUSDCAD":{"label":"USD/CAD","description":"US dollar to Canadian dollar annual exchange rate"}
+    },
+    "observations":{
+    "2015":1.2986,
+    "2016":1.324806,
+    "2017":1.278711
+    }
+}
