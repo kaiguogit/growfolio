@@ -50,7 +50,7 @@ class Portfolio extends React.Component {
         return (
             <div>
                 <div className="tabbed-pane-nav mod-left u-clearfix">
-                    <div className="layout-center-xl">
+                    <div>
                         <ul>
                             <li className={tabItem}>
                                 <NavLink className={tabButton} to={`${url}performance`} role="tab">
@@ -75,7 +75,7 @@ class Portfolio extends React.Component {
                         <i className="fa fa-spinner fa-2x fa-spin" aria-hidden="true"/>
                     </span>
                 </div>
-                <div className={`${isTscsFetching ? 'u-hidden' : ''} layout-center-xl`}>
+                <div className={`${isTscsFetching ? 'u-hidden' : ''}`}>
                     <Route path={url} render={({location}) => {
                         if (location.pathname !== url + 'setting') {
                             return <ActionBar/>;

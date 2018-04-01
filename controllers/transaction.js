@@ -139,7 +139,7 @@ const returnError = (message, errors) => ({
 
 const createOrEditTransactions = isEdit => (req, res) => {
   const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'totalOrPerShare', 'amount', 'type',
-    'account', 'commission', 'date', 'notes'];
+    'account', 'commission', 'date', 'notes', 'returnOfCapital', 'capitalGain'];
   const data = {};
   keys.forEach((key) => {
     data[key] = req.body[key];

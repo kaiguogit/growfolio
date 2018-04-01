@@ -70,6 +70,16 @@ export const TSCS_COLUMNS = [
         }
     },
     {
+        selector: 'returnOfCapital',
+        title: 'Return Of Capital',
+        filter: currency(3)
+    },
+    {
+        selector: 'capitalGain',
+        title: 'Capital Gain',
+        filter: currency(3)
+    },
+    {
         selector: 'total',
         title: 'Total',
         filter: currency(3)

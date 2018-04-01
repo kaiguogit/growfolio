@@ -106,11 +106,9 @@ const _calcHoldingCost = (holding) => {
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
                 tsc.acbChange = tsc.total;
-
                 // Accumulate all buy cost or overall return.
                 holding.cost_overall += tsc.acbChange;
                 holding.shares += tsc.shares;
-
             } else if (tsc.type === 'sell') {
                 // acb change is cost * (sold shares / holding shares)
                 tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
@@ -124,20 +122,20 @@ const _calcHoldingCost = (holding) => {
                 holding.shares -= tsc.shares;
                 holding.realized_gain += tsc.realized_gain;
             }
-            holding.cost += tsc.acbChange;
-            tsc.acbChange = round(tsc.acbChange, 3);
-            // ACB status for tsc
-            // Not sure why, but 774 * 47.19 + 9.95 = 36535.009999999995 instead of
-            // 36536.01
-            // so round last 3 digit for these properties
-            if (holding.shares) {
-                tsc.newAcb = round(holding.cost, 3);
-                tsc.newAverageCost = round(divide(holding.cost, holding.shares), 3);
-            } else {
-                tsc.newAcb = 0;
-                tsc.newAverageCost = 0;
-            }
         } else if (tsc.type === 'dividend') {
+            // http://canadianmoneyforum.com/showthread.php/10747-quot-Notional-distribution-quot-question
+            // Return of capital decrease cost
+            tsc.acbChange = 0;
+            if (tsc.returnOfCapital) {
+                tsc.acbChange = - tsc.returnOfCapital;
+            }
+            // Capital gain is not distributed to me, they are reinvested inside of the fund
+            // Since I will pay tax on it, therefore it increases the cost
+            if (tsc.capitalGain) {
+                tsc.acbChange += tsc.capitalGain;
+            }
+            // Accumulate all buy cost or overall return.
+            holding.cost_overall += tsc.acbChange;
             tsc.realized_gain = tsc.total;
             holding.realized_gain += tsc.realized_gain;
             holding.dividend += tsc.realized_gain;
@@ -149,6 +147,19 @@ const _calcHoldingCost = (holding) => {
                 holding.realizedGainCAD += tsc.realized_gain;
                 holding.dividendCAD += tsc.realized_gain;
             }
+        }
+        holding.cost += tsc.acbChange;
+        tsc.acbChange = round(tsc.acbChange, 3);
+        // ACB status for tsc
+        // Not sure why, but 774 * 47.19 + 9.95 = 36535.009999999995 instead of
+        // 36536.01
+        // so round last 3 digit for these properties
+        if (holding.shares) {
+            tsc.newAcb = round(holding.cost, 3);
+            tsc.newAverageCost = round(divide(holding.cost, holding.shares), 3);
+        } else {
+            tsc.newAcb = 0;
+            tsc.newAverageCost = 0;
         }
         tsc.total = round(tsc.total, 3);
     });

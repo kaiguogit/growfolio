@@ -23,6 +23,8 @@ class TscsForm extends React.Component {
                 date: moment(),
                 shares: '',
                 amount: '',
+                returnOfCapital: '',
+                capitalGain: '',
                 account: '',
                 totalOrPerShare: true,
                 commission: '',
@@ -63,7 +65,8 @@ class TscsForm extends React.Component {
     }
 
     render() {
-        let {type, name, currency, exch, shares, amount, account, commission, notes, totalOrPerShare} = this.state;
+        let {type, name, currency, exch, shares, amount, account, commission, notes, totalOrPerShare,
+            returnOfCapital, capitalGain} = this.state;
         let {tsc} = this.props;
         return (
             <form className="tscs-form">
@@ -105,7 +108,6 @@ class TscsForm extends React.Component {
                     <label htmlFor="account">Account</label>
                     <Select name="account" id="account"
                         value={account}
-                        defaultValue=""
                         onChange={this.handleInputChange}>
                         <option disabled value="">-- Select an account --</option>
                         <option value="kai-tfsa">Kai TFSA</option>
@@ -131,7 +133,6 @@ class TscsForm extends React.Component {
                     <Input type="number" name="shares" id="shares"
                         value={shares} onChange={this.handleInputChange}/>
                 </FormGroup>
-
                 <FormGroup>
                     <label htmlFor="amount">Amount</label>
                     <div className="row no-gutters">
@@ -154,6 +155,20 @@ class TscsForm extends React.Component {
                     <Input type="number" name="commission" id="commission"
                         value={commission} onChange={this.handleInputChange}/>
                 </FormGroup>
+                {this.state.type === 'dividend' &&
+                <FormGroup>
+                    <label htmlFor="returnofcapital">Return of Capital</label>
+                    <Input type="number" name="returnOfCapital" id="returnofcapital"
+                        value={returnOfCapital} onChange={this.handleInputChange}/>
+                </FormGroup>
+                }
+                {this.state.type === 'dividend' &&
+                <FormGroup>
+                    <label htmlFor="capitalgain">Capital Gain</label>
+                    <Input type="number" name="capitalGain" id="capitalgain"
+                        value={capitalGain} onChange={this.handleInputChange}/>
+                </FormGroup>
+                }
                 <FormGroup>
                     <label htmlFor="notes">Notes</label>
                     <Input type="text" name="notes" id="notes"
