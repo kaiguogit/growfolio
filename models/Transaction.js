@@ -9,6 +9,10 @@ const transactionSchema = new mongoose.Schema({
   amount: Number,
   // Is amount for total or pershare?
   totalOrPerShare: Boolean,
+  // Dividend's return of capital
+  returnOfCapital: Number,
+  // Dividend's capital gain
+  capitalGain: Number,
   type: String,
   account: String,
   commission: Number,

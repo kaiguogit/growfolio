@@ -89,6 +89,16 @@ const validateTransactionForm = (payload) => {
     errors.shares = 'Shares is invalid';
   }
 
+  if (!isValidNum(payload.returnOfCapital)) {
+    isFormValid = false;
+    errors.returnOfCapital = 'Return of capital is invalid';
+  }
+
+  if (!isValidNum(payload.capitalGain)) {
+    isFormValid = false;
+    errors.capitalGain = 'Capital gain is invalid';
+  }
+
   if (!isValidNum(payload.amount)) {
     isFormValid = false;
     errors.amount = 'Amount is invalid';
