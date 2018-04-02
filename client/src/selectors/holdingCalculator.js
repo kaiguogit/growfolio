@@ -4,10 +4,13 @@ import ACCOUNTS from '../constants/accounts';
 
 const HOLDING_PROPERTIES = [
     'cost',
-    'cost_overall',
+    'costCAD',
+    'costOverall',
+    'costOverallCAD',
     'shares',
-    'average_cost',
-    'realized_gain',
+    'averageCost',
+    'averageCostCAD',
+    'realizedGain',
     'dividend',
     'realizedGainCAD',
     'dividendCAD'
@@ -86,70 +89,76 @@ const _getRealTimeRate = (rates, currency) => {
      * @param {object} holding: The holding for specified symbol
      * @return holding with calculated
      *     cost (current holding cost),
-     *     average_cost (current holding's cost per share),
-     *     cost_overall (accumulated buying cost),
+     *     averageCost (current holding's cost per share),
+     *     costOverall (accumulated buying cost),
      *     shares (current holding cost),
-     *     realized_gain (sold value - holding cost * (sold shares / holding shares))
+     *     realizedGain (sold value - holding cost * (sold shares / holding shares))
     */
 const _calcHoldingCost = (holding) => {
     _setZero(HOLDING_PROPERTIES, holding);
     // Assuming the transactions here are already sorted by date.
     holding.transactions.forEach(tsc => {
         let rate;
-        if (tsc.currency === 'USD') {
+        const isUSD = tsc.currency === 'USD';
+        if (isUSD) {
             rate = tsc.rate;
             if (!rate) {
                 rate = 1;
                 holding.unfoundRate = true;
             }
         }
+        // http://www.moneysense.ca/invest/calculating-capital-gains-on-u-s-stocks/
+        // Keep track of CAD based ACB.
+        // You need to determine the cost in Canadian dollars
+        // based on the exchange rate at the time of purchase and do the same for the sale proceeds
+        // based on the current exchange rate.
         if (tsc.type === 'buy' || tsc.type === 'sell') {
             if (tsc.type === 'buy') {
                 tsc.acbChange = tsc.total;
+                tsc.acbChangeCAD = tsc.totalCAD;
                 // Accumulate all buy cost or overall return.
-                holding.cost_overall += tsc.acbChange;
+                holding.costOverall += tsc.acbChange;
+                holding.costOverallCAD += tsc.acbChangeCAD;
                 holding.shares += tsc.shares;
             } else if (tsc.type === 'sell') {
                 // acb change is cost * (sold shares / holding shares)
                 tsc.acbChange = - divide(holding.cost * tsc.shares, holding.shares);
-                tsc.realized_gain = tsc.total + tsc.acbChange;
-                if (tsc.currency === 'USD') {
-                    tsc.realizedGainCAD = tsc.realized_gain * rate;
-                    holding.realizedGainCAD += tsc.realizedGainCAD;
-                } else {
-                    holding.realizedGainCAD += tsc.realized_gain;
-                }
+                tsc.acbChangeCAD = - divide(holding.costCAD * tsc.shares, holding.shares);
+                tsc.realizedGain = tsc.total + tsc.acbChange;
+                tsc.realizedGainCAD = tsc.totalCAD + tsc.acbChangeCAD;
+                holding.realizedGain += tsc.realizedGain;
+                holding.realizedGainCAD += tsc.realizedGainCAD;
                 holding.shares -= tsc.shares;
-                holding.realized_gain += tsc.realized_gain;
             }
         } else if (tsc.type === 'dividend') {
             // http://canadianmoneyforum.com/showthread.php/10747-quot-Notional-distribution-quot-question
             // Return of capital decrease cost
             tsc.acbChange = 0;
+            tsc.acbChangeCAD = 0;
             if (tsc.returnOfCapital) {
                 tsc.acbChange = - tsc.returnOfCapital;
+                tsc.acbChangeCAD = - tsc.returnOfCapitalCAD;
             }
             // Capital gain is not distributed to me, they are reinvested inside of the fund
             // Since I will pay tax on it, therefore it increases the cost
             if (tsc.capitalGain) {
                 tsc.acbChange += tsc.capitalGain;
+                tsc.acbChangeCAD += tsc.capitalGainCAD;
             }
             // Accumulate all buy cost or overall return.
-            holding.cost_overall += tsc.acbChange;
-            tsc.realized_gain = tsc.total;
-            holding.realized_gain += tsc.realized_gain;
-            holding.dividend += tsc.realized_gain;
-            if (tsc.currency === 'USD') {
-                tsc.realizedGainCAD = tsc.total * rate;
-                holding.realizedGainCAD += tsc.realizedGainCAD;
-                holding.dividendCAD += tsc.realizedGainCAD;
-            } else {
-                holding.realizedGainCAD += tsc.realized_gain;
-                holding.dividendCAD += tsc.realized_gain;
-            }
+            holding.costOverall += tsc.acbChange;
+            holding.costOverallCAD += tsc.acbChangeCAD;
+            tsc.realizedGain = tsc.total;
+            tsc.realizedGainCAD = tsc.totalCAD;
+            holding.realizedGain += tsc.realizedGain;
+            holding.realizedGainCAD += tsc.realizedGainCAD;
+            holding.dividend += tsc.realizedGain;
+            holding.dividendCAD += tsc.realizedGainCAD;
         }
         holding.cost += tsc.acbChange;
+        holding.costCAD += tsc.acbChangeCAD;
         tsc.acbChange = round(tsc.acbChange, 3);
+        tsc.acbChangeCAD = round(tsc.acbChangeCAD, 3);
         // ACB status for tsc
         // Not sure why, but 774 * 47.19 + 9.95 = 36535.009999999995 instead of
         // 36536.01
@@ -157,22 +166,28 @@ const _calcHoldingCost = (holding) => {
         if (holding.shares) {
             tsc.newAcb = round(holding.cost, 3);
             tsc.newAverageCost = round(divide(holding.cost, holding.shares), 3);
+            tsc.newAcbCAD = round(holding.costCAD, 3);
+            tsc.newAverageCostCAD = round(divide(holding.costCAD, holding.shares), 3);
         } else {
             tsc.newAcb = 0;
             tsc.newAverageCost = 0;
+            tsc.newAcbCAD = 0;
+            tsc.newAverageCostCAD = 0;
         }
-        tsc.total = round(tsc.total, 3);
     });
 
     if (holding.shares) {
         holding.cost = round(holding.cost, 3);
+        holding.costCAD = round(holding.costCAD, 3);
     } else {
         // Clear cost if share is 0, since it maybe very small
         // number after minize sell transacations.
         holding.cost = 0;
+        holding.costCAD = 0;
     }
 
-    holding.average_cost = divide(holding.cost, holding.shares);
+    holding.averageCost = divide(holding.cost, holding.shares);
+    holding.averageCostCAD = divide(holding.costCAD, holding.shares);
     avoidNaN(HOLDING_PROPERTIES, holding);
 };
 
@@ -238,13 +253,13 @@ export const generateAccountHoldingsMap = (tscs, historicalRate) => {
  * Add {
  *    price                    (price from quote API),
  *    change                   (day's price change from quote API)
- *    change_percent           (day's price change percent from quote API),
+ *    changePercent           (day's price change percent from quote API),
  *    mkt_value                (shares * price),
  *    gain                     (mkt_value - cost),
- *    gain_percent             (gain / cost),
- *    days_gain                (change * shares),
- *    gain_overall             (gain + realized_gain),
- *    gain_overall_percent     (gain_overall / cost_overall)
+ *    gainPercent             (gain / cost),
+ *    daysGain                (change * shares),
+ *    gainOverall             (gain + realizedGain),
+ *    gainOverallPercent     (gainOverall / costOverall)
  * }
  * @param {object} holding
  * @param {object} quote quote data for the holding
@@ -256,26 +271,26 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
         let h = Object.assign({}, holding);
         if (quote &&
             typeof h.shares === 'number' && typeof h.cost === 'number' &&
-            typeof h.realized_gain === 'number' &&
-            typeof h.cost_overall === 'number') {
+            typeof h.realizedGain === 'number' &&
+            typeof h.costOverall === 'number') {
                 h.price = quote.current_price;
                 h.change = quote.change * 1;
-                h.change_percent = quote.change_percent * 1;
+                h.changePercent = quote.changePercent * 1;
                 h.mkt_value = h.shares * h.price;
                 h.gain = h.mkt_value - h.cost;
-                h.gain_percent = divide(h.gain, h.cost);
-                h.days_gain = h.shares * h.change;
+                h.gainPercent = divide(h.gain, h.cost);
+                h.daysGain = h.shares * h.change;
         } else {
             // If quote is not found, still make property available
             // to avoid NaN in sum calculation.
             h.price = 0;
             h.mkt_value = 0;
             h.gain = 0;
-            h.gain_percent = 0;
-            h.days_gain = 0;
+            h.gainPercent = 0;
+            h.daysGain = 0;
         }
-        h.gain_overall = h.gain + h.realized_gain;
-        h.gain_overall_percent = divide(h.gain_overall, h.cost_overall);
+        h.gainOverall = h.gain + h.realizedGain;
+        h.gainOverallPercent = divide(h.gainOverall, h.costOverall);
         if (holding.currency === 'USD') {
             h.gainOverallCAD = h.gain * _getRealTimeRate(currencyRates, holding.currency) +
                 h.realizedGainCAD;
@@ -298,28 +313,30 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
  * @returns {object}
  */
 export const calculateTotalPerformance = holdings => {
-    const sumProps = ['mkt_value', 'cost', 'gain', 'days_gain', 'gain_overall', 'cost_overall',
-                   'realized_gain', 'dividend'];
+    const sumProps = ['mkt_value', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
+                   'realizedGain', 'dividend'];
     const rt = {holdings};
 
     holdings.forEach(holding => {
         sumProps.forEach(prop => {
             rt[prop] = rt[prop] || 0;
             if (holding.currency === 'USD') {
-                if (prop === 'realized_gain') {
+                if (prop === 'realizedGain') {
                     rt[prop] += holding.realizedGainCAD;
                 } else if (prop === 'dividend') {
                     rt[prop] += holding.dividendCAD;
-                } else if (prop === 'gain_overall') {
+                } else if (prop === 'gainOverall') {
                     rt[prop] += holding.gainOverallCAD;
+                } else if (prop === 'costOverall') {
+                    rt[prop] += holding.costOverallCAD;
                 }
             } else {
                 rt[prop] += holding[prop];
             }
         });
     });
-    rt.gain_percent = divide(rt.gain, rt.cost);
-    rt.change_percent = divide(rt.days_gain, rt.cost);
-    rt.gain_overall_percent = divide(rt.gain_overall, rt.cost_overall);
+    rt.gainPercent = divide(rt.gain, rt.cost);
+    rt.changePercent = divide(rt.daysGain, rt.cost);
+    rt.gainOverallPercent = divide(rt.gainOverall, rt.costOverall);
     return rt;
 };

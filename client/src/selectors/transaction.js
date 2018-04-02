@@ -15,6 +15,13 @@ class Transaction {
 
     init() {
         const {type, totalOrPerShare, amount, shares, commission} = this;
+        this.currency = this.currency.toUpperCase();
+        this.date = moment(this.date);
+        const isUSD = this.currency === 'USD';
+        if (isUSD) {
+            this.rate = _getHistoricalDailyRate(this.date.format('YYYY-MM-DD'));
+        }
+        let rate = this.rate || 1;
 
         // Amount could be total or price based on totalOrPerShare property.
         // Calculate total and price
@@ -32,16 +39,9 @@ class Transaction {
                 divide(amount + commission, shares) :
                 amount;
         }
-        this.currency = this.currency.toUpperCase();
-        this.date = moment(this.date);
-
-        if (this.currency === 'USD') {
-            this.findRate();
-        }
-    }
-
-    findRate() {
-        this.rate = _getHistoricalDailyRate(this.date.format('YYYY-MM-DD'));
+        this.totalCAD = this.total * rate;
+        this.returnOfCapitalCAD = this.returnOfCapital && this.returnOfCapital * rate;
+        this.capitalGainCAD = this.capitalGain && this.capitalGain * rate;
     }
 }
 

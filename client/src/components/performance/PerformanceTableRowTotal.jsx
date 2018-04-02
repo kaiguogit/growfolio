@@ -5,8 +5,8 @@ import { getTotalPerformance } from '../../selectors';
 import PERFORMANCE_COLUMNS from './columns';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const validColumn = ['cost', 'mkt_value', 'change_percent', 'days_gain', 'gain',
-'gain_percent', 'gain_overall', 'gain_overall_percent', 'realized_gain', 'dividend', 'cost_overall'];
+const validColumn = ['cost', 'mkt_value', 'changePercent', 'daysGain', 'gain',
+'gainPercent', 'gainOverall', 'gainOverallPercent', 'realizedGain', 'dividend', 'costOverall'];
 
 class PerformanceTableRowTotal extends React.Component {
     constructor(props) {

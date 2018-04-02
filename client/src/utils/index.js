@@ -141,8 +141,8 @@ export const redOrGreen = (value) => {
     return style;
 };
 
-export const coloredCell = (entry, column) => {
-    let value = entry[column.selector];
+export const coloredCell = (entry, column, useCADselector) => {
+    let value = useCADselector ? entry[column.selectorCAD] : entry[column.selector];
     let refValue = column.ref_selector ? entry[column.ref_selector] : value;
 
     return (
@@ -153,20 +153,28 @@ export const coloredCell = (entry, column) => {
 };
 
 export const renderCell = (entry, column, key) => {
-    let value = entry[column.selector];
-    let content;
-    let filteredValue = column.filter ? column.filter(value) : value;
-    if (column.formatFunction) {
-        content = column.formatFunction(entry, column);
-    } else {
-        content = filteredValue;
+    let value, valueCAD, content, contentCAD, filteredValue, filteredValueCAD, usdColumn;
+    value = entry[column.selector];
+    filteredValue = column.filter ? column.filter(value) : value;
+    content = column.formatFunction ? column.formatFunction(entry, column) : filteredValue;
+    usdColumn = column.selectorCAD && entry.currency === 'USD';
+    if (usdColumn) {
+        valueCAD = entry[column.selectorCAD];
+        filteredValueCAD = column.filter ? column.filter(valueCAD) : valueCAD;
+        contentCAD = column.formatFunction ? column.formatFunction(entry, column, true) : filteredValueCAD;
     }
     let cellStyle = column.cellStyle;
     cellStyle = typeof cellStyle === 'function' ? cellStyle(entry) : cellStyle;
     return (
         <td key={key} style={cellStyle}>
             <span style={column.style} key={filteredValue}>
-                {content}
+                {!usdColumn && content}
+                {usdColumn &&
+                    <div>
+                        <div>{contentCAD}</div>
+                        <div>{content}(USD)</div>
+                    </div>
+                }
             </span>
         </td>
     );

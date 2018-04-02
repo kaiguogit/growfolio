@@ -121,13 +121,13 @@ const processQuotes = quotes => {
     // always return an Array.
     quotes = Array.isArray(quotes) ? quotes : [quotes];
     quotes.forEach(quote => {
-        const { t: symbol, l: current_price, c: change, cp: change_percent} = quote;
+        const { t: symbol, l: current_price, c: change, cp: changePercent} = quote;
         result[symbol] = {
             $original: quote,
             symbol,
             current_price: num(current_price),
             change: num(change),
-            change_percent: num(change_percent) / 100
+            changePercent: num(changePercent) / 100
         };
     });
     return result;

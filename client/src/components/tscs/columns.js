@@ -41,14 +41,9 @@ export const TSCS_COLUMNS = [
         title: 'Date'
     },
     {
-        selector: 'realized_gain',
+        selector: 'realizedGain',
+        selectorCAD: 'realizedGainCAD',
         title: 'Realized Gain',
-        filter: currency(3),
-        formatFunction: coloredCell
-    },
-    {
-        selector: 'realizedGainCAD',
-        title: 'Realized Gain (CAD)',
         filter: currency(3),
         formatFunction: coloredCell
     },
@@ -81,22 +76,26 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'total',
+        selectorCAD: 'totalCAD',
         title: 'Total',
         filter: currency(3)
     },
     {
         selector: 'acbChange',
+        selectorCAD: 'acbChangeCAD',
         title: 'Change in ACB',
         filter: currency(3),
         formatFunction: coloredCell
     },
     {
         selector: 'newAcb',
+        selectorCAD: 'newAcbCAD',
         title: 'New ACB',
         filter: currency(3)
     },
     {
         selector: 'newAverageCost',
+        selectorCAD: 'newAverageCostCAD',
         filter: currency(3),
         title: 'Average Cost'
     },

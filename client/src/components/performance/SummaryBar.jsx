@@ -22,7 +22,7 @@ const Change = (props) => {
         return {};
     };
 
-    const {change, change_percent, title} = props;
+    const {change, changePercent, title} = props;
     const numStyle = upOrDown(change).style;
     return (
         <div className="col-12 col-sm-6 col-md-auto mr-md-3">
@@ -32,11 +32,11 @@ const Change = (props) => {
                     <h2 style={numStyle}>
                         {currency(2)(change)}
                         {' '}
-                        {change_percent !== undefined &&
+                        {changePercent !== undefined &&
                             <span className={upOrDown(change).iconClass}/>
                         }
                         {' '}
-                        {change_percent !== undefined && percentage(change_percent)}
+                        {changePercent !== undefined && percentage(changePercent)}
                     </h2>
                 </div>
             </NumberChangeTransition>
@@ -46,7 +46,7 @@ const Change = (props) => {
 
 Change.propTypes = {
     change: PropTypes.number,
-    change_percent: PropTypes.number,
+    changePercent: PropTypes.number,
     title: PropTypes.string.isRequired
 };
 
@@ -93,14 +93,14 @@ class SummaryBar extends React.Component {
         return(
             <div className="summary-bar row no-gutters">
                 {this.totalValue()}
-                <Change change={performance.days_gain}
-                    change_percent={performance.change_percent}
+                <Change change={performance.daysGain}
+                    changePercent={performance.changePercent}
                     title="Today's Change"/>
                 <Change change={performance.gain}
-                    change_percent={performance.gain_percent}
+                    changePercent={performance.gainPercent}
                     title="Total Change"/>
-                <Change change={performance.gain_overall}
-                    change_percent={performance.gain_overall_percent}
+                <Change change={performance.gainOverall}
+                    changePercent={performance.gainOverallPercent}
                     title="Overall Change"/>
                 {exchangeWatchList.map(rate => {
                     return (

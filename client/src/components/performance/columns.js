@@ -1,7 +1,7 @@
 import { percentage, currency, coloredCell } from '../../utils';
 
 const defaultColumn = {
-    // ref_selector: 'days_gain'
+    // ref_selector: 'daysGain'
 };
 
 const PERFORMANCE_COLUMNS = [
@@ -28,7 +28,7 @@ const PERFORMANCE_COLUMNS = [
         title: 'Market Value',
     },
     {
-        selector: 'average_cost',
+        selector: 'averageCost',
         filter: currency(2),
         title: 'Average Cost',
         className: 'hidden-sm-down'
@@ -50,7 +50,7 @@ const PERFORMANCE_COLUMNS = [
         className: 'font-weight-bold'
     },
     {
-        selector: 'change_percent',
+        selector: 'changePercent',
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Change Percent',
@@ -58,7 +58,7 @@ const PERFORMANCE_COLUMNS = [
         ref_selector: 'change'
     },
     {
-        selector: 'days_gain',
+        selector: 'daysGain',
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Day\'s Gain',
@@ -71,27 +71,27 @@ const PERFORMANCE_COLUMNS = [
         title: 'Gain'
     },
     {
-        selector: 'gain_percent',
+        selector: 'gainPercent',
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Gain Percent'
     },
     {
-        selector: 'gain_overall',
+        selector: 'gainOverall',
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Overall Return',
         className: 'hidden-sm-down'
     },
     {
-        selector: 'gain_overall_percent',
+        selector: 'gainOverallPercent',
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Overall Return Percent',
         className: 'hidden-sm-down'
     },
     {
-        selector: 'realized_gain',
+        selector: 'realizedGain',
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Realized Gain'
@@ -104,7 +104,7 @@ const PERFORMANCE_COLUMNS = [
         className: 'hidden-sm-down'
     },
     {
-        selector: 'cost_overall',
+        selector: 'costOverall',
         filter: currency(2),
         title: 'Overall Cost',
         className: 'hidden-sm-down'
