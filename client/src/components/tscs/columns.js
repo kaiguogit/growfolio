@@ -25,6 +25,7 @@ export const TSCS_COLUMNS = [
     {
         selector: 'price',
         title: 'Price',
+        showOtherCurrency: true,
         filter: currency(4)
     },
     {
