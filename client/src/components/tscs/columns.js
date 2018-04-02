@@ -76,26 +76,26 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'total',
-        selectorCAD: 'totalCAD',
+        showOtherCurrency: true,
         title: 'Total',
         filter: currency(3)
     },
     {
         selector: 'acbChange',
-        selectorCAD: 'acbChangeCAD',
+        showOtherCurrency: true,
         title: 'Change in ACB',
         filter: currency(3),
         formatFunction: coloredCell
     },
     {
         selector: 'newAcb',
-        selectorCAD: 'newAcbCAD',
+        showOtherCurrency: true,
         title: 'New ACB',
         filter: currency(3)
     },
     {
         selector: 'newAverageCost',
-        selectorCAD: 'newAverageCostCAD',
+        showOtherCurrency: true,
         filter: currency(3),
         title: 'Average Cost'
     },

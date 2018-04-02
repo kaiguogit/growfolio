@@ -141,8 +141,8 @@ export const redOrGreen = (value) => {
     return style;
 };
 
-export const coloredCell = (entry, column, useCADselector) => {
-    let value = useCADselector ? entry[column.selectorCAD] : entry[column.selector];
+export const coloredCell = (entry, column) => {
+    let value = entry[column.selector];
     let refValue = column.ref_selector ? entry[column.ref_selector] : value;
 
     return (
@@ -152,27 +152,30 @@ export const coloredCell = (entry, column, useCADselector) => {
     );
 };
 
-export const renderCell = (entry, column, key) => {
-    let value, valueCAD, content, contentCAD, filteredValue, filteredValueCAD, usdColumn;
-    value = entry[column.selector];
+export const renderCell = (entry, column, key, displayCurrency) => {
+    let value, otherValue, content, otherContent, filteredValue, otherfilteredValue;
+    let otherCurrency = displayCurrency === 'CAD' ? 'USD' : 'CAD';
+    let showOtherCurrency = column.showOtherCurrency;
+    let selector = column.selector;
+    value = entry[displayCurrency][selector];
     filteredValue = column.filter ? column.filter(value) : value;
-    content = column.formatFunction ? column.formatFunction(entry, column) : filteredValue;
-    usdColumn = column.selectorCAD && entry.currency === 'USD';
-    if (usdColumn) {
-        valueCAD = entry[column.selectorCAD];
-        filteredValueCAD = column.filter ? column.filter(valueCAD) : valueCAD;
-        contentCAD = column.formatFunction ? column.formatFunction(entry, column, true) : filteredValueCAD;
+    content = column.formatFunction ? column.formatFunction(entry[displayCurrency], column) : filteredValue;
+
+    if (showOtherCurrency) {
+        otherValue = entry[otherCurrency][selector];
+        otherfilteredValue = column.filter ? column.filter(otherValue) : otherValue;
+        otherContent = column.formatFunction ? column.formatFunction(entry[displayCurrency], column) : otherfilteredValue;
     }
     let cellStyle = column.cellStyle;
     cellStyle = typeof cellStyle === 'function' ? cellStyle(entry) : cellStyle;
     return (
         <td key={key} style={cellStyle}>
             <span style={column.style} key={filteredValue}>
-                {!usdColumn && content}
-                {usdColumn &&
+                {!showOtherCurrency && content}
+                {showOtherCurrency &&
                     <div>
-                        <div>{contentCAD}</div>
-                        <div>{content}(USD)</div>
+                        <div>{otherContent}</div>
+                        <div>{content}({otherCurrency})</div>
                     </div>
                 }
             </span>

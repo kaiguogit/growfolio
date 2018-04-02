@@ -32,7 +32,13 @@ export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-export const getHistoricalRate = state => state.currency.annualAverageRate;
+export const getRealTimeRate = state => {
+    // TO-DO
+    // use API data
+    return {
+        USDCAD: 1
+    };
+};
 
 
 /**
@@ -68,7 +74,7 @@ export const getHistoricalRate = state => state.currency.annualAverageRate;
  * @return {object}: key-value map, key is account, value is holdings array
  */
 export const getAccountHoldingsMap = createDeepEqualSelector(
-    [getTscs, getHistoricalRate], generateAccountHoldingsMap);
+    [getTscs], generateAccountHoldingsMap);
 
 /**
  * Get holdings for single account.
@@ -122,7 +128,7 @@ export const getSingleHolding = createDeepEqualSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createDeepEqualSelector([getSingleHolding, getQuote], calculateHoldingPerformance);
+    return createDeepEqualSelector([getSingleHolding, getQuote, getRealTimeRate, getDisplayCurrency], calculateHoldingPerformance);
 };
 
 /**
@@ -131,10 +137,10 @@ export const makeGetHoldingPerformance = () => {
  * @return {Array}: calculated holdings with performance data.
  */
 export const getHoldingsPerformance = createDeepEqualSelector(
-    [getHoldings, getQuotes],
-    (holdings, quotes) => {
+    [getHoldings, getQuotes, getRealTimeRate, getDisplayCurrency],
+    (holdings, quotes, rates, currency) => {
         return (holdings || []).map(holding => {
-            return calculateHoldingPerformance(holding, quotes[holding.symbol]);
+            return calculateHoldingPerformance(holding, quotes[holding.symbol], rates, currency);
         });
     }
 );
