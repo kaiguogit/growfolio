@@ -1,5 +1,5 @@
 import types from '../constants/actionTypes';
-import { log, getHeaders, avoidNaN } from '../utils';
+import { log, getHeaders, avoidNaNKeys } from '../utils';
 
 /*
  * Actions
@@ -83,7 +83,7 @@ export const fetchTscs = () => dispatch => {
             let symbol = tsc.symbol;
             tsc.symbol = symbol.toUpperCase();
             tsc.type = tsc.type.toLowerCase();
-            avoidNaN(['shares', 'amount', 'commission'], tsc);
+            avoidNaNKeys(['shares', 'amount', 'commission'], tsc);
         });
         return tscs;
     })

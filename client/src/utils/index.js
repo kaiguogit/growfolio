@@ -4,6 +4,7 @@ import Auth from '../services/Auth';
 import styles from '../styles';
 import './promise';
 import log from './log';
+import {DollarValue} from '../selectors/transaction';
 
 export {log};
 /**
@@ -23,20 +24,31 @@ export const round = (value, digit) => {
 export const num = (n) => numeral(n).value();
 
 /**
+ * Convert value to number for single key in object.
+ * If it's not a finite number, i.e NaN or Infinity, use 0
+ * @param {string} key
+ * @param {object} obj
+ */
+export const avoidNaN = (key, obj) => {
+    let result;
+    if (key in obj) {
+        result = num(obj[key]);
+        obj[key] = isFinite(result) && result ? result : 0;
+    }
+};
+
+/**
  * Convert value to number for provided keys in object.
  * If it's not a finite number, i.e NaN or Infinity, use 0
  * @param {array} keys
  * @param {object} obj
  */
-export const avoidNaN = (keys, obj) => {
-    let result;
+export const avoidNaNKeys = (keys, obj) => {
     keys.forEach(key => {
-        if (key in obj) {
-            result = num(obj[key]);
-            obj[key] = isFinite(result) && result ? result : 0;
-        }
+        avoidNaN(key, obj);
     });
 };
+
 /**
  * Filters
  */
@@ -141,9 +153,23 @@ export const redOrGreen = (value) => {
     return style;
 };
 
-export const coloredCell = (entry, column, useCADselector) => {
-    let value = useCADselector ? entry[column.selectorCAD] : entry[column.selector];
-    let refValue = column.ref_selector ? entry[column.ref_selector] : value;
+export const getDollarValue = (obj, key, displayCurrency) => {
+    if (obj[key] instanceof DollarValue) {
+        return obj[key][displayCurrency];
+    }
+    return obj[key];
+};
+
+export const coloredCell = (entry, column, displayCurrency) => {
+    let value, refValue;
+    let selector = column.selector;
+    let ref_selector = column.ref_selector;
+    value = getDollarValue(entry, selector, displayCurrency);
+    if (ref_selector) {
+        refValue = getDollarValue(entry, ref_selector, displayCurrency);
+    } else {
+        refValue = value;
+    }
 
     return (
         <span style={redOrGreen(refValue)}>
@@ -152,27 +178,30 @@ export const coloredCell = (entry, column, useCADselector) => {
     );
 };
 
-export const renderCell = (entry, column, key) => {
-    let value, valueCAD, content, contentCAD, filteredValue, filteredValueCAD, usdColumn;
-    value = entry[column.selector];
+export const renderCell = (entry, column, key, displayCurrency) => {
+    let value, otherValue, content, otherContent, filteredValue, otherfilteredValue;
+    let otherCurrency = displayCurrency === 'CAD' ? 'USD' : 'CAD';
+    let showOtherCurrency = column.showOtherCurrency && entry.currency !== displayCurrency;
+    let selector = column.selector;
+    value = getDollarValue(entry, selector, displayCurrency);
     filteredValue = column.filter ? column.filter(value) : value;
-    content = column.formatFunction ? column.formatFunction(entry, column) : filteredValue;
-    usdColumn = column.selectorCAD && entry.currency === 'USD';
-    if (usdColumn) {
-        valueCAD = entry[column.selectorCAD];
-        filteredValueCAD = column.filter ? column.filter(valueCAD) : valueCAD;
-        contentCAD = column.formatFunction ? column.formatFunction(entry, column, true) : filteredValueCAD;
+    content = column.formatFunction ? column.formatFunction(entry, column, displayCurrency) : filteredValue;
+
+    if (showOtherCurrency) {
+        otherValue = getDollarValue(entry, selector, otherCurrency);
+        otherfilteredValue = column.filter ? column.filter(otherValue) : otherValue;
+        otherContent = column.formatFunction ? column.formatFunction(entry, column, otherCurrency) : otherfilteredValue;
     }
     let cellStyle = column.cellStyle;
     cellStyle = typeof cellStyle === 'function' ? cellStyle(entry) : cellStyle;
     return (
         <td key={key} style={cellStyle}>
             <span style={column.style} key={filteredValue}>
-                {!usdColumn && content}
-                {usdColumn &&
+                {!showOtherCurrency && content}
+                {showOtherCurrency &&
                     <div>
-                        <div>{contentCAD}</div>
-                        <div>{content}(USD)</div>
+                        <div>{content}</div>
+                        <div>{otherContent}({otherCurrency})</div>
                     </div>
                 }
             </span>

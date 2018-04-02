@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getTotalPerformance } from '../../selectors';
+import { getTotalPerformance, getDisplayCurrency } from '../../selectors';
 import PERFORMANCE_COLUMNS from './columns';
 import TableCell from '../shared/table/TableCell.jsx';
 
@@ -20,13 +20,14 @@ class PerformanceTableRowTotal extends React.Component {
       */
     renderValidCell(column) {
         let {selector, className} = column;
-        let total = this.props.total;
+        let {total, displayCurrency} = this.props;
         if (validColumn.indexOf(selector) !== -1) {
             return (
                 <TableCell
                     key={selector}
                     entry={total}
                     column={column}
+                    displayCurrency={displayCurrency}
                 />
             );
         }
@@ -49,12 +50,14 @@ class PerformanceTableRowTotal extends React.Component {
 }
 
 PerformanceTableRowTotal.propTypes = {
-    total: PropTypes.object.isRequired
+    total: PropTypes.object.isRequired,
+    displayCurrency: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => {
   return {
-      total: getTotalPerformance(state)
+      total: getTotalPerformance(state),
+      displayCurrency: getDisplayCurrency(state)
   };
 };
 export default connect(mapStateToProps)(PerformanceTableRowTotal);

@@ -2,47 +2,101 @@ import { divide } from '../utils';
 import moment from 'moment';
 import historicalDailyExchangeRate from '../constants/dailyExchangeRate';
 
-const _getHistoricalDailyRate = (date) => {
+const _getHistoricalDailyRate = date => {
     return historicalDailyExchangeRate && historicalDailyExchangeRate.observations &&
         historicalDailyExchangeRate.observations[date];
 };
 
-class Transaction {
+export class Transaction {
+    /**
+     * @param {string} data.symbol
+     * @param {string} data.exch
+     * @param {string} data.name
+     * @param {date} data.date
+     * @param {string} data.currency
+     * @param {string} data.account
+     * @param {string} data.type
+     * @param {boolean} data.totalOrPerShare
+     * @param {number} data.amount
+     * @param {number} data.shares
+     * @param {number} data.commission
+     * returnofCapital decrease the acb.
+     * @param {number} data.returnOfCapital
+     * capital gain portion of dividend, not the realized gain. It increases the acb.
+     * @param {number} data.capitalGain
+     * @param {string} data.note
+     */
     constructor(data) {
+        this.processInitialData(data);
         Object.assign(this, data);
-        this.init();
+        this.setRate();
+        this.setDollarValues();
+        this.setTotalandPrice();
     }
 
-    init() {
-        const {type, totalOrPerShare, amount, shares, commission} = this;
-        this.currency = this.currency.toUpperCase();
-        this.date = moment(this.date);
-        const isUSD = this.currency === 'USD';
-        if (isUSD) {
-            this.rate = _getHistoricalDailyRate(this.date.format('YYYY-MM-DD'));
-        }
-        let rate = this.rate || 1;
+    setDollarValues() {
+        let rate = this.isUSD() ? this.rate : divide(1, this.rate);
+        let CADValue, USDValue;
+        ['amount', 'commission', 'returnOfCapital', 'capitalGain'].forEach(key => {
+            CADValue = this.isUSD() ? this[key] * rate : this[key];
+            USDValue = this.isUSD() ? this[key] : this[key] * rate;
+            this[key] = new DollarValue({CAD: CADValue, USD: USDValue});
+        });
+        ['acbChange', 'realizedGain', 'newAcb', 'newAverageCost'].forEach(key => {
+            this[key] = new DollarValue();
+        });
+    }
 
-        // Amount could be total or price based on totalOrPerShare property.
-        // Calculate total and price
-        if (type === 'buy' || type === 'dividend') {
-            this.total = totalOrPerShare ? amount :
-                (shares * amount + commission);
-            this.price = totalOrPerShare ?
-                divide(amount - commission, shares) :
-                amount;
+    processInitialData(data) {
+        data.currency = data.currency.toUpperCase();
+        data.date = moment(data.date);
+    }
+
+    setRate() {
+        this.rate = _getHistoricalDailyRate(this.date.format('YYYY-MM-DD'));
+        if (!this.rate) {
+            this.rate = 1;
+            this.unfoundRate = true;
         }
-        if (type === 'sell') {
-            this.total = totalOrPerShare ? amount :
-                (shares * amount - commission);
-            this.price = totalOrPerShare ?
-                divide(amount + commission, shares) :
-                amount;
-        }
-        this.totalCAD = this.total * rate;
-        this.returnOfCapitalCAD = this.returnOfCapital && this.returnOfCapital * rate;
-        this.capitalGainCAD = this.capitalGain && this.capitalGain * rate;
+    }
+
+    isUSD() {
+        return this.currency === 'USD';
+    }
+
+    setTotalandPrice() {
+        const {type, totalOrPerShare, shares} = this;
+        this.total = new DollarValue();
+        this.price = new DollarValue();
+        DollarValue.TYPES.forEach(currency => {
+            let amount = this.amount[currency];
+            let commission = this.commission[currency];
+            // Amount could be total or price based on totalOrPerShare property.
+            // Calculate total and price
+            if (type === 'buy' || type === 'dividend') {
+                this.total[currency] = totalOrPerShare ? amount :
+                    (shares * amount + commission);
+                this.price[currency] = totalOrPerShare ?
+                    divide(amount - commission, shares) :
+                    amount;
+            }
+            if (type === 'sell') {
+                this.total[currency] = totalOrPerShare ? amount :
+                    (shares * amount - commission);
+                this.price[currency] = totalOrPerShare ?
+                    divide(amount + commission, shares) :
+                    amount;
+            }
+        });
     }
 }
 
-export default Transaction;
+export class DollarValue {
+    constructor(params = {}) {
+        let {CAD, USD} = params;
+        this.CAD = CAD || 0;
+        this.USD = USD || 0;
+    }
+}
+
+DollarValue.TYPES = ['CAD', 'USD'];

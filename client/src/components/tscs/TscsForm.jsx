@@ -7,12 +7,20 @@ import 'react-datepicker/dist/react-datepicker.css';
 // import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 import SymbolAutoComplete from './SymbolAutoComplete.jsx';
 import {Input, FormGroup, Select} from '../shared/index.jsx';
+import {DollarValue} from '../../selectors/transaction';
 
 class TscsForm extends React.Component {
     constructor(props) {
         super(props);
         if (this.props.tsc) {
-            this.state = Object.assign({}, props.tsc);
+            let state = Object.assign({}, props.tsc);
+            let currency = this.props.tsc.currency;
+            Object.keys(state).forEach(key => {
+                if (state[key] instanceof DollarValue) {
+                    state[key] = state[key][currency];
+                }
+            });
+            this.state = state;
         } else {
             this.state = {
                 type: 'buy',

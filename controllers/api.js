@@ -39,25 +39,31 @@ const makeQuotesUrl = (symbols) => {
  * Yahoo quotes
  */
 exports.getQuotes = (req, res) => {
-  const symbolsStr = req.query.symbols;
-  const url = makeQuotesUrl(JSON.parse(symbolsStr));
-  request(url, (error, response, body) => {
-    const errorReponse = {
-      status_code: request.statusCode,
-      error,
-      message: 'Error when getting quotes',
-      success: false
-    };
-    if (error) { res.json(errorReponse); }
-    // if (request.statusCode === 403) {
-    //   return next(new Error('Error when getting quotes'));
-    // }
-    // Google returns string with //, chop it off.
-    try {
-      const result = JSON.parse(body.replace(/\/\//, ''));
-      res.json({ success: true, result });
-    } catch (err) {
-      res.json(errorReponse);
-    }
+  // const symbolsStr = req.query.symbols;
+  // const url = makeQuotesUrl(JSON.parse(symbolsStr));
+  // request(url, (error, response, body) => {
+  //   const errorReponse = {
+  //     status_code: request.statusCode,
+  //     error,
+  //     message: 'Error when getting quotes',
+  //     success: false
+  //   };
+  //   if (error) { res.json(errorReponse); }
+  //   // if (request.statusCode === 403) {
+  //   //   return next(new Error('Error when getting quotes'));
+  //   // }
+  //   // Google returns string with //, chop it off.
+  //   try {
+  //     const result = JSON.parse(body.replace(/\/\//, ''));
+  //     res.json({ success: true, result });
+  //   } catch (err) {
+  //     res.json(errorReponse);
+  //   }
+  // });
+
+  res.json({
+    status_code: 404,
+    message: 'API not available at this time',
+    success: false
   });
 };

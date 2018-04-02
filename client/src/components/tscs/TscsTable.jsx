@@ -6,7 +6,7 @@ import { renderCell } from '../../utils';
 import TableCategory from '../shared/table/TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 
-const TscsTable = ({holdings}) => {
+const TscsTable = ({holdings, displayCurrency}) => {
     const categoryTitle = holding => {
         const render = () => {
             return (
@@ -48,7 +48,7 @@ const TscsTable = ({holdings}) => {
                         key={holding.symbol}
                     >
                         {holding.transactions.map(tsc => {
-                            return <TscsRow tsc={tsc} key={tsc._id}/>;
+                            return <TscsRow tsc={tsc} key={tsc._id} displayCurrency={displayCurrency}/>;
                         })}
                     </TableCategory>
                 );
@@ -59,13 +59,14 @@ const TscsTable = ({holdings}) => {
 
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
+    displayCurrency: PropTypes.string.isRequired
 };
 
-const TscsRow = ({tsc}) => {
+const TscsRow = ({tsc, displayCurrency}) => {
     return (
         <tr>
             {TSCS_COLUMNS.map(column => {
-                return renderCell(tsc, column, column.selector);
+                return renderCell(tsc, column, column.selector, displayCurrency);
             })}
             <td>
                 <div className="tscs-action-buttons">
@@ -79,6 +80,7 @@ const TscsRow = ({tsc}) => {
 
 TscsRow.propTypes = {
     tsc: PropTypes.object.isRequired,
+    displayCurrency: PropTypes.string.isRequired,
 };
 
 export default TscsTable;

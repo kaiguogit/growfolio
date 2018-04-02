@@ -33,7 +33,9 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'commission',
-        title: 'Commission'
+        title: 'Commission',
+        showOtherCurrency: true,
+        filter: currency(3)
     },
     {
         selector: 'date',
@@ -42,7 +44,7 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'realizedGain',
-        selectorCAD: 'realizedGainCAD',
+        showOtherCurrency: true,
         title: 'Realized Gain',
         filter: currency(3),
         formatFunction: coloredCell
@@ -51,12 +53,10 @@ export const TSCS_COLUMNS = [
         selector: 'rate',
         title: 'Exchange Rate',
         formatFunction: entry =>{
-            if (entry.currency === 'USD') {
-                return entry.rate || 'Rate not found';
-            }
+            return entry.unfoundRate && 'Rate not found' || entry.rate;
         },
         cellStyle: entry => {
-            if (entry.currency === 'USD' && !entry.rate) {
+            if (entry.unfoundRate) {
                 return {
                     backgroundColor: 'red',
                     color: 'white'
@@ -76,26 +76,26 @@ export const TSCS_COLUMNS = [
     },
     {
         selector: 'total',
-        selectorCAD: 'totalCAD',
+        showOtherCurrency: true,
         title: 'Total',
         filter: currency(3)
     },
     {
         selector: 'acbChange',
-        selectorCAD: 'acbChangeCAD',
+        showOtherCurrency: true,
         title: 'Change in ACB',
         filter: currency(3),
         formatFunction: coloredCell
     },
     {
         selector: 'newAcb',
-        selectorCAD: 'newAcbCAD',
+        showOtherCurrency: true,
         title: 'New ACB',
         filter: currency(3)
     },
     {
         selector: 'newAverageCost',
-        selectorCAD: 'newAverageCostCAD',
+        showOtherCurrency: true,
         filter: currency(3),
         title: 'Average Cost'
     },
