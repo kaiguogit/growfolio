@@ -32,7 +32,7 @@ export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-export const getRealTimeRate = state => {
+export const getRealTimeRate = () => {
     // TO-DO
     // use API data
     return {
