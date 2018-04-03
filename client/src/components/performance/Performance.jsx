@@ -29,7 +29,7 @@ class Performance extends React.Component {
 Performance.propTypes = {
     holdings: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
-    showZeroShareHolding: PropTypes.bool.isRequired
+    showZeroShareHolding: PropTypes.bool.isRequired,
     displayCurrency: PropTypes.string.isRequired
 };
 
