@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { TSCS_COLUMNS } from './columns';
-import { renderCell } from '../../utils';
 import TableCategory from '../shared/table/TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
+import TableCell from '../shared/table/TableCell.jsx';
 
 const TscsTable = ({holdings, displayCurrency}) => {
     const categoryTitle = holding => {
@@ -66,7 +66,14 @@ const TscsRow = ({tsc, displayCurrency}) => {
     return (
         <tr>
             {TSCS_COLUMNS.map(column => {
-                return renderCell(tsc, column, column.selector, displayCurrency);
+                return (
+                    <TableCell
+                        key={column.selector}
+                        entry={tsc}
+                        column={column}
+                        displayCurrency={displayCurrency}
+                    />
+                );
             })}
             <td>
                 <div className="tscs-action-buttons">

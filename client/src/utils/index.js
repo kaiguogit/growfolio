@@ -177,34 +177,3 @@ export const coloredCell = (entry, column, displayCurrency) => {
         </span>
     );
 };
-
-export const renderCell = (entry, column, key, displayCurrency) => {
-    let value, otherValue, content, otherContent, filteredValue, otherfilteredValue;
-    let otherCurrency = displayCurrency === 'CAD' ? 'USD' : 'CAD';
-    let showOtherCurrency = column.showOtherCurrency && entry.currency !== displayCurrency;
-    let selector = column.selector;
-    value = getDollarValue(entry, selector, displayCurrency);
-    filteredValue = column.filter ? column.filter(value) : value;
-    content = column.formatFunction ? column.formatFunction(entry, column, displayCurrency) : filteredValue;
-
-    if (showOtherCurrency) {
-        otherValue = getDollarValue(entry, selector, otherCurrency);
-        otherfilteredValue = column.filter ? column.filter(otherValue) : otherValue;
-        otherContent = column.formatFunction ? column.formatFunction(entry, column, otherCurrency) : otherfilteredValue;
-    }
-    let cellStyle = column.cellStyle;
-    cellStyle = typeof cellStyle === 'function' ? cellStyle(entry) : cellStyle;
-    return (
-        <td key={key} style={cellStyle}>
-            <span style={column.style} key={filteredValue}>
-                {!showOtherCurrency && content}
-                {showOtherCurrency &&
-                    <div>
-                        <div>{content}</div>
-                        <div>{otherContent}({otherCurrency})</div>
-                    </div>
-                }
-            </span>
-        </td>
-    );
-};

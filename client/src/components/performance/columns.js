@@ -18,6 +18,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'cost',
+        showOtherCurrency: true,
         filter: currency(2),
         title: 'Cost',
         className: 'hidden-sm-down'
@@ -29,12 +30,14 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'averageCost',
+        showOtherCurrency: true,
         filter: currency(2),
         title: 'Average Cost',
         className: 'hidden-sm-down'
     },
     {
         selector: 'price',
+        showOtherCurrency: true,
         filter: currency(2),
         title: 'Price'
     },
@@ -44,6 +47,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'change',
+        showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Change',
@@ -59,6 +63,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'daysGain',
+        showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Day\'s Gain',
@@ -66,6 +71,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gain',
+        showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Gain'
@@ -78,6 +84,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gainOverall',
+        showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Overall Return',
@@ -92,12 +99,14 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'realizedGain',
+        showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Realized Gain'
     },
     {
         selector: 'dividend',
+        showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Dividend',
@@ -105,6 +114,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'costOverall',
+        showOtherCurrency: true,
         filter: currency(2),
         title: 'Overall Cost',
         className: 'hidden-sm-down'

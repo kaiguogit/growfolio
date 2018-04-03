@@ -193,6 +193,7 @@ export const calculateTotalPerformance = (holdings, displayCurrency) => {
             }
         });
     });
+    rt.currency = displayCurrency;
     rt.gainPercent = divide(rt.gain, rt.cost);
     rt.changePercent = divide(rt.daysGain, rt.cost);
     rt.gainOverallPercent = divide(rt.gainOverall, rt.costOverall);

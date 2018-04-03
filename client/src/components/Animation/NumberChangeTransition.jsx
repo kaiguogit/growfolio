@@ -5,7 +5,7 @@ import TransitionGroup from 'react-transition-group/TransitionGroup';
 
 const transitionUpOrDown = (upOrDown) => {
     return upOrDown ? "background-green-fade-out" : "background-red-fade-out";
-}
+};
 
 const MyTransition = ({children, upOrDown, ...props}) => (
     <CSSTransition {...props}
