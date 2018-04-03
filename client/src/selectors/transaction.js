@@ -27,8 +27,8 @@ export class Transaction {
      * @param {string} data.note
      */
     constructor(data) {
-        this.processInitialData(data);
         Object.assign(this, data);
+        this.processInitialData();
         this.setRate();
         this.setDollarValues();
         this.setTotalandPrice();
@@ -47,9 +47,9 @@ export class Transaction {
         });
     }
 
-    processInitialData(data) {
-        data.currency = data.currency.toUpperCase();
-        data.date = moment(data.date);
+    processInitialData() {
+        this.currency = this.currency.toUpperCase();
+        this.date = moment(this.date);
     }
 
     setRate() {
