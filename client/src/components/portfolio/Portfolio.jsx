@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import * as rootActions from '../../actions';
 import * as tscsActions from '../../actions/tscs';
 import * as quotesActions from '../../actions/quotes';
+import * as portfolioActions from '../../actions/portfolio';
 
 import NProgress from 'nprogress';
 import isEqual from 'lodash.isequal';
@@ -27,6 +28,7 @@ class Portfolio extends React.Component {
             this.props.actions.fetchTscs();
         }
         this.props.actions.setIntervalRefreshQuotes();
+        this.fetchPortfolioSetting();
     }
 
     componentDidUpdate(prevProps) {
@@ -39,6 +41,12 @@ class Portfolio extends React.Component {
 
     componentWillUnmount() {
         NProgress.done();
+    }
+
+    fetchPortfolioSetting() {
+        this.props.actions.getShowZeroShareHolding();
+        this.props.actions.getSelectDisplayAccount();
+        this.props.actions.getSelectDisplayCurrency();
     }
 
     render() {
@@ -117,7 +125,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        actions: bindActionCreators(Object.assign(rootActions, tscsActions, quotesActions), dispatch)
+        actions: bindActionCreators(
+            Object.assign(rootActions, tscsActions, quotesActions, portfolioActions), dispatch)
     };
 };
 

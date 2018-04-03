@@ -35,7 +35,7 @@ class PerformanceSetting extends React.Component {
                     <div>
                         <CheckBox
                             title="Show 0-share holdings"
-                            onChange={this.props.actions.showZeroShareHolding}
+                            onChange={this.props.actions.setShowZeroShareHolding}
                             checked={this.props.showZeroShareHolding}/>
                     </div>
                     <GoBackButton/>

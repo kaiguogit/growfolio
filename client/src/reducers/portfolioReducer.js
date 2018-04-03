@@ -4,20 +4,29 @@ import initialState from './initialState';
 const portfolioReducer = (state = initialState.portfolio, action) => {
     switch (action.type) {
         case types.SELECT_DISPLAY_CURRENCY:
-            return {
-                ...state,
-                displayCurrency: action.displayCurrency
-            };
+            if (action.displayCurrency != undefined) {
+                return {
+                    ...state,
+                    displayCurrency: action.displayCurrency
+                };
+            }
+            return state;
         case types.SELECT_DISPLAY_ACCOUNT:
-            return {
-                ...state,
-                displayAccount: action.displayAccount
-            };
+            if (action.displayAccount != undefined) {
+                return {
+                    ...state,
+                    displayAccount: action.displayAccount
+                };
+            }
+            return state;
         case types.SHOW_ZERO_SHARE_HOLDING:
-            return {
-                ...state,
-                showZeroShareHolding: action.showZeroShareHolding
-            };
+            if (action.showZeroShareHolding != undefined) {
+                return {
+                    ...state,
+                    showZeroShareHolding: action.showZeroShareHolding
+                };
+            }
+            return state;
         default:
             return state;
     }
