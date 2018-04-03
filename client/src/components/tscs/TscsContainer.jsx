@@ -14,7 +14,7 @@ class TscsContainer extends React.Component {
 
         // Hide holding with 0 share.
         if (!showZeroShareHolding) {
-            holdings = holdings.filter(holding => holding.shares);
+            holdings = holdings.filter(holding => holding.shares[displayCurrency]);
         }
 
         return (

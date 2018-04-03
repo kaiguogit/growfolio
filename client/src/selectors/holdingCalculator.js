@@ -137,7 +137,7 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates, displ
         let cost = h.cost[displayCurrency];
         let realizedGain = h.realizedGain[displayCurrency];
         let costOverall = h.costOverall[displayCurrency];
-        let shares = h.shares;
+        let shares = h.shares[displayCurrency];
 
         if (quote &&
             typeof shares === 'number' && typeof cost === 'number' &&

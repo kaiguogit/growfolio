@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as quotesActions from '../../actions/quotes';
-import { getHoldings } from '../../selectors';
+import { getHoldings, getDisplayCurrency } from '../../selectors';
 import PerformanceTable from './PerformanceTable.jsx';
 import SummaryBar from './SummaryBar.jsx';
 
 class Performance extends React.Component {
 
     render() {
-        let { holdings, showZeroShareHolding } = this.props;
+        let { holdings, showZeroShareHolding, displayCurrency } = this.props;
         // Hide holding with 0 share.
         if (!showZeroShareHolding) {
-            holdings = holdings.filter(holding => holding.shares);
+            holdings = holdings.filter(holding => holding.shares[displayCurrency]);
         }
 
         return(
@@ -30,12 +30,14 @@ Performance.propTypes = {
     holdings: PropTypes.array.isRequired,
     actions: PropTypes.object.isRequired,
     showZeroShareHolding: PropTypes.bool.isRequired
+    displayCurrency: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => {
     return {
         holdings: getHoldings(state),
-        showZeroShareHolding: state.portfolio.showZeroShareHolding
+        showZeroShareHolding: state.portfolio.showZeroShareHolding,
+        displayCurrency: getDisplayCurrency(state)
     };
 };
 
