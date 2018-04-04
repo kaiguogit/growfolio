@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const quoteSchema = new mongoose.Schema({
   symbol: String,
   date: String,
-  price: Number,
-  change: Number,
-  changePercent: Number,
-  currency: String,
+  open: Number,
+  high: Number,
+  low: Number,
+  close: Number,
+  volumn: Number,
   _user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 

@@ -1,3 +1,5 @@
+'use strict';
+
 import initialState from './initialState';
 import types from '../constants/actionTypes';
 import merge from 'lodash/merge';

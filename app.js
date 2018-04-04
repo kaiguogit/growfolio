@@ -134,6 +134,8 @@ app.route('/api/historical-quotes')
   .post(historicalQuoteController.createHistoricalQuotes)
   .put(historicalQuoteController.editHistoricalQuotes)
   .delete(historicalQuoteController.deleteHistoricalQuotes);
+app.route('/api/download-historical-quotes')
+  .get(historicalQuoteController.downloadHistoricalQuotes);
 app.get('*', homeController.index);
 
 /**

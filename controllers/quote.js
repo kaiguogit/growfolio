@@ -1,3 +1,5 @@
+const { makeUrl } = require('../utils');
+const request = require('request');
 const numeral = require('numeral');
 /**
  * GET /historical-quotes
@@ -140,5 +142,86 @@ exports.deleteHistoricalQuotes = (req, res) => {
     if (err) return handleError(err);
     // removed!
     res.json({ result: { message: 'removed' } });
+  });
+};
+
+
+const BASE_URI = 'https://www.alphavantage.co/query';
+// Expect symbol for TSX to have prefix "TSX:", e.g TSX:VFV
+const makeDailyQuotesUrl = (symbol) => {
+  const params = {
+    function: 'TIME_SERIES_DAILY',
+    symbol,
+    apikey: process.env.ALPHA_VANTAGE_API_KEY
+  };
+  return makeUrl(BASE_URI, params);
+};
+
+const normalizeAPIResult = (response) => {
+  const result = {};
+  ['1. open', '2. high', '3. low', '4. close', '5. volume'].forEach((key) => {
+    const normalKey = key.split('. ')[1];
+    result[normalKey] = response[key];
+  });
+  return result;
+};
+
+const saveQuotes = (response, res) => {
+  const meta = response['Meta Data'];
+  const quotes = response['Time Series (Daily)'];
+  if (response.Information) {
+    res.json({
+      status_code: 403,
+      message: response.Information,
+      success: false
+    });
+  }
+  if (meta && quotes) {
+    let symbol = meta['2. Symbol'];
+    if (symbol && symbol.startsWith('TSX:')) {
+      symbol = symbol.replace('TSX:', '');
+    }
+    const result = {}
+    // let lastRefreshed = meta['3. Last Refreshed'];
+    // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
+    Object.keys(quotes).forEach((date, data) => {
+      data = normalizeAPIResult(data);
+      Quote.find({ date, symbol }, (error, foundQuote) => {
+        if (error) {
+          new Quote(data).save((err, savedQuote) => {
+            result[date] = savedQuote;
+          });
+        }
+      });
+    });
+    res.json({ success: true, result });
+  }
+};
+
+/**
+ * GET /api/download-historical-quotes
+ */
+exports.downloadHistoricalQuotes = (req, res) => {
+  const symbol = req.query.symbol;
+  const url = makeDailyQuotesUrl(symbol);
+  request(url, (error, response, body) => {
+    const errorReponse = {
+      status_code: request.statusCode,
+      error,
+      message: 'Error when getting quotes',
+      success: false
+    };
+    if (error) { res.json(errorReponse); }
+    // if (request.statusCode === 403) {
+    //   return next(new Error('Error when getting quotes'));
+    // }
+    // Google returns string with //, chop it off.
+    try {
+      // const result = JSON.parse(body.replace(/\/\//, ''));
+      const result = JSON.parse(body);
+      saveQuotes(result);
+    } catch (err) {
+      res.json(errorReponse);
+    }
   });
 };
