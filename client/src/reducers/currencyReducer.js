@@ -8,13 +8,20 @@ const currencyReducer = (state = initialState.currency, action) => {
                 ...state,
                 isFetching: true
             };
-        case types.RECEIVE_CURRENCY:
+        case types.RECEIVE_CURRENCY: {
+            let rate = state.rate;
+            let lastUpdated = state.lastUpdated;
+            if (action.rates) {
+                rate = Object.assign({}, rate, action.rates);
+                lastUpdated = Date.now();
+            }
             return {
                 ...state,
+                rate,
                 isFetching: false,
-                rate: action.rate || [],
-                lastUpdated: action.receivedAt
+                lastUpdated
             };
+        }
         case types.REQUEST_CURRENCY_TIMEOUT:
             return {
                 ...state,

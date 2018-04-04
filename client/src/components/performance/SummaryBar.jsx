@@ -86,9 +86,12 @@ class SummaryBar extends React.Component {
         const {performance, currencyRates} = this.props;
         //TODO hard coded exchange rate for now.
         // use watch list in future
-        const exchangeWatchList = (currencyRates || []).filter(rate => {
-            return ['CADCNY', 'CADUSD', 'USDCAD'].includes(rate.id);
-        });
+        const exchangeWatchList = ['CADCNY', 'CADUSD', 'USDCAD'].filter(rate => {
+            return currencyRates[rate];
+        }).map(rate => ({
+                name: rate,
+                rate: currencyRates[rate]
+        }));
 
         return(
             <div className="summary-bar row no-gutters">
@@ -104,7 +107,7 @@ class SummaryBar extends React.Component {
                     title="Overall Change"/>
                 {exchangeWatchList.map(rate => {
                     return (
-                        <ExchangeRate title={rate.Name} rate={rate.Rate} key={rate.id}/>
+                        <ExchangeRate title={rate.name} rate={rate.rate} key={rate.name}/>
                     );
                 })}
             </div>

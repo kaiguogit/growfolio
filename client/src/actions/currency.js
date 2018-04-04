@@ -18,7 +18,7 @@ export const receiveCurrency = (rate) => ({
 
 /**
  * YAHOO Finance API version
- * makeQuotesUrl, processQuotes, fetchQuotes functions
+ * makeQuotesUrl, processQuotes functions
  */
 const makeCurrencyUrl = currencyPairs => {
     // concat symbols into \"USDCAD\",\"USDCNY\"

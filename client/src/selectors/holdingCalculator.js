@@ -2,6 +2,7 @@ import { divide } from '../utils';
 import {Transaction, DollarValue} from './transaction';
 import Holding from './holding';
 import ACCOUNTS from '../constants/accounts';
+import moment from 'moment';
 
 const compareDate = (a, b) => {
     return new Date(a.date) - new Date(b.date);
@@ -114,6 +115,21 @@ export const generateAccountHoldingsMap = tscs => {
 };
 
 /**
+ * Get quote before date
+ * @param quotes quotes map
+ * @param date if not provided, use today
+ */
+const getLatestQuote = (quotes, date) => {
+    if (quotes) {
+        date = date || moment().format('YYYY-MM-DD');
+        while (!quotes[date]) {
+            date = date.substract(1, 'days');
+        }
+        return quotes[date];
+    }
+};
+
+/**
  * Output selectors, add performance data to holdings
  * Add {
  *    price                    (price from quote API),
@@ -127,23 +143,24 @@ export const generateAccountHoldingsMap = tscs => {
  *    gainOverallPercent     (gainOverall / costOverall)
  * }
  * @param {object} holding
- * @param {object} quote quote data for the holding
+ * @param {object} quoteMap quote data for the holding
  * @param {array} currencyRates currency map
  * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quote, currencyRates, displayCurrency) => {
+export const calculateHoldingPerformance = (holding, quoteMap, currencyRates, displayCurrency) => {
         let h = Object.assign({}, holding);
         let cost = h.cost[displayCurrency];
         let realizedGain = h.realizedGain[displayCurrency];
         let costOverall = h.costOverall[displayCurrency];
         let shares = h.shares[displayCurrency];
 
+        let quote = getLatestQuote(quoteMap);
         if (quote &&
             typeof shares === 'number' && typeof cost === 'number' &&
             typeof realizedGain === 'number' &&
             typeof costOverall === 'number') {
-                h.price = quote.current_price;
+                h.price = quote['4. close'];
                 h.change = quote.change * 1;
                 h.changePercent = quote.changePercent * 1;
                 h.mkt_value = shares * h.price;

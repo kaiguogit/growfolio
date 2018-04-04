@@ -13,57 +13,41 @@ exports.getApi = (req, res) => {
   });
 };
 
-const BASE_URI = 'http://finance.google.com/finance/info';
-const makeQuotesUrl = (symbols) => {
-  // Accommodate bug in production,that Toronto exch can't get qutoes properly.
-  // TODO find a better API.
-  symbols.forEach((symbol) => {
-    if (symbol.exch && (symbol.exch.toLowerCase() === 'toronto' || symbol.exch.toLowerCase() === 'industry')) {
-      symbol.exch = 'TSE';
-    }
-  });
-  //
-  let symbolsStr = symbols.map(x => (
-    x.exch ? `${x.exch}:${x.symbol}` : x.symbol
-  ));
-  symbolsStr = symbolsStr.join(',');
+const BASE_URI = 'https://www.alphavantage.co/query';
+// Expect symbol for TSX to have prefix "TSX:", e.g TSX:VFV
+const makeQuotesUrl = (symbol) => {
   const params = {
-    client: 'ig',
-    q: symbolsStr
+    function: 'TIME_SERIES_DAILY_ADJUSTED',
+    symbol,
+    apikey: process.env.ALPHA_VANTAGE_API_KEY
   };
   return makeUrl(BASE_URI, params);
 };
 
 /**
  * GET /api/quotes
- * Yahoo quotes
  */
 exports.getQuotes = (req, res) => {
-  // const symbolsStr = req.query.symbols;
-  // const url = makeQuotesUrl(JSON.parse(symbolsStr));
-  // request(url, (error, response, body) => {
-  //   const errorReponse = {
-  //     status_code: request.statusCode,
-  //     error,
-  //     message: 'Error when getting quotes',
-  //     success: false
-  //   };
-  //   if (error) { res.json(errorReponse); }
-  //   // if (request.statusCode === 403) {
-  //   //   return next(new Error('Error when getting quotes'));
-  //   // }
-  //   // Google returns string with //, chop it off.
-  //   try {
-  //     const result = JSON.parse(body.replace(/\/\//, ''));
-  //     res.json({ success: true, result });
-  //   } catch (err) {
-  //     res.json(errorReponse);
-  //   }
-  // });
-
-  res.json({
-    status_code: 404,
-    message: 'API not available at this time',
-    success: false
+  const symbol = req.query.symbol;
+  const url = makeQuotesUrl(symbol);
+  request(url, (error, response, body) => {
+    const errorReponse = {
+      status_code: request.statusCode,
+      error,
+      message: 'Error when getting quotes',
+      success: false
+    };
+    if (error) { res.json(errorReponse); }
+    // if (request.statusCode === 403) {
+    //   return next(new Error('Error when getting quotes'));
+    // }
+    // Google returns string with //, chop it off.
+    try {
+      // const result = JSON.parse(body.replace(/\/\//, ''));
+      const result = JSON.parse(body);
+      res.json({ success: true, result });
+    } catch (err) {
+      res.json(errorReponse);
+    }
   });
 };

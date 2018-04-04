@@ -6,6 +6,7 @@ import { num, log, getHeaders } from '../utils';
 import * as currencyActions from './currency';
 import { batchActions } from './';
 import { getHoldings } from '../selectors';
+import fakeData from './fakeData';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 const REFRESH_QUOTES_TIMEOUT = 15000;
@@ -155,6 +156,27 @@ const processRealtimeQuotes = quotes => {
     return result;
 };
 
+const processQuotes = response => {
+    const meta = response['Meta Data'];
+    const quotes = response['Time Series (Daily)'];
+    if (response.Information) {
+        log.info(response.Information);
+    }
+    if (meta && quotes) {
+        let symbol = meta['2. Symbol'];
+        const result = {};
+        if (symbol && symbol.startsWith('TSX:')) {
+            symbol = symbol.replace('TSX:', '');
+        }
+        result.symbol = symbol;
+        // let lastRefreshed = meta['3. Last Refreshed'];
+        // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
+        result.quote = quotes;
+        return result;
+    }
+    return {};
+};
+
 const processHistoricalQutes = quotes => {
     return quotes.reduce((result, quote) => {
         result[quote.symbol] = quote;
@@ -165,7 +187,7 @@ const processHistoricalQutes = quotes => {
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
  */
-const fetchQuotes = (state) => {
+const fetchQuotes = state => {
     if (state.quotes.useHistoricalQuote) {
         return fetchHistoricalQuotes(state);
     }
@@ -174,28 +196,44 @@ const fetchQuotes = (state) => {
 
 const fetchRealTimeQuotes = state => {
     const holdings = getHoldings(state);
-    const symbols = holdings.map(x => ({
-        symbol: x.symbol,
-        exch: x.exch
-    }));
-    if (!(symbols && Array.isArray(symbols) && symbols.length)) {
+
+    if (!(holdings && Array.isArray(holdings) && holdings.length)) {
         // empty symbols, skip fetching
         return Promise.resolve([]);
     }
-    return $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: __MY_API__ + 'quotes',
-        data: {symbols: JSON.stringify(symbols)},
-        headers: {
-            Authorization: `Bearer ${Auth.getToken()}`
-        },
-        timeout: 3000
-    }).then(data => {
-        if (!data.success) {
-            return {};
-        }
-        return processRealtimeQuotes(data.result);
+    return Promise.all(holdings.map(holding => {
+        // let symbol = holding.symbol;
+        // if (holding.currency === 'CAD') {
+        //     symbol = 'TSX:' + symbol;
+        // }
+        // return processRealtimeQuotes(data.result);
+
+        // return $.ajax({
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     url: __MY_API__ + 'quotes',
+        //     data: {symbol},
+        //     headers: {
+        //         Authorization: `Bearer ${Auth.getToken()}`
+        //     },
+        //     timeout: 3000
+        // }).then(data => {
+        //     if (!data.success) {
+        //         return {};
+        //     }
+        //     return processQuotes(data.result);
+        // });
+        return Promise.resolve(fakeData).then(data => {
+            if (!data.success) {
+                return {};
+            }
+            return processQuotes(data.result);
+        });
+    })).then(quotes => {
+        return quotes.reduce((result, quote) => {
+            result[quote.symbol] = quote.quote;
+            return result;
+        }, {});
     });
 };
 
