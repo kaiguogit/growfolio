@@ -13,18 +13,15 @@ const handleError = (err) => {
 };
 
 exports.getHistoricalQuotes = (req, res) => {
-    const date = req.query.date;
     Quote.find({
         _user: req.user._id,
-        date
-    })
-        .exec((err, data) => {
-            if (err) {
-                res.json({ result: [], error: err });
-            } else {
-                res.json({ result: data });
-            }
-        });
+    }).exec((err, data) => {
+        if (err) {
+            res.json({ result: [], error: err });
+        } else {
+            res.json({ result: data });
+        }
+    });
 };
 
 const isString = value => (typeof value === 'string');
@@ -168,7 +165,8 @@ const normalizeAPIResult = (response) => {
     return result;
 };
 
-const saveQuotes = (res, response) => {
+const saveQuotes = (req, res, response) => {
+    const _user = req.user._id;
     const meta = response['Meta Data'];
     const quotes = response['Time Series (Daily)'];
     if (response.Information) {
@@ -186,18 +184,33 @@ const saveQuotes = (res, response) => {
         const result = {};
         // let lastRefreshed = meta['3. Last Refreshed'];
         // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
-        Object.keys(quotes).forEach((date) => {
-            const data = normalizeAPIResult(quotes[date]);
-            Quote.find({ date, symbol }).exec().then((foundQuote) => {
-                new Quote(data).save((err, savedQuote) => {
-                    result[date] = savedQuote;
-                });
+        const promises = Object.keys(quotes).map((date) => {
+            return Quote.findOne({ date, symbol, _user }).exec().then((foundQuote) => {
+                if (foundQuote) {
+                    result[date] = foundQuote;
+                } else {
+                    const data = Object.assign({
+                        _user: req.user._id,
+                        symbol,
+                        date
+                    }, normalizeAPIResult(quotes[date]));
+                    return new Quote(data).save().then((savedQuote) => {
+                        result[date] = savedQuote;
+                    });
+                }
             }, error => {
-
                 console.log(error);
             });
+
         });
-        res.json({ success: true, result });
+        Promise.all(promises).then(
+            () => {
+                res.json({ success: true, result });
+            },
+            (error) => {
+                res.json({ success: false, error });
+            }
+        );
     }
 };
 
@@ -207,25 +220,22 @@ const saveQuotes = (res, response) => {
 exports.downloadHistoricalQuotes = (req, res) => {
     const symbol = req.query.symbol;
     const url = makeDailyQuotesUrl(symbol);
-    saveQuotes(res, fakeData);
-    // request(url, (error, response, body) => {
-    //   const errorReponse = {
-    //     status_code: request.statusCode,
-    //     error,
-    //     message: 'Error when getting quotes',
-    //     success: false
-    //   };
-    //   if (error) { res.json(errorReponse); }
-    //   // if (request.statusCode === 403) {
-    //   //   return next(new Error('Error when getting quotes'));
-    //   // }
-    //   // Google returns string with //, chop it off.
-    //   try {
-    //     // const result = JSON.parse(body.replace(/\/\//, ''));
-    //     const result = JSON.parse(body);
-    //     saveQuotes(res, result);
-    //   } catch (err) {
-    //     res.json(errorReponse);
-    //   }
-    // });
+    // saveQuotes(req, res, fakeData);
+    // TODO
+    // pass date and check if quote exists already before calling api to avoid too many api calls.
+    request(url, (error, response, body) => {
+        const errorReponse = {
+            status_code: request.statusCode,
+            error,
+            message: 'Error when getting quotes',
+            success: false
+        };
+        if (error) { res.json(errorReponse); }
+        try {
+            const result = JSON.parse(body);
+            saveQuotes(req, res, result);
+        } catch (err) {
+            res.json(errorReponse);
+        }
+    });
 };

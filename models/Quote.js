@@ -7,7 +7,7 @@ const quoteSchema = new mongoose.Schema({
   high: Number,
   low: Number,
   close: Number,
-  volumn: Number,
+  volume: Number,
   _user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
