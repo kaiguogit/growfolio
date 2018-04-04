@@ -1,6 +1,7 @@
 const { makeUrl } = require('../utils');
 const request = require('request');
 const numeral = require('numeral');
+const fakeData = require('./fakeData.json');
 /**
  * GET /historical-quotes
  */
@@ -166,36 +167,39 @@ const normalizeAPIResult = (response) => {
   return result;
 };
 
-const saveQuotes = (response, res) => {
-  const meta = response['Meta Data'];
-  const quotes = response['Time Series (Daily)'];
-  if (response.Information) {
-    res.json({
-      status_code: 403,
-      message: response.Information,
-      success: false
-    });
-  }
-  if (meta && quotes) {
-    let symbol = meta['2. Symbol'];
-    if (symbol && symbol.startsWith('TSX:')) {
-      symbol = symbol.replace('TSX:', '');
-    }
-    const result = {}
-    // let lastRefreshed = meta['3. Last Refreshed'];
-    // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
-    Object.keys(quotes).forEach((date, data) => {
-      data = normalizeAPIResult(data);
-      Quote.find({ date, symbol }, (error, foundQuote) => {
-        if (error) {
-          new Quote(data).save((err, savedQuote) => {
-            result[date] = savedQuote;
-          });
-        }
+const saveQuotes = (res, response) => {
+    const meta = response['Meta Data'];
+    const quotes = response['Time Series (Daily)'];
+    if (response.Information) {
+      res.json({
+        status_code: 403,
+        message: response.Information,
+        success: false
       });
-    });
-    res.json({ success: true, result });
-  }
+    }
+    if (meta && quotes) {
+        let symbol = meta['2. Symbol'];
+        if (symbol && symbol.startsWith('TSX:')) {
+            symbol = symbol.replace('TSX:', '');
+        }
+        const result = {};
+        // let lastRefreshed = meta['3. Last Refreshed'];
+        // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
+        Object.keys(quotes).forEach((date) => {
+            const data = normalizeAPIResult(quotes[date]);
+            Quote.find({ date, symbol }).exec().then((foundQuote) => {
+                if (error) {
+                    new Quote(data).save((err, savedQuote) => {
+                        result[date] = savedQuote;
+                    });
+                }
+           }, error => {
+            
+            console.log(error);
+           });
+        });
+        res.json({ success: true, result });
+    }
 };
 
 /**
@@ -204,24 +208,25 @@ const saveQuotes = (response, res) => {
 exports.downloadHistoricalQuotes = (req, res) => {
   const symbol = req.query.symbol;
   const url = makeDailyQuotesUrl(symbol);
-  request(url, (error, response, body) => {
-    const errorReponse = {
-      status_code: request.statusCode,
-      error,
-      message: 'Error when getting quotes',
-      success: false
-    };
-    if (error) { res.json(errorReponse); }
-    // if (request.statusCode === 403) {
-    //   return next(new Error('Error when getting quotes'));
-    // }
-    // Google returns string with //, chop it off.
-    try {
-      // const result = JSON.parse(body.replace(/\/\//, ''));
-      const result = JSON.parse(body);
-      saveQuotes(result);
-    } catch (err) {
-      res.json(errorReponse);
-    }
-  });
+  saveQuotes(res, fakeData);
+  // request(url, (error, response, body) => {
+  //   const errorReponse = {
+  //     status_code: request.statusCode,
+  //     error,
+  //     message: 'Error when getting quotes',
+  //     success: false
+  //   };
+  //   if (error) { res.json(errorReponse); }
+  //   // if (request.statusCode === 403) {
+  //   //   return next(new Error('Error when getting quotes'));
+  //   // }
+  //   // Google returns string with //, chop it off.
+  //   try {
+  //     // const result = JSON.parse(body.replace(/\/\//, ''));
+  //     const result = JSON.parse(body);
+  //     saveQuotes(res, result);
+  //   } catch (err) {
+  //     res.json(errorReponse);
+  //   }
+  // });
 };
