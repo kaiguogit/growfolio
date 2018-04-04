@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Chart from './Chart.jsx';
 import drilldown from 'highcharts/modules/drilldown';
-import isEqual from 'lodash.isequal';
+import {isEqual} from 'lodash';
 
 class PieChart extends React.Component {
     shouldComponentUpdate(nextProps) {

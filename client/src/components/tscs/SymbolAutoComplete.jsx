@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import * as actions from '../../actions/symbols';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import {escapeRegexCharacters} from '../../utils';
 import IsolatedScroll from 'react-isolated-scroll';
 

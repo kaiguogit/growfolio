@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/balance';
-import isEqual from 'lodash.isequal';
+import {isEqual} from 'lodash';
 
 import { Input, Select } from '../shared/index.jsx';
 import { getTotalPerformance } from '../../selectors';

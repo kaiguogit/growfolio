@@ -10,7 +10,7 @@ import * as quotesActions from '../../actions/quotes';
 import * as portfolioActions from '../../actions/portfolio';
 
 import NProgress from 'nprogress';
-import isEqual from 'lodash.isequal';
+import {isEqual} from 'lodash';
 
 import NavLink from '../NavLink.jsx';
 import Performance from '../performance/Performance.jsx';

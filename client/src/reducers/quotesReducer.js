@@ -1,5 +1,7 @@
 import initialState from './initialState';
 import types from '../constants/actionTypes';
+import merge from 'lodash/merge';
+
 const quotesReducer = (state = initialState.quotes, action) => {
     switch (action.type) {
         case types.ADD_QUOTE:
@@ -14,7 +16,7 @@ const quotesReducer = (state = initialState.quotes, action) => {
                 return {
                     ...state,
                     isFetching: false,
-                    items: Object.assign({}, state.items, action.quotes),
+                    items: merge({}, state.items, action.quotes),
                     lastUpdated: action.receivedAt
                 };
             }
