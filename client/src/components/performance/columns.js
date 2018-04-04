@@ -105,6 +105,12 @@ const PERFORMANCE_COLUMNS = [
         title: 'Realized Gain'
     },
     {
+        selector: 'realizedGainCAD',
+        title: 'Realized Gain (CAD)',
+        filter: currency(3),
+        formatFunction: coloredCell
+    },
+    {
         selector: 'dividend',
         showOtherCurrency: true,
         filter: currency(2),

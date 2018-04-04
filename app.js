@@ -35,6 +35,7 @@ const apiController = require('./controllers/api');
 // const contactController = require('./controllers/contact');
 const transactionController = require('./controllers/transaction');
 const allocationController = require('./controllers/allocation');
+const historicalQuoteController = require('./controllers/quote');
 
 /**
  * API keys and Passport configuration.
@@ -128,7 +129,11 @@ app.route('/api/allocations')
   .delete(allocationController.deleteAllocations);
 app.route('/api/quotes')
   .get(apiController.getQuotes);
-
+app.route('/api/historical-quotes')
+  .get(historicalQuoteController.getHistoricalQuotes)
+  .post(historicalQuoteController.createHistoricalQuotes)
+  .put(historicalQuoteController.editHistoricalQuotes)
+  .delete(historicalQuoteController.deleteHistoricalQuotes);
 app.get('*', homeController.index);
 
 /**

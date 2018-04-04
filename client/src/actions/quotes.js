@@ -1,7 +1,7 @@
 import types from '../constants/actionTypes';
 import $ from 'jquery';
 import Auth from '../services/Auth';
-import { num, log } from '../utils';
+import { num, log, getHeaders } from '../utils';
 
 import * as currencyActions from './currency';
 import { batchActions } from './';
@@ -22,6 +22,28 @@ export const receiveQuotes = (quotes) => ({
     type: types.RECEIVE_QUOTES,
     receivedAt: Date.now(),
     quotes
+});
+
+export const setQuoteDisplayDate = date => dispatch => {
+    let setDate = (date) => ({
+        type: types.SET_QUOTE_DISPLAY_DATE,
+        date
+    });
+    dispatch(batchActions([
+        setDate(date),
+        refreshQuotes()
+    ]));
+};
+
+export const setUseHistoricalQuote = (date) => ({
+    type: types.SET_USE_HISTORICAL_QUOTE,
+    date
+});
+
+export const toggleQuoteModal = (showModal, quote) => ({
+    type: types.TOGGLE_QUOTE_MODAL,
+    showModal,
+    quote
 });
 
 /**
@@ -112,7 +134,7 @@ export const receiveQuotes = (quotes) => ({
  * div Dividend
  * yld Dividend Yield
  */
-const processQuotes = quotes => {
+const processRealtimeQuotes = quotes => {
     // convert to object map
     const result = {};
     if (!quotes) {
@@ -125,7 +147,7 @@ const processQuotes = quotes => {
         result[symbol] = {
             $original: quote,
             symbol,
-            current_price: num(current_price),
+            price: num(current_price),
             change: num(change),
             changePercent: num(changePercent) / 100
         };
@@ -133,11 +155,29 @@ const processQuotes = quotes => {
     return result;
 };
 
+const processHistoricalQutes = quotes => {
+    return quotes.reduce((result, quote) => {
+        result[quote.symbol] = quote;
+        return result;
+    }, {});
+};
 /*
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
  */
-const fetchQuotes = symbols => {
+const fetchQuotes = (state) => {
+    if (state.quotes.useHistoricalQuote) {
+        return fetchHistoricalQuotes(state);
+    }
+    return fetchRealTimeQuotes(state);
+};
+
+const fetchRealTimeQuotes = state => {
+    const holdings = getHoldings(state);
+    const symbols = holdings.map(x => ({
+        symbol: x.symbol,
+        exch: x.exch
+    }));
     if (!(symbols && Array.isArray(symbols) && symbols.length)) {
         // empty symbols, skip fetching
         return Promise.resolve([]);
@@ -155,23 +195,53 @@ const fetchQuotes = symbols => {
         if (!data.success) {
             return {};
         }
-        return processQuotes(data.result);
+        return processRealtimeQuotes(data.result);
     });
+};
+
+const fetchHistoricalQuotes = state => {
+    const date = state.quotes.displayDate.format('MM-DD-YYYY');
+    return $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: __MY_API__ + 'historical-quotes',
+        data: {
+            date
+        },
+        headers: {
+            Authorization: `Bearer ${Auth.getToken()}`
+        },
+        timeout: 3000
+    }).then(data => {
+        return processHistoricalQutes(data.result);
+    });
+};
+
+export const createQuote = quote => (dispatch, getState) => {
+    dispatch({
+        type: types.ADD_QUOTE
+    });
+    let quoteDate = getState().quotes.displayDate;
+    let quoteDateStr = quoteDate.format('MM-DD-YYYY');
+    quote.date = quoteDateStr;
+    return fetch(__MY_API__ + 'historical-quotes', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(quote)
+    }).then(response => response.json())
+    .then(() => refreshQuotes()(dispatch, getState))
+    .catch(log.error);
 };
 
 export const refreshQuotes = () => (dispatch, getState) => {
     const state = getState();
-    const holdings = getHoldings(state);
 
     dispatch(batchActions([
         requestQuotes(),
         currencyActions.requestCurrency()
     ]));
 
-    let quotePromise = fetchQuotes(holdings.map(x => ({
-        symbol: x.symbol,
-        exch: x.exch
-    })));
+    let quotePromise = fetchQuotes(state);
     let currencyPromise = currencyActions.fetchCurrency(state);
 
     Promise.timeout(REFRESH_QUOTES_TIMEOUT, Promise.all([quotePromise, currencyPromise]))

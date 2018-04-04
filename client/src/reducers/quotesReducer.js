@@ -1,8 +1,8 @@
 import initialState from './initialState';
 import types from '../constants/actionTypes';
-// import isEqual from 'lodash.isequal';
 const quotesReducer = (state = initialState.quotes, action) => {
     switch (action.type) {
+        case types.ADD_QUOTE:
         case types.REQUEST_QUOTES:
             return {
                 ...state,
@@ -20,6 +20,24 @@ const quotesReducer = (state = initialState.quotes, action) => {
             return {
                 ...state,
                 isFetching: false
+            };
+        case types.SET_QUOTE_DISPLAY_DATE:
+            return {
+                ...state,
+                displayDate: action.date
+            };
+        case types.SET_USE_HISTORICAL_QUOTE:
+            return {
+                ...state,
+                useHistoricalQuote: action.useHistoricalQuote
+            };
+        case types.TOGGLE_QUOTE_MODAL:
+            return {
+                ...state,
+                dialogModal: {
+                    isOpened: !!action.showModal,
+                    quote: action.quote ? Object.assign({}, action.quote) : null
+                }
             };
         default:
             return state;

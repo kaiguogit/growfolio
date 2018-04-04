@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default {
     portfolio: {
         displayCurrency: 'CAD',
@@ -20,7 +22,13 @@ export default {
     quotes: {
         isFetching: false,
         items: {},
-        lastUpdated: Date.now()
+        displayDate: moment(),
+        lastUpdated: Date.now(),
+        useHistoricalQuote: true,
+        dialogModal: {
+            isOpened: false,
+            quote: null
+        }
     },
     currency: {
         isFetching: false,

@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import {createLogger} from 'redux-logger';
 import batchingReducer from '../reducers';
 
-
 function configureStoreProd(initialState) {
   const middlewares = [
     // Add other middleware on this line...
