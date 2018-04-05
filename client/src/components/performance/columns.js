@@ -29,6 +29,10 @@ const PERFORMANCE_COLUMNS = [
         title: 'Market Value',
     },
     {
+        selector: 'quoteDate',
+        title: 'Market Time'
+    },
+    {
         selector: 'averageCost',
         showOtherCurrency: true,
         filter: currency(2),

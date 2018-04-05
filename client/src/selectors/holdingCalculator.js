@@ -199,6 +199,7 @@ export const calculateHoldingPerformance = (holding, quoteMap, currencyRates, di
             typeof costOverall === 'number') {
                 h.price = quote.close;
                 h.change = quote.change * 1;
+                h.quoteDate = quote.date;
                 h.changePercent = quote.changePercent * 1;
                 h.mkt_value = shares * h.price;
                 h.gain = h.mkt_value - cost;
