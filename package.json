@@ -13,6 +13,7 @@
     "//": "Go to ./client and run build, output is saved in public folder",
     "build": "yarn upgrade && cd client && yarn upgrade && npm install && npm run build",
     "start": "node app.js",
+    "debug": "node --inspect --debug-brk app.js",
     "test": "mocha --reporter spec"
   },
   "dependencies": {
