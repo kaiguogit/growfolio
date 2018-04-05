@@ -1,6 +1,7 @@
 import types from '../constants/actionTypes';
-import { makeUrl, num, log} from '../utils';
+import { makeUrl, num, log, getHeaders} from '../utils';
 import { getHoldings } from '../selectors';
+import fakeExchangeRate from './fakeData/exchangeRate';
 
 export const requestCurrency = () => ({
     type: types.REQUEST_CURRENCY
@@ -16,59 +17,16 @@ export const receiveCurrency = (rate) => ({
     rate
 });
 
-/**
- * YAHOO Finance API version
- * makeQuotesUrl, processQuotes functions
- */
-const makeCurrencyUrl = currencyPairs => {
-    // concat symbols into \"USDCAD\",\"USDCNY\"
-    let currencyPairsStr = currencyPairs.map((symbol) => '\"' + symbol + '\"').join(',');
-    let url = 'https://query.yahooapis.com/v1/public/yql';
-    let params = {
-      q: `select * from yahoo.finance.xchange where pair in (${currencyPairsStr})`,
-      format:'json',
-      diagnostics: 'true',
-      env: 'store://datatables.org/alltableswithkeys',
-      callback: ''
-    };
-    return makeUrl(url, params);
-};
-
-const processRate = data => {
-    let rates = data && data.query && data.query.results && data.query.results.rate || [];
-    // always return an Array.
-    rates = Array.isArray(rates) ? rates : [rates];
-    rates.forEach((rate) => {
-        rate.Rate = num(rate.Rate);
-    });
-    return rates;
-};
-
-/**
- * Generate currency pairs array based on holding's currency,
- * displaycurrency setting and currency watchlist
- * @param {object} state
- * @return {array} array of string e.g ['CADCNY', 'CADUSD']
- */
-const getCurrencyPairs = (state) => {
-    const holdings = getHoldings(state);
-    const watchList = state.currency.watchList;
-    const displayCurrency = state.portfolio.displayCurrency;
-    const currencyPairs = [];
-
-    watchList.forEach(currencyId => {
-        // TODO hard coded as CAD for now, add support changing base
-        // currency.
-        currencyPairs.push('CAD' + currencyId);
-    });
-
-    holdings.forEach(holding => {
-        let pair = holding.currency + displayCurrency;
-        if (holding.currency !== displayCurrency && currencyPairs.indexOf(pair) === -1) {
-            currencyPairs.push(pair);
-        }
-    });
-    return currencyPairs;
+const processAPIResponse = (response) => {
+    if (response.result) {
+        const result = response.result;
+        const from = result['From_Currency Code'];
+        const to = result['To_Currency Code'];
+        const rate = result['Exchange Rate'];
+        return {
+            [from + to]: rate
+        };
+    }
 };
 
 /**
@@ -76,17 +34,12 @@ const getCurrencyPairs = (state) => {
  * @param {object} state
  * @returns {promise} fetch currency promise
  */
-export const fetchCurrency = (state) => {
-    const currencyPairs = getCurrencyPairs(state);
-    if (!currencyPairs.length) {
-        // empty currencyPairs, skip fetching
-        return Promise.resolve([]);
-    }
-    return fetch(makeCurrencyUrl(currencyPairs))
-    .then(response => response.json())
-    .then(data => {
-        return processRate(data);
-    }).catch(error => {
+export const fetchCurrency = () => {
+    return Promise.resolve(fakeExchangeRate)
+    // return fetch(__MY_API__ + 'exchange-rate', {
+    //     headers: getHeaders()
+    // }).then(response => response.json())
+    .then(processAPIResponse).catch(error => {
         log.error(error);
     });
 };

@@ -1,0 +1,12 @@
+{
+    "success": true,
+    "result": {
+        "From_Currency Code": "USD",
+        "From_Currency Name": "United States Dollar",
+        "To_Currency Code": "CAD",
+        "To_Currency Name": "Canadian Dollar",
+        "Exchange Rate": "1.27565000",
+        "Last Refreshed": "2018-04-05 19:09:42",
+        "Time Zone": "UTC"
+    }
+}

@@ -61,7 +61,10 @@ const ExchangeRate = ({title, rate}) => (
 
 ExchangeRate.propTypes = {
     title: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired
+    rate: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired,
 };
 
 /*

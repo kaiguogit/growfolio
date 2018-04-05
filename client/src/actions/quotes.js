@@ -5,9 +5,8 @@ import { num, log, getHeaders } from '../utils';
 
 import * as currencyActions from './currency';
 import { batchActions } from './';
-import { getHoldings } from '../selectors';
-import fakeData from './fakeData';
-import fakeQuotes from './fakeQuotes';
+import { getHoldings, getRealTimeRate } from '../selectors';
+import fakeQuotes from './fakeData/quotes';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 const REFRESH_QUOTES_TIMEOUT = 15000;
@@ -273,22 +272,31 @@ export const createQuote = quote => (dispatch, getState) => {
 
 export const refreshQuotes = () => (dispatch, getState) => {
     const state = getState();
-
-    dispatch(batchActions([
-        requestQuotes(),
-        currencyActions.requestCurrency()
-    ]));
+    const rate = getRealTimeRate(state);
+    const shouldRequestRate = rate.USDCAD === 1;
+    if (shouldRequestRate) {
+        dispatch(batchActions([
+            requestQuotes(),
+            currencyActions.requestCurrency()
+        ]));
+    } else {
+        dispatch(requestQuotes());
+    }
 
     let quotePromise = fetchQuotes(state);
-    let currencyPromise = currencyActions.fetchCurrency(state);
+    let currencyPromise = shouldRequestRate ? currencyActions.fetchCurrency(state): Promise.resolve();
 
     Promise.timeout(REFRESH_QUOTES_TIMEOUT, Promise.all([quotePromise, currencyPromise]))
     .then(([quotes, currency]) => {
         // Dispatch two receive actions together to avoid updating components twice.
-        dispatch(batchActions([
-            receiveQuotes(quotes),
-            currencyActions.receiveCurrency(currency)
-        ]));
+        if (shouldRequestRate) {
+            dispatch(batchActions([
+                receiveQuotes(quotes),
+                currencyActions.receiveCurrency(currency)
+            ]));
+        } else {
+            dispatch(receiveQuotes(quotes));
+        }
     }).catch((error) => {
         log.error(error);
         dispatch(batchActions([

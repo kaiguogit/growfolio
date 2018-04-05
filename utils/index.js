@@ -9,3 +9,11 @@ exports.makeUrl = (url, params) => {
   url += (url.indexOf('?') === -1 ? '?' : '&') + queryParams(params);
   return url;
 };
+
+exports.errorResponse = (errorCode, errorMessage, extraData) => {
+  return Object.assign({
+      status_code: errorCode || 403,
+      message: errorMessage || 'Something went wrong',
+      success: false
+  }, extraData);
+};

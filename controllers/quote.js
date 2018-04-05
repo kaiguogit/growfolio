@@ -1,7 +1,8 @@
-const { makeUrl } = require('../utils');
-const request = require('request');
+const { errorResponse } = require('../utils');
 const numeral = require('numeral');
-const fakeData = require('./fakeData.json');
+const fakeData = require('./fakeData/quote.json');
+const {dailyQuote: callApi} = require('./external-api/alpha-vantage');
+
 /**
  * GET /historical-quotes
  */
@@ -144,18 +145,6 @@ exports.deleteHistoricalQuotes = (req, res) => {
     });
 };
 
-
-const BASE_URI = 'https://www.alphavantage.co/query';
-// Expect symbol for TSX to have prefix "TSX:", e.g TSX:VFV
-const makeDailyQuotesUrl = (symbol) => {
-    const params = {
-        function: 'TIME_SERIES_DAILY',
-        symbol,
-        apikey: process.env.ALPHA_VANTAGE_API_KEY
-    };
-    return makeUrl(BASE_URI, params);
-};
-
 const normalizeAPIResult = (response) => {
     const result = {};
     ['1. open', '2. high', '3. low', '4. close', '5. volume'].forEach((key) => {
@@ -165,8 +154,7 @@ const normalizeAPIResult = (response) => {
     return result;
 };
 
-const saveQuotes = (req, res, response) => {
-    const _user = req.user._id;
+const saveQuotes = (userId) => (response) => {
     const meta = response['Meta Data'];
     const quotes = response['Time Series (Daily)'];
     if (meta && quotes) {
@@ -178,12 +166,12 @@ const saveQuotes = (req, res, response) => {
         // let lastRefreshed = meta['3. Last Refreshed'];
         // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
         const promises = Object.keys(quotes).map((date) => {
-            return Quote.findOne({ date, symbol, _user }).exec().then((foundQuote) => {
+            return Quote.findOne({ date, symbol, userId }).exec().then((foundQuote) => {
                 if (foundQuote) {
                     result.push(foundQuote);
                 } else {
                     const data = Object.assign({
-                        _user: req.user._id,
+                        _user: userId,
                         symbol,
                         date
                     }, normalizeAPIResult(quotes[date]));
@@ -192,21 +180,21 @@ const saveQuotes = (req, res, response) => {
                     });
                 }
             }, error => {
+                // TO-DO should I send db error back?
                 console.log(error);
             });
 
         });
-        Promise.all(promises).then(
+        return Promise.all(promises).then(
             () => {
-                res.json({ success: true, result });
+                return result;
             },
             (error) => {
-                res.json(errorResponse(null, error.message));
+                return Promise.reject(error);
             }
         );
-    } else {
-        res.json(errorResponse(null, 'Not valid api response'));
     }
+    return Promise.reject({message: 'api response is not valid'});
 };
 
 /**
@@ -214,29 +202,15 @@ const saveQuotes = (req, res, response) => {
  */
 exports.downloadHistoricalQuotes = (req, res) => {
     const symbol = req.body.symbol;
-    const url = makeDailyQuotesUrl(symbol);
-    // saveQuotes(req, res, fakeData);
+    const userId = req.user._id;
     // TODO
     // pass date and check if quote exists already before calling api to avoid too many api calls.
-    request(url, (error, response, body) => {
-        if (error) { res.json(errorResponse(null, null, {error})); }
-        try {
-            const result = JSON.parse(body);
-            const errorMessage = result.Information || result['Error Message'];
-            if (errorMessage) {
-                return res.json(errorResponse(null, errorMessage));
-            }
-            return saveQuotes(req, res, result);
-        } catch (err) {
-            return res.json(errorResponse(null, null, {error: err}));
-        }
+    // Promise.resolve(fakeData)
+    callApi(symbol)
+    .then(saveQuotes(userId))
+    .then((result) => {
+        res.json({success: true, result});
+    }).catch(error => {
+        res.json(errorResponse(null, error.message, {error}));
     });
 };
-
-function errorResponse(errorCode, errorMessage, extraData) {
-    return Object.assign({
-        status_code: errorCode || 403,
-        message: errorMessage || 'Something went wrong',
-        success: false
-    }, extraData);
-}

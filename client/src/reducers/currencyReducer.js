@@ -1,5 +1,6 @@
 import types from '../constants/actionTypes';
 import initialState from './initialState';
+import merge from 'lodash/merge';
 
 const currencyReducer = (state = initialState.currency, action) => {
     switch(action.type) {
@@ -11,8 +12,8 @@ const currencyReducer = (state = initialState.currency, action) => {
         case types.RECEIVE_CURRENCY: {
             let rate = state.rate;
             let lastUpdated = state.lastUpdated;
-            if (action.rates) {
-                rate = Object.assign({}, rate, action.rates);
+            if (action.rate) {
+                rate = merge({}, rate, action.rate);
                 lastUpdated = Date.now();
             }
             return {

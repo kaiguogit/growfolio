@@ -25,6 +25,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'mktValue',
+        showOtherCurrency: true,
         filter: currency(2),
         title: 'Market Value',
     },
@@ -82,6 +83,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gainPercent',
+        showOtherCurrency: true,
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Gain Percent'
@@ -96,6 +98,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gainOverallPercent',
+        showOtherCurrency: true,
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Overall Return Percent',
@@ -107,12 +110,6 @@ const PERFORMANCE_COLUMNS = [
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Realized Gain'
-    },
-    {
-        selector: 'realizedGainCAD',
-        title: 'Realized Gain (CAD)',
-        filter: currency(3),
-        formatFunction: coloredCell
     },
     {
         selector: 'dividend',

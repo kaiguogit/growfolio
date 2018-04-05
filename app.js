@@ -35,6 +35,7 @@ const userController = require('./controllers/user');
 const transactionController = require('./controllers/transaction');
 const allocationController = require('./controllers/allocation');
 const historicalQuoteController = require('./controllers/quote');
+const exchangeRateController = require('./controllers/exchangeRate');
 
 /**
  * API keys and Passport configuration.
@@ -133,6 +134,8 @@ app.route('/api/historical-quotes')
   .delete(historicalQuoteController.deleteHistoricalQuotes);
 app.route('/api/download-historical-quotes')
   .post(historicalQuoteController.downloadHistoricalQuotes);
+app.route('/api/exchange-rate')
+  .get(exchangeRateController.getRealTimeExchangeRate);
 app.get('*', homeController.index);
 
 /**

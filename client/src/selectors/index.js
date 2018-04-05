@@ -20,7 +20,7 @@ export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-export const getRealTimeRate = state => state.currency;
+export const getRealTimeRate = state => state.currency.rate;
 
 /**
  * Selector function
@@ -111,7 +111,7 @@ export const getSingleHolding = createSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createSelector([getSingleHolding, getQuote, getRealTimeRate, getDisplayCurrency], calculateHoldingPerformance);
+    return createSelector([getSingleHolding, getQuote, getRealTimeRate], calculateHoldingPerformance);
 };
 
 /**
@@ -120,7 +120,7 @@ export const makeGetHoldingPerformance = () => {
  * @return {Array}: calculated holdings with performance data.
  */
 export const getHoldingsPerformance = createSelector(
-    [getHoldings, getQuotes, getRealTimeRate, getDisplayCurrency],
+    [getHoldings, getQuotes, getRealTimeRate],
     (holdings, quotes, rates, currency) => {
         return (holdings || []).map(holding => {
             return calculateHoldingPerformance(holding, quotes[holding.symbol], rates, currency);

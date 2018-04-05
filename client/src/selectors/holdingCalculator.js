@@ -147,9 +147,10 @@ const _getLatestQuote = (quotes, date) => {
 };
 
 /**
- * Get 2 days' quotes to get change and changePercent
+ * Get 2 days' quotes to calculate change and changePercent
  * @param quotes quotes map
  * @param date specific date, if not provided, use today
+ * @return quote with additional change and changePercent property
  */
 const getLatestQuote = (quotes, date) => {
     let {date: latestDate, quote: latestQuote} = _getLatestQuote(quotes, date) || {};
@@ -184,46 +185,40 @@ const getLatestQuote = (quotes, date) => {
  * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quoteMap, currencyRates, displayCurrency) => {
+export const calculateHoldingPerformance = (holding, quoteMap, currencyRates) => {
         let h = Object.assign({}, holding);
-        let cost = h.cost[displayCurrency];
-        let realizedGain = h.realizedGain[displayCurrency];
-        let costOverall = h.costOverall[displayCurrency];
-        let shares = h.shares[displayCurrency];
-
-        // TODO Need daily rate for quote.
+        let cost = h.cost;
+        let realizedGain = h.realizedGain;
+        let costOverall = h.costOverall;
+        let shares = h.shares;
+        const rate = currencyRates.USDCAD;
         let quote = getLatestQuote(quoteMap);
-        if (quote &&
-            typeof shares === 'number' && typeof cost === 'number' &&
-            typeof realizedGain === 'number' &&
-            typeof costOverall === 'number') {
-                h.price = quote.close;
-                h.change = quote.change * 1;
+        ['price', 'change', 'mktValue', 'gain', 'gainPercent', 'daysGain', 'gainOverall',
+        'gainOverallPercent'].forEach(key => {
+            h[key] = new DollarValue();
+        });
+        const convertCurrency = (to, value) => {
+            const from = holding.currency;
+            if (from === to) {
+                return value;
+            }
+            return from === 'USD' ? value * rate : divide(value, rate);
+        };
+
+        if (quote) {
+            DollarValue.TYPES.forEach(c => {
+                h.price[c] = convertCurrency(c, quote.close);
+                h.change[c] = convertCurrency(c, quote.change);
                 h.quoteDate = quote.date;
-                h.changePercent = quote.changePercent * 1;
-                h.mktValue = shares * h.price;
-                h.gain = h.mktValue - cost;
-                h.gainPercent = divide(h.gain, cost);
-                h.daysGain = shares * h.change;
-        } else {
-            // If quote is not found, still make property available
-            // to avoid NaN in sum calculation.
-            h.price = 0;
-            h.mktValue = 0;
-            h.gain = 0;
-            h.gainPercent = 0;
-            h.daysGain = 0;
+                h.changePercent = quote.changePercent;
+                h.mktValue[c] = shares[c] * h.price[c];
+                h.gain[c] = h.mktValue[c] - cost[c];
+                h.gainPercent[c] = divide(h.gain[c], cost[c]);
+                h.daysGain[c] = shares[c] * h.change[c];
+                h.gainOverall[c] = h.gain[c] + realizedGain[c];
+                h.gainOverallPercent[c] = divide(h.gainOverall[c], costOverall[c]);
+            });
         }
-        h.gainOverall = h.gain + realizedGain;
-        h.gainOverallPercent = divide(h.gainOverall, costOverall);
-        /** TODO: another way to achieve this is to make a better getQuote selector
-         * Currently this calculation is triggered when anything in quote is new.
-         * A better getQuote function should filter API response with only the
-         * property that we care.
-         * That way this calculation function is only triggered when quote that we care
-         * is updated, and we can always return a new object instead of doing compare
-         * like below.
-         */
         // Return a new object to trigger props update.
         return h;
 };
