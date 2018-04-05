@@ -14,7 +14,7 @@ const quotesReducer = (state = initialState.quotes, action) => {
             };
         case types.RECEIVE_QUOTES:
             // if fetch quote failed, don't change.
-            if (action.quotes) {
+            if (action.quotes && Object.keys(action.quotes)) {
                 return {
                     ...state,
                     isFetching: false,

@@ -7,6 +7,7 @@ import * as currencyActions from './currency';
 import { batchActions } from './';
 import { getHoldings } from '../selectors';
 import fakeData from './fakeData';
+import fakeQuotes from './fakeQuotes';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 const REFRESH_QUOTES_TIMEOUT = 15000;
@@ -179,7 +180,8 @@ const processQuotes = response => {
 
 const processHistoricalQutes = quotes => {
     return quotes.reduce((result, quote) => {
-        result[quote.symbol] = quote;
+        result[quote.symbol] = result[quote.symbol] || {};
+        result[quote.symbol][quote.date] = quote;
         return result;
     }, {});
 };
@@ -238,14 +240,12 @@ const fetchRealTimeQuotes = state => {
 };
 
 const fetchHistoricalQuotes = state => {
-    const date = state.quotes.displayDate.format('MM-DD-YYYY');
+    // const date = state.quotes.displayDate.format('MM-DD-YYYY');
     return $.ajax({
         type: 'GET',
         dataType: 'json',
         url: __MY_API__ + 'historical-quotes',
-        data: {
-            date
-        },
+        data: {},
         headers: {
             Authorization: `Bearer ${Auth.getToken()}`
         },
@@ -300,4 +300,38 @@ export const refreshQuotes = () => (dispatch, getState) => {
 
 export const setIntervalRefreshQuotes = () => (dispatch, getState) => {
     setInterval(refreshQuotes().bind(null, dispatch, getState), REFRESH_QUOTES_INTERVAL);
+};
+
+const requestDownloadQuotes = (holding) => {
+    const symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
+
+    // return Promise.resolve(fakeQuotes)
+    return fetch(__MY_API__ + 'download-historical-quotes', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({symbol})
+    }).then(response => response.json())
+    .then(response => {
+        if (!response.success) {
+            return Promise.reject(response);
+        }
+        return response;
+    })
+    .then((data) => processHistoricalQutes(data.result));
+};
+
+export const downloadQuotes = () => (dispatch, getState) => {
+    const state = getState();
+    const holdings = getHoldings(state);
+    holdings.reduce((prev, next, index) => {
+        const request = () => {
+            return requestDownloadQuotes(next)
+            .then(quotes => dispatch(receiveQuotes(quotes)))
+            .catch(log.error);
+        };
+        if (!index) {
+            return prev.then(request);
+        }
+        return prev.delay(15000).then(request);
+    }, Promise.resolve());
 };

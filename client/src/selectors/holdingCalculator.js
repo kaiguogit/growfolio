@@ -120,12 +120,13 @@ export const generateAccountHoldingsMap = tscs => {
  * @param date if not provided, use today
  */
 const getLatestQuote = (quotes, date) => {
+    const fmt = 'YYYY-MM-DD';
     if (quotes) {
-        date = date || moment().format('YYYY-MM-DD');
-        while (!quotes[date]) {
-            date = date.substract(1, 'days');
+        date = date && moment(date, fmt) || moment();
+        while (!quotes[date.format(fmt)]) {
+            date = date.subtract(1, 'days');
         }
-        return quotes[date];
+        return quotes[date.format(fmt)];
     }
 };
 
@@ -160,7 +161,7 @@ export const calculateHoldingPerformance = (holding, quoteMap, currencyRates, di
             typeof shares === 'number' && typeof cost === 'number' &&
             typeof realizedGain === 'number' &&
             typeof costOverall === 'number') {
-                h.price = quote['4. close'];
+                h.price = quote.close;
                 h.change = quote.change * 1;
                 h.changePercent = quote.changePercent * 1;
                 h.mkt_value = shares * h.price;

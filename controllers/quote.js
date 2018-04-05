@@ -169,25 +169,18 @@ const saveQuotes = (req, res, response) => {
     const _user = req.user._id;
     const meta = response['Meta Data'];
     const quotes = response['Time Series (Daily)'];
-    if (response.Information) {
-        res.json({
-            status_code: 403,
-            message: response.Information,
-            success: false
-        });
-    }
     if (meta && quotes) {
         let symbol = meta['2. Symbol'];
         if (symbol && symbol.startsWith('TSX:')) {
             symbol = symbol.replace('TSX:', '');
         }
-        const result = {};
+        const result = [];
         // let lastRefreshed = meta['3. Last Refreshed'];
         // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
         const promises = Object.keys(quotes).map((date) => {
             return Quote.findOne({ date, symbol, _user }).exec().then((foundQuote) => {
                 if (foundQuote) {
-                    result[date] = foundQuote;
+                    result.push(foundQuote);
                 } else {
                     const data = Object.assign({
                         _user: req.user._id,
@@ -195,7 +188,7 @@ const saveQuotes = (req, res, response) => {
                         date
                     }, normalizeAPIResult(quotes[date]));
                     return new Quote(data).save().then((savedQuote) => {
-                        result[date] = savedQuote;
+                        result.push(savedQuote);
                     });
                 }
             }, error => {
@@ -208,34 +201,42 @@ const saveQuotes = (req, res, response) => {
                 res.json({ success: true, result });
             },
             (error) => {
-                res.json({ success: false, error });
+                res.json(errorResponse(null, error.message));
             }
         );
+    } else {
+        res.json(errorResponse(null, 'Not valid api response'));
     }
 };
 
 /**
- * GET /api/download-historical-quotes
+ * POST /api/download-historical-quotes
  */
 exports.downloadHistoricalQuotes = (req, res) => {
-    const symbol = req.query.symbol;
+    const symbol = req.body.symbol;
     const url = makeDailyQuotesUrl(symbol);
     // saveQuotes(req, res, fakeData);
     // TODO
     // pass date and check if quote exists already before calling api to avoid too many api calls.
     request(url, (error, response, body) => {
-        const errorReponse = {
-            status_code: request.statusCode,
-            error,
-            message: 'Error when getting quotes',
-            success: false
-        };
-        if (error) { res.json(errorReponse); }
+        if (error) { res.json(errorResponse(null, null, {error})); }
         try {
             const result = JSON.parse(body);
-            saveQuotes(req, res, result);
+            const errorMessage = result.Information || result['Error Message'];
+            if (errorMessage) {
+                return res.json(errorResponse(null, errorMessage));
+            }
+            return saveQuotes(req, res, result);
         } catch (err) {
-            res.json(errorReponse);
+            return res.json(errorResponse(null, null, {error: err}));
         }
     });
 };
+
+function errorResponse(errorCode, errorMessage, extraData) {
+    return Object.assign({
+        status_code: errorCode || 403,
+        message: errorMessage || 'Something went wrong',
+        success: false
+    }, extraData);
+}
