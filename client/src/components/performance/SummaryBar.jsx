@@ -117,7 +117,7 @@ class SummaryBar extends React.Component {
 
 SummaryBar.propTypes = {
     performance: PropTypes.object.isRequired,
-    currencyRates: PropTypes.array.isRequired,
+    currencyRates: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
