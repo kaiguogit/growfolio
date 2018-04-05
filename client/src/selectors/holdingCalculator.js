@@ -171,8 +171,8 @@ const getLatestQuote = (quotes, date) => {
  *    price                    (price from quote API),
  *    change                   (day's price change from quote API)
  *    changePercent           (day's price change percent from quote API),
- *    mkt_value                (shares * price),
- *    gain                     (mkt_value - cost),
+ *    mktValue                (shares * price),
+ *    gain                     (mktValue - cost),
  *    gainPercent             (gain / cost),
  *    daysGain                (change * shares),
  *    gainOverall             (gain + realizedGain),
@@ -201,15 +201,15 @@ export const calculateHoldingPerformance = (holding, quoteMap, currencyRates, di
                 h.change = quote.change * 1;
                 h.quoteDate = quote.date;
                 h.changePercent = quote.changePercent * 1;
-                h.mkt_value = shares * h.price;
-                h.gain = h.mkt_value - cost;
+                h.mktValue = shares * h.price;
+                h.gain = h.mktValue - cost;
                 h.gainPercent = divide(h.gain, cost);
                 h.daysGain = shares * h.change;
         } else {
             // If quote is not found, still make property available
             // to avoid NaN in sum calculation.
             h.price = 0;
-            h.mkt_value = 0;
+            h.mktValue = 0;
             h.gain = 0;
             h.gainPercent = 0;
             h.daysGain = 0;
@@ -234,7 +234,7 @@ export const calculateHoldingPerformance = (holding, quoteMap, currencyRates, di
  * @returns {object}
  */
 export const calculateTotalPerformance = (holdings, displayCurrency) => {
-    const sumProps = ['mkt_value', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
+    const sumProps = ['mktValue', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
                    'realizedGain', 'dividend'];
     const rt = {holdings};
 

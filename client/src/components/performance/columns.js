@@ -24,7 +24,7 @@ const PERFORMANCE_COLUMNS = [
         className: 'hidden-sm-down'
     },
     {
-        selector: 'mkt_value',
+        selector: 'mktValue',
         filter: currency(2),
         title: 'Market Value',
     },
