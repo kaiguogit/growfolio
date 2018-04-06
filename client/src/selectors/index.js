@@ -16,6 +16,8 @@ import { generateAccountHoldingsMap,
 export const getTscs = state => state.tscs.items;
 export const getQuotes = state => state.quotes.items;
 export const getQuote = (state, props) => state.quotes.items[props.symbol];
+export const getRealTimeQuotes = (state) => state.quotes.realTimeitems;
+export const getRealTimeQuote = (state, props) => state.quotes.realTimeitems[props.symbol];
 export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
@@ -111,7 +113,7 @@ export const getSingleHolding = createSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createSelector([getSingleHolding, getQuote, getRealTimeRate], calculateHoldingPerformance);
+    return createSelector([getSingleHolding, getQuote, getRealTimeQuote, getRealTimeRate], calculateHoldingPerformance);
 };
 
 /**
@@ -120,10 +122,10 @@ export const makeGetHoldingPerformance = () => {
  * @return {Array}: calculated holdings with performance data.
  */
 export const getHoldingsPerformance = createSelector(
-    [getHoldings, getQuotes, getRealTimeRate],
-    (holdings, quotes, rates, currency) => {
+    [getHoldings, getQuotes, getRealTimeQuotes, getRealTimeRate],
+    (holdings, quotes, realTimeQuotes, rates) => {
         return (holdings || []).map(holding => {
-            return calculateHoldingPerformance(holding, quotes[holding.symbol], rates, currency);
+            return calculateHoldingPerformance(holding, quotes[holding.symbol], realTimeQuotes[holding.symbol], rates);
         });
     }
 );

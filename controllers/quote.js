@@ -249,7 +249,7 @@ const processRealTimeQuotes = (response) => {
  * POST /api/download-historical-quotes
  */
 exports.getIntraDayQuote = (req, res) => {
-    const symbol = req.body.symbol;
+    const symbol = req.query.symbol;
     const userId = req.user._id;
     Promise.resolve(fakeRealTimeData)
     // callIntraDayQuoteApi(symbol)

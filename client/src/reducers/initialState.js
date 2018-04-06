@@ -22,9 +22,10 @@ export default {
     quotes: {
         isFetching: false,
         items: {},
+        realTimeItems: {},
         displayDate: moment(),
         lastUpdated: Date.now(),
-        useHistoricalQuote: true,
+        useHistoricalQuote: false,
         dialogModal: {
             isOpened: false,
             quote: null

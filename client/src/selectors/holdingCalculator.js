@@ -181,11 +181,12 @@ const getLatestQuote = (quotes, date) => {
  * }
  * @param {object} holding
  * @param {object} quoteMap quote data for the holding
+ * @param {object} realTimeQuoteMap quote data for the holding
  * @param {array} currencyRates currency map
  * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quoteMap, currencyRates) => {
+export const calculateHoldingPerformance = (holding, quoteMap, realTimeQuoteMap, currencyRates) => {
         let h = Object.assign({}, holding);
         let cost = h.cost;
         let realizedGain = h.realizedGain;

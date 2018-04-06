@@ -23,6 +23,16 @@ const quotesReducer = (state = initialState.quotes, action) => {
                 };
             }
             return state;
+        case types.RECEIVE_REAL_TIME_QUOTES:
+            if (action.quotes && Object.keys(action.quotes)) {
+                return {
+                    ...state,
+                    isFetching: false,
+                    realTimeItems: merge({}, state.realTimeItems, action.quotes),
+                    lastUpdated: action.receivedAt
+                };
+            }
+            return state;
         case types.REQUEST_QUOTES_TIMEOUT:
             return {
                 ...state,
