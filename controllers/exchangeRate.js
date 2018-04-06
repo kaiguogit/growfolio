@@ -1,4 +1,4 @@
-// const fakeData = require('./fakeData/exchangeRate.json');
+// const fakeData = require('./fixtures/exchangeRate.json');
 const {exchangeRate: callApi} = require('./external-api/alpha-vantage');
 const {errorResponse} = require('../utils');
 

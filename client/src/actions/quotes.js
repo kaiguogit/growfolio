@@ -6,7 +6,7 @@ import { num, log, getHeaders } from '../utils';
 import * as currencyActions from './currency';
 import { batchActions } from './';
 import { getHoldings, getRealTimeRate } from '../selectors';
-// import fakeQuotes from './fakeData/quotes';
+// import fakeQuotes from './fixtures/quotes';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 const REFRESH_QUOTES_TIMEOUT = 15000;

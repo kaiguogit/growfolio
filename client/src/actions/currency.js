@@ -1,6 +1,6 @@
 import types from '../constants/actionTypes';
 import { log, getHeaders} from '../utils';
-// import fakeExchangeRate from './fakeData/exchangeRate';
+// import fakeExchangeRate from './fixtures/exchangeRate';
 
 export const requestCurrency = () => ({
     type: types.REQUEST_CURRENCY
