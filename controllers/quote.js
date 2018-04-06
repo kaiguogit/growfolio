@@ -1,13 +1,13 @@
 const { errorResponse } = require('../utils');
 const numeral = require('numeral');
 // const fakeData = require('./fixtures/quote.json');
-const {dailyQuote: callApi} = require('./external-api/alpha-vantage');
+const fakeRealTimeData = require('./fixtures/realTimeQuote.json');
+const {dailyQuote: callDailyQuoteApi, intraDayQuote: callIntraDayQuoteApi} = require('./external-api/alpha-vantage');
 
 /**
  * GET /historical-quotes
  */
 const Quote = require('../models/Quote.js');
-
 
 const handleError = (err) => {
     console.log(err);
@@ -206,8 +206,54 @@ exports.downloadHistoricalQuotes = (req, res) => {
     // TODO
     // pass date and check if quote exists already before calling api to avoid too many api calls.
     // Promise.resolve(fakeData)
-    callApi(symbol)
+    callDailyQuoteApi(symbol)
     .then(saveQuotes(userId))
+    .then((result) => {
+        res.json({success: true, result});
+    }).catch(error => {
+        res.json(errorResponse(null, error.message, {error}));
+    });
+};
+
+const processRealTimeQuotes = (response) => {
+    const meta = response['Meta Data'];
+    const dataKey = Object.keys(response).find(key => key.includes('Time Series'));
+    const quotes = response[dataKey];
+    if (meta && quotes) {
+        let symbol = meta['2. Symbol'];
+        if (symbol && symbol.startsWith('TSX:')) {
+            symbol = symbol.replace('TSX:', '');
+        }
+        let lastRefreshed = meta['3. Last Refreshed'];
+        let interval = meta['4. Interval'];
+        // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
+        const result = Object.keys(quotes).map((date) => {
+            return Object.assign({
+                symbol,
+                date
+            }, normalizeAPIResult(quotes[date]));
+        });
+        return {
+            meta: {
+                symbol,
+                interval,
+                lastRefreshed
+            },
+            data: result
+        };
+    }
+    return Promise.reject({message: 'api response is not valid'});
+};
+
+/**
+ * POST /api/download-historical-quotes
+ */
+exports.getIntraDayQuote = (req, res) => {
+    const symbol = req.body.symbol;
+    const userId = req.user._id;
+    Promise.resolve(fakeRealTimeData)
+    // callIntraDayQuoteApi(symbol)
+    .then(processRealTimeQuotes)
     .then((result) => {
         res.json({success: true, result});
     }).catch(error => {

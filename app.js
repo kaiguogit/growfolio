@@ -34,7 +34,7 @@ const userController = require('./controllers/user');
 // const contactController = require('./controllers/contact');
 const transactionController = require('./controllers/transaction');
 const allocationController = require('./controllers/allocation');
-const historicalQuoteController = require('./controllers/quote');
+const quoteController = require('./controllers/quote');
 const exchangeRateController = require('./controllers/exchangeRate');
 
 /**
@@ -128,12 +128,14 @@ app.route('/api/allocations')
   .post(allocationController.createAllocations)
   .delete(allocationController.deleteAllocations);
 app.route('/api/historical-quotes')
-  .get(historicalQuoteController.getHistoricalQuotes)
-  .post(historicalQuoteController.createHistoricalQuotes)
-  .put(historicalQuoteController.editHistoricalQuotes)
-  .delete(historicalQuoteController.deleteHistoricalQuotes);
+  .get(quoteController.getHistoricalQuotes)
+  .post(quoteController.createHistoricalQuotes)
+  .put(quoteController.editHistoricalQuotes)
+  .delete(quoteController.deleteHistoricalQuotes);
 app.route('/api/download-historical-quotes')
-  .post(historicalQuoteController.downloadHistoricalQuotes);
+  .post(quoteController.downloadHistoricalQuotes);
+app.route('/api/real-time-quotes')
+  .get(quoteController.getIntraDayQuote);
 app.route('/api/exchange-rate')
   .get(exchangeRateController.getRealTimeExchangeRate);
 app.get('*', homeController.index);

@@ -40,3 +40,16 @@ exports.dailyQuote = (symbol) => {
     };
     return defaultRequest(params).then(basicErrorChecking);
 };
+
+// Expect symbol for TSX to NOT have prefix "TSX:", e.g VFV
+// Different to daily quote, I know.
+exports.intraDayQuote = (symbol) => {
+    const params = {
+        qs: {
+            function: 'TIME_SERIES_INTRADAY',
+            interval: '15min',
+            symbol
+        }
+    };
+    return defaultRequest(params).then(basicErrorChecking);
+};
