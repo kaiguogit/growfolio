@@ -6,7 +6,7 @@ import { num, log, getHeaders } from '../utils';
 import * as currencyActions from './currency';
 import { batchActions } from './';
 import { getHoldings, getRealTimeRate } from '../selectors';
-import fakeQuotes from './fakeData/quotes';
+// import fakeQuotes from './fakeData/quotes';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 const REFRESH_QUOTES_TIMEOUT = 15000;
@@ -340,6 +340,6 @@ export const downloadQuotes = () => (dispatch, getState) => {
         if (!index) {
             return prev.then(request);
         }
-        return prev.delay(15000).then(request);
+        return prev.delay(1000).then(request);
     }, Promise.resolve());
 };

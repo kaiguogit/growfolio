@@ -1,6 +1,6 @@
 const { errorResponse } = require('../utils');
 const numeral = require('numeral');
-const fakeData = require('./fakeData/quote.json');
+// const fakeData = require('./fakeData/quote.json');
 const {dailyQuote: callApi} = require('./external-api/alpha-vantage');
 
 /**

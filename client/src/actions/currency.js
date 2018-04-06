@@ -1,7 +1,6 @@
 import types from '../constants/actionTypes';
-import { makeUrl, num, log, getHeaders} from '../utils';
-import { getHoldings } from '../selectors';
-import fakeExchangeRate from './fakeData/exchangeRate';
+import { log, getHeaders} from '../utils';
+// import fakeExchangeRate from './fakeData/exchangeRate';
 
 export const requestCurrency = () => ({
     type: types.REQUEST_CURRENCY
@@ -35,10 +34,10 @@ const processAPIResponse = (response) => {
  * @returns {promise} fetch currency promise
  */
 export const fetchCurrency = () => {
-    return Promise.resolve(fakeExchangeRate)
-    // return fetch(__MY_API__ + 'exchange-rate', {
-    //     headers: getHeaders()
-    // }).then(response => response.json())
+    // return Promise.resolve(fakeExchangeRate)
+    return fetch(__MY_API__ + 'exchange-rate', {
+        headers: getHeaders()
+    }).then(response => response.json())
     .then(processAPIResponse).catch(error => {
         log.error(error);
     });

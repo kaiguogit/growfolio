@@ -14,7 +14,7 @@
     "build": "yarn upgrade && cd client && yarn upgrade && npm install && npm run build",
     "start": "node app.js",
     "debug": "node --inspect app.js",
-    "debug:watch": "nodemon --inspect app.js",
+    "debug:watch": "nodemon --ignore client/ --inspect app.js",
     "test": "mocha --reporter spec"
   },
   "dependencies": {
