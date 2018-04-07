@@ -2,8 +2,6 @@ import { divide } from '../utils';
 import {Transaction, DollarValue} from './transaction';
 import Holding from './holding';
 import ACCOUNTS from '../constants/accounts';
-import moment from 'moment';
-const DATE_FORMAT = 'YYYY-MM-DD';
 
 const compareDate = (a, b) => {
     return new Date(a.date) - new Date(b.date);
@@ -116,57 +114,6 @@ export const generateAccountHoldingsMap = tscs => {
 };
 
 /**
- * Get previous date string
- * @param date string format date 'YYYY-MM-DD', if not privoded, use today.
- * @return previous day's string format
- */
-const previousDateStr = (date) => {
-    if (!date) {
-        return moment().format(DATE_FORMAT);
-    }
-    date = moment(date, DATE_FORMAT).subtract(1, 'days');
-    return date.format(DATE_FORMAT);
-};
-
-/**
- * Get quote before date
- * @param quotes quotes map
- * @param date specific date, if not provided, use today
- */
-const _getLatestQuote = (quotes, date) => {
-    if (quotes) {
-        date = date || previousDateStr();
-        while (!quotes[date]) {
-            date = previousDateStr(date);
-        }
-        return {
-            date,
-            quote: quotes[date]
-        };
-    }
-};
-
-/**
- * Get 2 days' quotes to calculate change and changePercent
- * @param quotes quotes map
- * @param date specific date, if not provided, use today
- * @return quote with additional change and changePercent property
- */
-const getLatestQuote = (quotes, date) => {
-    let {date: latestDate, quote: latestQuote} = _getLatestQuote(quotes, date) || {};
-    let {quote: previousQuote} = _getLatestQuote(quotes, previousDateStr(latestDate)) || {};
-    const result = {};
-    if (latestQuote, previousQuote) {
-        Object.assign(result, latestQuote);
-        let latestClose = latestQuote.close;
-        let previousClose = previousQuote.close;
-        result.change = latestClose - previousClose;
-        result.changePercent = divide((latestClose - previousClose), previousClose);
-        return result;
-    }
-};
-
-/**
  * Output selectors, add performance data to holdings
  * Add {
  *    price                    (price from quote API),
@@ -180,20 +127,18 @@ const getLatestQuote = (quotes, date) => {
  *    gainOverallPercent     (gainOverall / costOverall)
  * }
  * @param {object} holding
- * @param {object} quoteMap quote data for the holding
- * @param {object} realTimeQuoteMap quote data for the holding
+ * @param {object} quote quote data for the holding
  * @param {array} currencyRates currency map
  * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quoteMap, realTimeQuoteMap, currencyRates) => {
+export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
         let h = Object.assign({}, holding);
         let cost = h.cost;
         let realizedGain = h.realizedGain;
         let costOverall = h.costOverall;
         let shares = h.shares;
         const rate = currencyRates.USDCAD;
-        let quote = getLatestQuote(quoteMap);
         ['price', 'change', 'mktValue', 'gain', 'gainPercent', 'daysGain', 'gainOverall',
         'gainOverallPercent'].forEach(key => {
             h[key] = new DollarValue();

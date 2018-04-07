@@ -35,7 +35,7 @@ exports.getRealTimeExchangeRate = (req, res) => {
         }
         return Promise.reject({message: 'api response is not valid'});
     }).catch((error) => {
-        res.json(errorResponse(null, error.message, {error}));
+        res.json(errorResponse(error.message, null, {error}));
     });
 };
 

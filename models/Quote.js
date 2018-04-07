@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const quoteSchema = new mongoose.Schema({
   symbol: String,
+  isIntraday: Boolean,
   date: String,
   open: Number,
   high: Number,

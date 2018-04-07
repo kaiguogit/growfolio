@@ -132,10 +132,8 @@ app.route('/api/historical-quotes')
   .post(quoteController.createHistoricalQuotes)
   .put(quoteController.editHistoricalQuotes)
   .delete(quoteController.deleteHistoricalQuotes);
-app.route('/api/download-historical-quotes')
-  .post(quoteController.downloadHistoricalQuotes);
-app.route('/api/real-time-quotes')
-  .get(quoteController.getIntraDayQuote);
+app.route('/api/quotes')
+  .get(quoteController.getQuoteHandler);
 app.route('/api/exchange-rate')
   .get(exchangeRateController.getRealTimeExchangeRate);
 app.get('*', homeController.index);

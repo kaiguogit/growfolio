@@ -1,13 +1,19 @@
 const { errorResponse } = require('../utils');
 const numeral = require('numeral');
-// const fakeData = require('./fixtures/quote.json');
-const fakeRealTimeData = require('./fixtures/realTimeQuote.json');
+const fakeDailyQuote = require('./fixtures/dailyQuote.json');
+const fakeIntradayQuote = require('./fixtures/intradayQuote.json');
+const merge = require('lodash/merge');
 const {dailyQuote: callDailyQuoteApi, intraDayQuote: callIntraDayQuoteApi} = require('./external-api/alpha-vantage');
 
 /**
  * GET /historical-quotes
  */
 const Quote = require('../models/Quote.js');
+const QuoteMeta = require('../models/QuoteMeta.js');
+const TYPES = {
+    INTRADAY: 'INTRADAY',
+    DAILY: 'DAILY'
+};
 
 const handleError = (err) => {
     console.log(err);
@@ -154,29 +160,36 @@ const normalizeAPIResult = (response) => {
     return result;
 };
 
-const saveQuotes = (userId) => (response) => {
+const removePrefix = (symbol) => {
+    if (symbol && symbol.startsWith('TSX:')) {
+        return symbol.replace('TSX:', '');
+    }
+    return symbol;
+};
+
+const saveQuotes = (userId, isIntraday) => (response) => {
     const meta = response['Meta Data'];
-    const quotes = response['Time Series (Daily)'];
+    isIntraday = !!isIntraday;
+    const dataKey = Object.keys(response).find(key => key.includes('Time Series'));
+    const quotes = response[dataKey];
+    let resultMeta;
+    let resultData = {};
     if (meta && quotes) {
-        let symbol = meta['2. Symbol'];
-        if (symbol && symbol.startsWith('TSX:')) {
-            symbol = symbol.replace('TSX:', '');
-        }
-        const result = [];
-        // let lastRefreshed = meta['3. Last Refreshed'];
-        // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
+        let symbol = removePrefix(meta['2. Symbol']);
+        let lastRefreshed = meta['3. Last Refreshed'];
         const promises = Object.keys(quotes).map((date) => {
-            return Quote.findOne({ date, symbol, userId }).exec().then((foundQuote) => {
+            return Quote.findOne({ date, symbol, _user: userId }).exec().then(foundQuote => {
                 if (foundQuote) {
-                    result.push(foundQuote);
+                    resultData[date] = foundQuote;
                 } else {
                     const data = Object.assign({
                         _user: userId,
+                        isIntraday,
                         symbol,
                         date
                     }, normalizeAPIResult(quotes[date]));
                     return new Quote(data).save().then((savedQuote) => {
-                        result.push(savedQuote);
+                        resultData[date] = savedQuote;
                     });
                 }
             }, error => {
@@ -185,9 +198,30 @@ const saveQuotes = (userId) => (response) => {
             });
 
         });
+        const metaPromise = QuoteMeta.findOne({symbol, _user: userId}).exec()
+        .then(foundMeta => {
+            let quoteMeta;
+            let refereshTimeKey = isIntraday ? 'lastRefreshedIntraday' : 'lastRefreshedDaily';
+            if (foundMeta) {
+                quoteMeta = foundMeta;
+                quoteMeta[refereshTimeKey] = lastRefreshed;
+            } else {
+                quoteMeta = new QuoteMeta({
+                    _user: userId,
+                    isIntraday,
+                    symbol,
+                    [refereshTimeKey]: lastRefreshed
+                });
+            }
+            return quoteMeta.save().then(savedMeta => resultMeta = savedMeta);
+        });
+        promises.push(metaPromise);
         return Promise.all(promises).then(
             () => {
-                return result;
+                return {
+                    meta: resultMeta,
+                    data: resultData
+                };
             },
             (error) => {
                 return Promise.reject(error);
@@ -198,65 +232,72 @@ const saveQuotes = (userId) => (response) => {
 };
 
 /**
- * POST /api/download-historical-quotes
+ * Get quotes for single symbol
+ * @param {string} symbol
+ * @param {string} type 'intraday' or 'daily'
+ * @param {object} userId
  */
-exports.downloadHistoricalQuotes = (req, res) => {
-    const symbol = req.body.symbol;
-    const userId = req.user._id;
-    // TODO
-    // pass date and check if quote exists already before calling api to avoid too many api calls.
-    // Promise.resolve(fakeData)
-    callDailyQuoteApi(symbol)
-    .then(saveQuotes(userId))
-    .then((result) => {
-        res.json({success: true, result});
-    }).catch(error => {
-        res.json(errorResponse(null, error.message, {error}));
-    });
-};
-
-const processRealTimeQuotes = (response) => {
-    const meta = response['Meta Data'];
-    const dataKey = Object.keys(response).find(key => key.includes('Time Series'));
-    const quotes = response[dataKey];
-    if (meta && quotes) {
-        let symbol = meta['2. Symbol'];
-        if (symbol && symbol.startsWith('TSX:')) {
-            symbol = symbol.replace('TSX:', '');
-        }
-        let lastRefreshed = meta['3. Last Refreshed'];
-        let interval = meta['4. Interval'];
-        // result.quote = quotes[lastRefreshed] && quotes[lastRefreshed]['4. close'] || {};
-        const result = Object.keys(quotes).map((date) => {
-            return Object.assign({
-                symbol,
-                date
-            }, normalizeAPIResult(quotes[date]));
-        });
-        return {
-            meta: {
-                symbol,
-                interval,
-                lastRefreshed
-            },
-            data: result
-        };
-    }
-    return Promise.reject({message: 'api response is not valid'});
+const getSingleQuote = (symbol, type, userId) => {
+    const isIntraday = type === TYPES.INTRADAY;
+    const fakeData = isIntraday ? fakeIntradayQuote : fakeDailyQuote;
+    const callApiFn = isIntraday ? callIntraDayQuoteApi : callDailyQuoteApi;
+    return Promise.resolve(fakeData)
+    // callApiFn(symbol)
+    .then(saveQuotes(userId, isIntraday));
 };
 
 /**
- * POST /api/download-historical-quotes
+ * Get quotes for multiple symbols
+ * @param {array} symbols
+ * @param {string} type 'INTRADAY' or 'DAILY'
+ * @param {object} userId
  */
-exports.getIntraDayQuote = (req, res) => {
-    const symbol = req.query.symbol;
+const getMultipleQuotes = (symbols, type, userId) => {
+    return result => {
+        if (!result) {
+            result = {
+                meta: {},
+                data: {}
+            };
+        }
+        return symbols.reduce((p, symbol) => {
+            return p.then(getSingleQuote.bind(null, symbol, type, userId))
+            .then(quote => {
+                if (quote) {
+                    const data = result.data;
+                    const meta = result.meta;
+                    symbol = removePrefix(symbol);
+                    data[symbol] = merge({}, data[symbol], quote.data);
+                    meta[symbol] = merge({}, meta[symbol], quote.meta);
+                }
+                return result;
+            });
+        }, Promise.resolve());
+    };
+};
+
+const getMultipleQuotesAllTypes = (symbols, userId) => {
+    return Object.keys(TYPES).reduce((promise, type) =>{
+        return promise.then(getMultipleQuotes(symbols, type, userId));
+    }, Promise.resolve({
+        meta: {},
+        data: {}
+    }));
+};
+
+/**
+ * POST /api/quotes
+ */
+exports.getQuoteHandler = (req, res) => {
+    const symbols = req.query.symbols && req.query.symbols.split(',');
+    if (!(symbols && symbols.length)) {
+        return res.json(errorResponse('parameter symbols must be comma separated'));
+    }
     const userId = req.user._id;
-    Promise.resolve(fakeRealTimeData)
-    // callIntraDayQuoteApi(symbol)
-    .then(processRealTimeQuotes)
+    getMultipleQuotesAllTypes(symbols, userId)
     .then((result) => {
         res.json({success: true, result});
     }).catch(error => {
-        res.json(errorResponse(null, error.message, {error}));
+        res.json(errorResponse(error.message, null, {error}));
     });
 };

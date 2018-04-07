@@ -1,3 +1,5 @@
+require('./promise');
+
 const queryParams = (params) => {
   const esc = encodeURIComponent;
   return Object.keys(params)
@@ -10,7 +12,7 @@ exports.makeUrl = (url, params) => {
   return url;
 };
 
-exports.errorResponse = (errorCode, errorMessage, extraData) => {
+exports.errorResponse = (errorMessage, errorCode, extraData) => {
   return Object.assign({
       status_code: errorCode || 403,
       message: errorMessage || 'Something went wrong',

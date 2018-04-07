@@ -21,8 +21,8 @@ export default {
     },
     quotes: {
         isFetching: false,
-        items: {},
-        realTimeItems: {},
+        data: {},
+        meta: {},
         displayDate: moment(),
         lastUpdated: Date.now(),
         useHistoricalQuote: false,
