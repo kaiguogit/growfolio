@@ -7,6 +7,20 @@ import log from './log';
 import {DollarValue} from '../selectors/transaction';
 
 export {log};
+
+/**
+ * Wrapper function to try and catch provided callback.
+ */
+export const makeSafe = (fn) => {
+    return (...args) => {
+        try {
+            return fn.apply(null, args);
+        } catch (e) {
+            log.error('Function ', fn, ' went wrong. \n Arguments: ', args, '\nError: ', e);
+        }
+    };
+};
+
 /**
  * round number by digits
  * http://www.javascriptkit.com/javatutors/round.shtml

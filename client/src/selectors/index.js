@@ -1,11 +1,17 @@
 import {
-    createSelectorWithDependencies as createSelector,
+    createSelectorWithDependencies,
     registerSelectors
 } from 'reselect-tools';
 import { generateAccountHoldingsMap,
          calculateHoldingPerformance,
          calculateTotalPerformance
 } from './holdingCalculator';
+import {makeSafe} from '../utils';
+
+// Catch error here so stack trace can be shown properly.
+// Because it would otherwise be caught in aync action, which
+// is confusing.
+const createSelector = makeSafe(createSelectorWithDependencies);
 
 /**
  * Input selectors
@@ -16,8 +22,8 @@ import { generateAccountHoldingsMap,
 export const getTscs = state => state.tscs.items;
 export const getQuotes = state => state.quotes.items;
 export const getQuote = (state, props) => state.quotes.items[props.symbol];
-export const getRealTimeQuotes = (state) => state.quotes.realTimeitems;
-export const getRealTimeQuote = (state, props) => state.quotes.realTimeitems[props.symbol];
+export const getRealTimeQuotes = (state) => state.quotes.realTimeItems;
+export const getRealTimeQuote = (state, props) => state.quotes.realTimeItems[props.symbol];
 export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
@@ -76,7 +82,7 @@ registerSelectors({getAccountHoldingsMap});
  */
 export const getHoldings = createSelector(
     [getDisplayAccount, getAccountHoldingsMap],
-    (account, accountHoldingsMap) => accountHoldingsMap[account] || []
+    makeSafe((account, accountHoldingsMap) => accountHoldingsMap[account] || [])
 );
 registerSelectors({getHoldings});
 
@@ -90,7 +96,7 @@ registerSelectors({getHoldings});
  */
 export const getSingleHolding = createSelector(
     [getHoldings, getSymbolFromProps],
-    (holdings, symbol) => (holdings || []).find(x => x.symbol === symbol)
+    makeSafe((holdings, symbol) => (holdings || []).find(x => x.symbol === symbol))
 );
 
 /**
@@ -123,11 +129,11 @@ export const makeGetHoldingPerformance = () => {
  */
 export const getHoldingsPerformance = createSelector(
     [getHoldings, getQuotes, getRealTimeQuotes, getRealTimeRate],
-    (holdings, quotes, realTimeQuotes, rates) => {
+    makeSafe((holdings, quotes, realTimeQuotes, rates) => {
         return (holdings || []).map(holding => {
-            return calculateHoldingPerformance(holding, quotes[holding.symbol], realTimeQuotes[holding.symbol], rates);
+                return calculateHoldingPerformance(holding, quotes[holding.symbol], realTimeQuotes[holding.symbol], rates);
         });
-    }
+    })
 );
 registerSelectors({getHoldingsPerformance});
 
@@ -139,10 +145,10 @@ registerSelectors({getHoldingsPerformance});
 export const getTotalPerformance = createSelector([getHoldingsPerformance, getDisplayCurrency], calculateTotalPerformance);
 registerSelectors({getTotalPerformance});
 
-export const getBalanceArray = createSelector([getBalance], balance => {
+export const getBalanceArray = createSelector([getBalance], makeSafe(balance => {
     return Object.keys(balance).map(symbol => ({
         name: symbol,
         y: balance[symbol].percentage
     }));
-});
+}));
 registerSelectors({getBalanceArray});
