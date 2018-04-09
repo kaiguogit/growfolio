@@ -1,27 +1,19 @@
 import types from '../constants/actionTypes';
-import { log, getHeaders} from '../utils';
+import { log } from '../utils';
 // import fakeExchangeRate from './fixtures/exchangeRate';
+import { makeActionCreator, callAPI } from './utils';
+import { getRealTimeRate } from '../selectors';
 
-export const requestCurrency = () => ({
-    type: types.REQUEST_CURRENCY
-});
+export const requestCurrency = makeActionCreator(types.REQUEST_CURRENCY);
+export const requestCurrencyTimeout = makeActionCreator(types.REQUEST_CURRENCY_TIMEOUT);
 
-export const requestCurrencyTimeout = () => ({
-    type: types.REQUEST_CURRENCY_TIMEOUT
-});
-
-export const receiveCurrency = (rate) => ({
-    type: types.RECEIVE_CURRENCY,
-    receivedAt: Date.now(),
-    rate
-});
+export const receiveCurrency = makeActionCreator(types.RECEIVE_CURRENCY, 'rate');
 
 const processAPIResponse = (response) => {
-    if (response.result) {
-        const result = response.result;
-        const from = result['From_Currency Code'];
-        const to = result['To_Currency Code'];
-        const rate = result['Exchange Rate'];
+    if (response) {
+        const from = response['From_Currency Code'];
+        const to = response['To_Currency Code'];
+        const rate = response['Exchange Rate'];
         return {
             [from + to]: rate
         };
@@ -33,12 +25,17 @@ const processAPIResponse = (response) => {
  * @param {object} state
  * @returns {promise} fetch currency promise
  */
-export const fetchCurrency = () => {
-    // return Promise.resolve(fakeExchangeRate)
-    return fetch(__MY_API__ + 'exchange-rate', {
-        headers: getHeaders()
-    }).then(response => response.json())
-    .then(processAPIResponse).catch(error => {
-        log.error(error);
-    });
+export const fetchCurrency = () => (dispatch, getState) => {
+    const rate = getRealTimeRate(getState());
+    const shouldRequestRate = rate.USDCAD === 1;
+    if (shouldRequestRate) {
+        dispatch(requestCurrency());
+        // return Promise.resolve(fakeExchangeRate)
+        return callAPI(__MY_API__ + 'exchange-rate')
+        .then(processAPIResponse).then((result) => {
+            dispatch(receiveCurrency(result));
+        }).catch(error => {
+            log.error(error);
+        });
+    }
 };

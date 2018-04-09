@@ -37,6 +37,7 @@ const delayedRequest = (params) => {
     }
     let result = ongoingPromise = previous.catch(() => {})
     .then(() => {
+        console.log('sending api to alpha vantage.');
         return defaultRequest(params).then(basicErrorChecking);
     });
     const clearOngoing = () => {

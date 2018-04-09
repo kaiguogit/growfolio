@@ -129,7 +129,6 @@ export const generateAccountHoldingsMap = tscs => {
  * @param {object} holding
  * @param {object} quote quote data for the holding
  * @param {array} currencyRates currency map
- * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
 export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
@@ -144,27 +143,28 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
             h[key] = new DollarValue();
         });
         const convertCurrency = (to, value) => {
+            if (!value) {
+                return 0;
+            }
             const from = holding.currency;
             if (from === to) {
                 return value;
             }
             return from === 'USD' ? value * rate : divide(value, rate);
         };
-
-        if (quote) {
-            DollarValue.TYPES.forEach(c => {
-                h.price[c] = convertCurrency(c, quote.close);
-                h.change[c] = convertCurrency(c, quote.change);
-                h.quoteDate = quote.date;
-                h.changePercent = quote.changePercent;
-                h.mktValue[c] = shares[c] * h.price[c];
-                h.gain[c] = h.mktValue[c] - cost[c];
-                h.gainPercent[c] = divide(h.gain[c], cost[c]);
-                h.daysGain[c] = shares[c] * h.change[c];
-                h.gainOverall[c] = h.gain[c] + realizedGain[c];
-                h.gainOverallPercent[c] = divide(h.gainOverall[c], costOverall[c]);
-            });
-        }
+        quote = quote || {};
+        DollarValue.TYPES.forEach(c => {
+            h.price[c] = convertCurrency(c, quote.close);
+            h.change[c] = convertCurrency(c, quote.change);
+            h.quoteDate = quote.date || 'N/A';
+            h.changePercent = quote.changePercent || 0;
+            h.mktValue[c] = shares[c] * h.price[c];
+            h.gain[c] = h.mktValue[c] ? h.mktValue[c] - cost[c] : 0;
+            h.gainPercent[c] = divide(h.gain[c], cost[c]);
+            h.daysGain[c] = shares[c] * h.change[c];
+            h.gainOverall[c] = h.gain[c] + realizedGain[c];
+            h.gainOverallPercent[c] = divide(h.gainOverall[c], costOverall[c]);
+        });
         // Return a new object to trigger props update.
         return h;
 };
@@ -172,6 +172,7 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
 /**
  * Sum up holding's value and caculate total performance.
  * @param {array} holdings
+ * @param {array} currencyRates currency map
  * @returns {object}
  */
 export const calculateTotalPerformance = (holdings, displayCurrency) => {

@@ -14,6 +14,10 @@ const quotesReducer = createReducer(initialState.quotes, {
     [types.SET_QUOTE_DISPLAY_DATE]: setValueFromAction('displayDate'),
     [types.SET_USE_HISTORICAL_QUOTE]: setValueFromAction('useHistoricalQuote'),
     [types.TOGGLE_QUOTE_MODAL]: toggleModel,
+    [types.RECEIVE_SINGLE_QUOTE]: reduceReducers(
+        mergeObjectFromAction('data'),
+        mergeObjectFromAction('meta'),
+    ),
     [types.RECEIVE_QUOTES]: reduceReducers(
         stopFetching,
         mergeObjectFromAction('data'),

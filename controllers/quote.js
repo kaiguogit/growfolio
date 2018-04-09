@@ -6,6 +6,7 @@ const merge = require('lodash/merge');
 const moment = require('moment-timezone');
 const {dailyQuote: callDailyQuoteApi, intraDayQuote: callIntraDayQuoteApi} = require('./external-api/alpha-vantage');
 
+const NEW_YORK_TIME_ZONE = 'America/New_York';
 /**
  * GET /historical-quotes
  */
@@ -277,7 +278,7 @@ const guardEmptyDate = (date) => {
  */
 const isWeekDay = date => {
     date = guardEmptyDate(date);
-    const dow = date.tz('America/New_York').day();
+    const dow = date.tz(NEW_YORK_TIME_ZONE).day();
     if (dow > 0 && dow < 6) {
         return true;
     }
@@ -290,14 +291,14 @@ const isWeekDay = date => {
  */
 const lastWeekDay = (date) => {
     date = guardEmptyDate(date);
-    let dow = date.tz('America/New_York').day();
+    let dow = date.tz(NEW_YORK_TIME_ZONE).day();
     if (dow === 0) {
         //today is Sunday return last Friday
-        return moment.tz('America/New_York').day(-2);
+        return moment.tz(NEW_YORK_TIME_ZONE).day(-2);
     }
     if (dow === 6) {
         //today is Staturday return this Friday
-        return moment.tz('America/New_York').day(5);
+        return moment.tz(NEW_YORK_TIME_ZONE).day(5);
     }
     // today is weekday
     return date;
@@ -307,8 +308,8 @@ const isMarketOpened = () => {
     if (isWeekDay()) {
         const now = moment();
         // Set to new york time's 9:30 - 16:00
-        const marketOpen = moment.tz('America/New_York').hour(9).minute(30).second(0);
-        const marketClose = moment.tz('America/New_York').hour(16).minute(0).second(0);
+        const marketOpen = moment.tz(NEW_YORK_TIME_ZONE).hour(9).minute(30).second(0);
+        const marketClose = moment.tz(NEW_YORK_TIME_ZONE).hour(16).minute(0).second(0);
         //Exclusive https://momentjs.com/docs/#/query/is-between/
         return now.isBetween(marketOpen, marketClose, 'minute', '()');
     }
@@ -345,7 +346,7 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
                 return true;
             }
             if (marketOpened) {
-                if (moment.tz(lastRefreshedIntraday, 'America/New_York').isBefore(moment().subtract(5, 'minutes'))) {
+                if (moment.tz(lastRefreshedIntraday, NEW_YORK_TIME_ZONE).isBefore(moment().subtract(5, 'minutes'))) {
                     return true;
                 }
             }
@@ -354,7 +355,7 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
                 return true;
             }
             const expectedDate = marketOpened ? lastWeekDay(yesterday()) : lastWeekDay();
-            if (moment.tz(lastRefreshedDaily, 'America/New_York').isBefore(expectedDate, 'day')) {
+            if (moment.tz(lastRefreshedDaily, NEW_YORK_TIME_ZONE).isBefore(expectedDate, 'day')) {
                 return true;
             }
         }

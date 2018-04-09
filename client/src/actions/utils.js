@@ -1,3 +1,5 @@
+import { getHeaders } from '../utils';
+
 // makeActionCreator
 // https://redux.js.org/recipes/reducing-boilerplate#generating-action-creators
 /**
@@ -24,3 +26,14 @@ export const makeActionCreator = (type, ...argNames) => {
     };
 };
 
+export const callAPI = (url) => {
+    return fetch(url, {headers: getHeaders()})
+    .then(response => response.json())
+    .then(response => {
+        if (!response.success) {
+            return Promise.reject(response);
+        }
+        return response;
+    })
+    .then((data) => data.result);
+};

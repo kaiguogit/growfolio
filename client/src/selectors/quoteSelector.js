@@ -1,5 +1,5 @@
 import {createSelector, registerSelectors} from './selectorsUtils';
-import moment from 'moment';
+import moment from 'moment-timezone';
 window.moment = moment;
 import { divide } from '../utils';
 
@@ -9,40 +9,25 @@ export const getQuotesMeta = state => state.quotes.meta;
 export const getQuoteMeta = (state, props) => state.quotes.meta[props.symbol];
 
 const DATE_FORMAT = 'YYYY-MM-DD';
+const NEW_YORK_TIME_ZONE = 'America/New_York';
 
-const calculateQuote = (data, meta) => {
-    let lastRefreshedIntraday = meta && meta.lastRefreshedIntraday;
-    // let lastRefreshedDaily = meta && meta.lastRefreshedDaily;
-    if (lastRefreshedIntraday) {
-        const {date: latestDate, quote: latestQuote} = _findLatestQuote(data, lastRefreshedIntraday);
-        if (latestDate) {
-            const {quote: previousQuote} = _findLatestQuote(data, previousDateStr(latestDate));
-            return _calculateChange(latestQuote, previousQuote);
-        }
+const parseDate = (date) => {
+    if (!date) {
+        return moment.tz(NEW_YORK_TIME_ZONE);
     }
+    return moment.tz(date, NEW_YORK_TIME_ZONE);
 };
-
-export const getLatestQuote = createSelector([getQuote, getQuoteMeta], calculateQuote);
-registerSelectors({getLatestQuote});
-
-export const getLatestQuotes = createSelector([getQuotes, getQuotesMeta], (data, meta) => {
-    return Object.keys(data).reduce((result, symbol) => {
-        result[symbol] = calculateQuote(data[symbol, meta[symbol]]);
-        return result;
-    }, {});
-});
 
 /**
  * Get previous date string
  * @param date string format date 'YYYY-MM-DD', if not privoded, use today.
  * @return previous day's string format
  */
-const previousDateStr = (date) => {
+const previousDateStr = date => {
     if (!date) {
-        return moment().format(DATE_FORMAT);
+        return parseDate().format(DATE_FORMAT);
     }
-    date = moment(date, DATE_FORMAT).subtract(1, 'days');
-    return date.format(DATE_FORMAT);
+    return parseDate(date).subtract(1, 'days').format(DATE_FORMAT);
 };
 
 /**
@@ -67,6 +52,33 @@ const _findLatestQuote = (quotes, date) => {
     return {};
 };
 
+const calculateQuote = (data, meta) => {
+    let lastIntraday = meta && meta.lastRefreshedIntraday;
+    let lastDaily = meta && meta.lastRefreshedDaily;
+    let keyToUse = lastIntraday || lastDaily;
+    if (lastIntraday && lastDaily) {
+        keyToUse = parseDate(lastIntraday).isAfter(parseDate(lastDaily)) ? lastIntraday : lastDaily;
+    }
+    if (keyToUse) {
+        const {date: latestDate, quote: latestQuote} = _findLatestQuote(data, keyToUse);
+        if (latestDate) {
+            const {quote: previousQuote} = _findLatestQuote(data, previousDateStr(latestDate));
+            return _calculateChange(latestQuote, previousQuote);
+        }
+        return Object.assign({}, latestQuote);
+    }
+};
+
+export const getLatestQuote = createSelector([getQuote, getQuoteMeta], calculateQuote);
+registerSelectors({getLatestQuote});
+
+export const getLatestQuotes = createSelector([getQuotes, getQuotesMeta], (data, meta) => {
+    return Object.keys(data).reduce((result, symbol) => {
+        result[symbol] = calculateQuote(data[symbol], meta[symbol]);
+        return result;
+    }, {});
+});
+
 /**
  * Compare 2 days' quotes to calculate change and changePercent
  * @param latestQuote
@@ -74,15 +86,13 @@ const _findLatestQuote = (quotes, date) => {
  * @return quote with additional change and changePercent property
  */
 const _calculateChange = (latestQuote, previousQuote) => {
+    const result = Object.assign({}, latestQuote);
     if (latestQuote && previousQuote) {
-        const result = {};
-        Object.assign(result, latestQuote);
         let latestClose = latestQuote.close;
         let previousClose = previousQuote.close;
         result.change = latestClose - previousClose;
         result.changePercent = divide((latestClose - previousClose), previousClose);
-        return result;
     }
-    return latestQuote;
+    return result;
 };
 registerSelectors({getLatestQuote});

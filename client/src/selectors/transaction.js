@@ -1,5 +1,5 @@
 import { divide } from '../utils';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import historicalDailyExchangeRate from '../constants/dailyExchangeRate';
 
 const _getHistoricalDailyRate = date => {
