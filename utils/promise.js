@@ -1,4 +1,3 @@
-
 /**
  * Create a promise that will reject at timeout
  * https://stackoverflow.com/questions/32461271/nodejs-timeout-a-promise-if-failed-to-complete-in-time
@@ -25,8 +24,27 @@ const delay = (t, v) => {
     });
  };
 
-Promise.prototype.delay = function(t) {
-    return this.then(function(v) {
-        return delay(t, v);
-    });
-};
+if (!Promise.prototype.delay) {
+    Promise.prototype.delay = function(t) {
+        return this.then(function(v) {
+            return delay(t, v);
+        });
+    };
+}
+
+// Add `finally()` to `Promise.prototype`
+// http://thecodebarbarian.com/using-promise-finally-in-node-js.html
+// https://stackoverflow.com/questions/35999072/what-is-the-equivalent-of-bluebird-promise-finally-in-native-es6-promises/35999141#35999141
+const promiseFinally = require('promise.prototype.finally');
+promiseFinally.shim();
+
+// if (!Promise.prototype.finally) {
+//     Promise.prototype.finally = function(onFinally) {
+//         return this.then(
+//         /* onFulfilled */
+//         res => Promise.resolve(onFinally()).then(() => res),
+//         /* onRejected */
+//         err => Promise.resolve(onFinally()).then(() => { throw err; })
+//         );
+//     };
+// }

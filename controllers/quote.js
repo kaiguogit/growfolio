@@ -241,8 +241,8 @@ const getSingleQuote = (symbol, type, userId) => {
     const isIntraday = type === TYPES.INTRADAY;
     const fakeData = isIntraday ? fakeIntradayQuote : fakeDailyQuote;
     const callApiFn = isIntraday ? callIntraDayQuoteApi : callDailyQuoteApi;
-    return Promise.resolve(fakeData)
-    // callApiFn(symbol)
+    // return Promise.resolve(fakeData)
+    return callApiFn(symbol)
     .then(saveQuotes(userId, isIntraday));
 };
 
