@@ -1,39 +1,75 @@
 const fakeData = require('./fixtures/exchangeRate.json');
 const {exchangeRate: callApi} = require('./external-api/alpha-vantage');
 const {errorResponse} = require('../utils');
+const moment = require('moment-timezone');
+const {NEW_YORK_TIME_ZONE} = require('../utils/time');
+const ExchangeRate = require('../models/ExchangeRate.js');
 
-const normalizeAPIResult = (response) => {
+const normalizeAPIResult = (response, _user) => {
     const result = {};
-    ["1. From_Currency Code",
-    "2. From_Currency Name",
-    "3. To_Currency Code",
-    "4. To_Currency Name",
-    "5. Exchange Rate",
-    "6. Last Refreshed",
-    "7. Time Zone"
-    ].forEach((key) => {
-        const normalKey = key.split('. ')[1];
+    const keyMap = {
+        '1. From_Currency Code': 'fromCurrency',
+        '3. To_Currency Code': 'toCurrency',
+        '5. Exchange Rate': 'rate',
+        '6. Last Refreshed': 'date'
+    };
+    Object.keys(keyMap).forEach(key => {
+        const normalKey = keyMap[key];
         result[normalKey] = response[key];
     });
+    result.date = moment.utc(result.date).tz(NEW_YORK_TIME_ZONE).format('YYYY-MM-DD');
+    result.isRealTime = true;
+    result._user = _user;
     return result;
 };
 
-// https://www.npmjs.com/package/request#requestoptions-callback
+const getRateFromDb = _user => {
+    return ExchangeRate.findOne({
+        fromCurrency: 'USD',
+        toCurrency: 'CAD',
+        date: moment.tz(NEW_YORK_TIME_ZONE).format('YYYY-MM-DD'),
+        _user
+    }).exec().then(foundRate => {
+        return foundRate;
+    });
+};
+
+const saveExchangeRateFromAPI = _user => response => {
+    const key = 'Realtime Currency Exchange Rate';
+    if (response[key]) {
+        const result = normalizeAPIResult(response[key], _user);
+        return ExchangeRate.findOne({
+            fromCurrency: 'USD',
+            toCurrency: 'CAD',
+            date: result.date,
+            _user
+        }).exec().then(foundRate => {
+            if (foundRate) {
+                return foundRate;
+            }
+            return new ExchangeRate(result).save().then(savedRate => {
+                return savedRate;
+            });
+        });
+    }
+    return Promise.reject({message: 'api response is not valid'});
+};
 
 /**
- * POST /api/download-historical-quotes
+ * POST /api/exchange-rate
  */
 exports.getRealTimeExchangeRate = (req, res) => {
-    // TODO
-    // pass date and check if quote exists already before calling api to avoid too many api calls.
-    Promise.resolve(fakeData)
-    // callApi()
-    .then((result) => {
-        const key = 'Realtime Currency Exchange Rate';
-        if (result[key]) {
-            return res.json({success: true, result: normalizeAPIResult(result[key])});
+    const userId = req.user._id;
+    return getRateFromDb(userId).then(foundRate => {
+        if (foundRate) {
+            return foundRate;
         }
-        return Promise.reject({message: 'api response is not valid'});
+        // return Promise.resolve(fakeData)
+        return callApi()
+        .then(saveExchangeRateFromAPI(userId));
+    })
+    .then(result => {
+        res.json({success: true, result});
     }).catch((error) => {
         res.json(errorResponse(error.message, null, {error}));
     });

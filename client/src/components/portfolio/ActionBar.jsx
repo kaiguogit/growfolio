@@ -6,7 +6,8 @@ import AddTscButton from './AddTscButton.jsx';
 
 const ActionBar = () => (
     <div>
-        <RefreshButton/>
+        <RefreshButton download={true}/>
+        <RefreshButton download={false}/>
         <SettingButton/>
         <AddTscButton/>
     </div>

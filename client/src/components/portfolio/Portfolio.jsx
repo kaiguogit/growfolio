@@ -36,7 +36,7 @@ class Portfolio extends React.Component {
         //Only refresh quotes when holdings or display currency changed
         if (!(isEqual(prevProps.tscs, this.props.tscs) &&
             prevProps.portfolio.displayCurrency === this.props.portfolio.displayCurrency)) {
-            // this.props.actions.refreshQuotes();
+            this.props.actions.refreshQuotes();
         }
     }
 

@@ -127,13 +127,13 @@ app.route('/api/allocations')
   .get(allocationController.getAllocations)
   .post(allocationController.createAllocations)
   .delete(allocationController.deleteAllocations);
-app.route('/api/historical-quotes')
-  .get(quoteController.getHistoricalQuotes)
-  .post(quoteController.createHistoricalQuotes)
-  .put(quoteController.editHistoricalQuotes)
-  .delete(quoteController.deleteHistoricalQuotes);
 app.route('/api/quotes')
-  .get(quoteController.getQuoteHandler);
+  .get(quoteController.getQuotes)
+  .post(quoteController.createQuotes)
+  .put(quoteController.editQuotes)
+  .delete(quoteController.deleteQuotes);
+app.route('/api/download-quotes')
+  .get(quoteController.downloadQuotes);
 app.route('/api/exchange-rate')
   .get(exchangeRateController.getRealTimeExchangeRate);
 app.get('*', homeController.index);

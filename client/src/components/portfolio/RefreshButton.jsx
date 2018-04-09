@@ -7,14 +7,15 @@ import { bindActionCreators } from 'redux';
 
 class RefreshButton extends React.Component {
     render() {
-        const { isFetching, actions } = this.props;
+        const { isFetching, actions, download } = this.props;
         return(
             <button type="button" className="mod-small"
-                onClick={actions.refreshQuotes}
+                onClick={() => actions.refreshQuotes(download)}
                 disabled={isFetching}>
                 <i className={`fa fa-refresh${isFetching ? ' fa-spin' : ''}`} aria-hidden="true"/>
                 <span className="ml-2">
-                    Refresh
+                    {download && 'Download Latest Quote'}
+                    {!download && 'Refresh'}
                 </span>
             </button>
         );
@@ -23,7 +24,8 @@ class RefreshButton extends React.Component {
 
 RefreshButton.propTypes = {
     actions: PropTypes.object.isRequired,
-    isFetching: PropTypes.bool.isRequired
+    isFetching: PropTypes.bool.isRequired,
+    download: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {

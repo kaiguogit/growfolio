@@ -2,7 +2,6 @@ import React from 'react';
 import numeral from 'numeral';
 import Auth from '../services/Auth';
 import styles from '../styles';
-import '../../../utils/promise';
 import log from './log';
 import {DollarValue} from '../selectors/transaction';
 

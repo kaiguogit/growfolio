@@ -5,9 +5,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as quotesActions from '../../actions/quotes';
 import { getHoldings } from '../../selectors';
+import { getQuotes } from '../../selectors/quoteSelector';
 import DatePicker from 'react-datepicker';
 import { FormGroup } from '../shared/index.jsx';
 import QuoteModal from './QuoteModal.jsx';
+import moment from 'moment-timezone';
 
 class Quote extends React.Component {
     constructor(props) {
@@ -33,8 +35,9 @@ class Quote extends React.Component {
     }
 
     getQuotePrice(symbol) {
-        let quote = this.getQuote(symbol);
-        return quote ? quote.price : '';
+        const quoteMap = this.getQuote(symbol);
+        const date = moment(this.props.displayDate).format('YYYY-MM-DD');
+        return quoteMap && quoteMap[date] && quoteMap[date].close || '';
     }
 
     render() {
@@ -93,7 +96,7 @@ const mapStateToProps = state => {
     return {
         holdings: getHoldings(state),
         displayDate: state.quotes.displayDate,
-        quotes: state.quotes.items,
+        quotes: getQuotes(state),
         showZeroShareHolding: state.portfolio.showZeroShareHolding
     };
 };
