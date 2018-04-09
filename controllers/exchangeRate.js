@@ -1,4 +1,4 @@
-// const fakeData = require('./fixtures/exchangeRate.json');
+const fakeData = require('./fixtures/exchangeRate.json');
 const {exchangeRate: callApi} = require('./external-api/alpha-vantage');
 const {errorResponse} = require('../utils');
 
@@ -26,8 +26,8 @@ const normalizeAPIResult = (response) => {
 exports.getRealTimeExchangeRate = (req, res) => {
     // TODO
     // pass date and check if quote exists already before calling api to avoid too many api calls.
-    // Promise.resolve(fakeData)
-    callApi()
+    Promise.resolve(fakeData)
+    // callApi()
     .then((result) => {
         const key = 'Realtime Currency Exchange Rate';
         if (result[key]) {
