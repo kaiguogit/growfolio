@@ -9,7 +9,7 @@ import { makeActionCreator } from './utils';
 // import fakeQuotes from './fixtures/quotes';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
-const REFRESH_QUOTES_TIMEOUT = 3000;
+const REFRESH_QUOTES_TIMEOUT = 10000;
 
 export const requestQuotes = makeActionCreator(types.REQUEST_QUOTES);
 export const requestQuotesTimeout = makeActionCreator(types.REQUEST_QUOTES_TIMEOUT);

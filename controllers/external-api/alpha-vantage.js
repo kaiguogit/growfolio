@@ -34,7 +34,7 @@ const delayedRequest = (params) => {
     } else {
         previous = Promise.resolve();
     }
-    let result = ongoingPromise = previous.finally(() => {
+    let result = ongoingPromise = previous.catch(() => {}).finally(() => {
         console.log('sending api to alpha vantage');
     }).then(() => {
         // Don't put this in finally function because finally function doesn't pass response.
