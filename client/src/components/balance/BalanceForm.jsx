@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/balance';
-import isEqual from 'lodash.isequal';
+import {isEqual} from 'lodash';
 
 import { Input, Select } from '../shared/index.jsx';
 import { getTotalPerformance } from '../../selectors';
@@ -68,7 +68,7 @@ class BalanceForm extends React.Component {
         this.props.total.holdings.forEach(holding => {
             this.props.actions.updateBalancePercentage({
                 symbol: holding.symbol,
-                percentage: Math.floor(holding.mkt_value / this.props.total.mkt_value * 10000) / 100
+                percentage: Math.floor(holding.mktValue / this.props.total.mktValue * 10000) / 100
             });
         });
     }
@@ -122,9 +122,9 @@ class BalanceForm extends React.Component {
         const balance = this.state.balance;
         const difference = (holding) => {
             let result = 0;
-            let totalValue = total.mkt_value + this.state.investAmount;
+            let totalValue = total.mktValue + this.state.investAmount;
             if (balance[holding.symbol]) {
-                result = balance[holding.symbol].percentage / 100 * totalValue - holding.mkt_value;
+                result = balance[holding.symbol].percentage / 100 * totalValue - holding.mktValue;
             }
             return (
                 <span style={redOrGreen(result)}>
@@ -174,14 +174,14 @@ class BalanceForm extends React.Component {
                                 <tr key={holding.symbol}>
                                     <td>{holding.symbol}</td>
                                     <td>{this.renderLabelSelector(holding.symbol)}</td>
-                                    <td>{currency(2)(holding.mkt_value)}</td>
+                                    <td>{currency(2)(holding.mktValue)}</td>
                                     <td>
                                         <div className="row no-gutters">
                                             <div className="col-6">
-                                                <span className="align-middle">{percentage(holding.mkt_value / total.mkt_value)}</span>
+                                                <span className="align-middle">{percentage(holding.mktValue / total.mktValue)}</span>
                                             </div>
                                             <div className="col-6">
-                                                <button className="btn btn-info btn-sm" name={holding.symbol} value={holding.mkt_value / total.mkt_value * 100} onClick={this.handlePercentageChange}>
+                                                <button className="btn btn-info btn-sm" name={holding.symbol} value={holding.mktValue / total.mktValue * 100} onClick={this.handlePercentageChange}>
                                                 Clone
                                                 </button>
                                             </div>
@@ -218,7 +218,7 @@ BalanceForm.propTypes = {
 
 const mapStateToProps = state => {
     const total = getTotalPerformance(state);
-    const filteredHoldings = total.holdings.slice(0).filter(holding => holding.mkt_value > 0);
+    const filteredHoldings = total.holdings.slice(0).filter(holding => holding.mktValue > 0);
     total.holdings = filteredHoldings;
     return {
         total: total,

@@ -1,0 +1,32 @@
+{
+    "Meta Data": {
+        "1. Information": "Daily Prices (open, high, low, close) and Volumes",
+        "2. Symbol": "BOTZ",
+        "3. Last Refreshed": "2018-04-03",
+        "4. Output Size": "Full size",
+        "5. Time Zone": "US/Eastern"
+    },
+    "Time Series (Daily)": {
+        "2018-04-03": {
+            "1. open": "23.6700",
+            "2. high": "23.7700",
+            "3. low": "23.5000",
+            "4. close": "23.7400",
+            "5. volume": "874277"
+        },
+        "2018-04-02": {
+            "1. open": "24.0100",
+            "2. high": "24.1300",
+            "3. low": "23.4300",
+            "4. close": "23.6100",
+            "5. volume": "1459647"
+        },
+        "2018-03-29": {
+            "1. open": "23.8200",
+            "2. high": "24.3350",
+            "3. low": "23.8100",
+            "4. close": "24.1900",
+            "5. volume": "1149003"
+        }
+    }
+}

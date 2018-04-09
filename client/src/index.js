@@ -27,7 +27,13 @@ import 'jquery';
 import './styles/vendor/bootstrap/bootstrap';
 import './styles/application.scss';
 
+// Reselect tools
+import * as ReselectTools from 'reselect-tools';
+
+// ReselectTools.registerSelectors(selectors); // register string names for selectors
+
 const store = configureStore();
+ReselectTools.getStateWith(() => store.getState()); // allows you to get selector inputs and outputs
 
 render(
     <Provider store={store}>

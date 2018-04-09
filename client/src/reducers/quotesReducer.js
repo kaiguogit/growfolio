@@ -1,30 +1,38 @@
+'use strict';
+
 import initialState from './initialState';
 import types from '../constants/actionTypes';
-// import isEqual from 'lodash.isequal';
-const quotesReducer = (state = initialState.quotes, action) => {
-    switch (action.type) {
-        case types.REQUEST_QUOTES:
-            return {
-                ...state,
-                isFetching: true
-            };
-        case types.RECEIVE_QUOTES:
-            // if fetch quote failed, don't change.
-            return {
-                ...state,
-                isFetching: false,
-                items: action.quotes || state.items,
-                lastUpdated: action.receivedAt
-            };
-        case types.REQUEST_QUOTES_TIMEOUT:
-            return {
-                ...state,
-                isFetching: false
-            };
-        default:
-            return state;
-    }
+import {createReducer, setValueFromAction, setKeyValue, mergeObjectFromAction} from './reducerUtils';
+import reduceReducers from 'reduce-reducers';
+
+const startFetching = setKeyValue('isFetching', true);
+const stopFetching = setKeyValue('isFetching', false);
+
+const quotesReducer = createReducer(initialState.quotes, {
+    [types.REQUEST_QUOTES]: startFetching,
+    [types.REQUEST_QUOTES_TIMEOUT]: stopFetching,
+    [types.SET_QUOTE_DISPLAY_DATE]: setValueFromAction('displayDate'),
+    [types.SET_USE_HISTORICAL_QUOTE]: setValueFromAction('useHistoricalQuote'),
+    [types.TOGGLE_QUOTE_MODAL]: toggleModel,
+    [types.RECEIVE_SINGLE_QUOTE]: reduceReducers(
+        mergeObjectFromAction('data'),
+        mergeObjectFromAction('meta'),
+    ),
+    [types.RECEIVE_QUOTES]: reduceReducers(
+        stopFetching,
+        mergeObjectFromAction('data'),
+        mergeObjectFromAction('meta'),
+    )
+});
+
+const toggleModel = (state, action) => {
+    return {
+        ...state,
+        dialogModal: {
+            isOpened: !!action.showModal,
+            quote: action.quote ? Object.assign({}, action.quote) : null
+        }
+    };
 };
 
 export default quotesReducer;
-

@@ -1,28 +1,11 @@
 import types from '../constants/actionTypes';
 import initialState from './initialState';
+import {createReducer, setKeyValue, mergeObjectFromAction, reduceReducers} from './reducerUtils';
 
-const currencyReducer = (state = initialState.currency, action) => {
-    switch(action.type) {
-        case types.REQUEST_CURRENCY:
-            return {
-                ...state,
-                isFetching: true
-            };
-        case types.RECEIVE_CURRENCY:
-            return {
-                ...state,
-                isFetching: false,
-                rate: action.rate || [],
-                lastUpdated: action.receivedAt
-            };
-        case types.REQUEST_CURRENCY_TIMEOUT:
-            return {
-                ...state,
-                isFetching: false
-            };
-        default:
-            return state;
-    }
-};
+const currencyReducer = createReducer(initialState.currency, {
+    [types.REQUEST_CURRENCY]: setKeyValue('isFetching', true),
+    [types.REQUEST_CURRENCY_TIMEOUT]: setKeyValue('isFetching', false),
+    [types.RECEIVE_CURRENCY]: reduceReducers(mergeObjectFromAction('rate'), setKeyValue('isFetching', false))
+});
 
 export default currencyReducer;

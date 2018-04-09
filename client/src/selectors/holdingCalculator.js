@@ -119,8 +119,8 @@ export const generateAccountHoldingsMap = tscs => {
  *    price                    (price from quote API),
  *    change                   (day's price change from quote API)
  *    changePercent           (day's price change percent from quote API),
- *    mkt_value                (shares * price),
- *    gain                     (mkt_value - cost),
+ *    mktValue                (shares * price),
+ *    gain                     (mktValue - cost),
  *    gainPercent             (gain / cost),
  *    daysGain                (change * shares),
  *    gainOverall             (gain + realizedGain),
@@ -129,46 +129,42 @@ export const generateAccountHoldingsMap = tscs => {
  * @param {object} holding
  * @param {object} quote quote data for the holding
  * @param {array} currencyRates currency map
- * @param {string} displayCurrency setting
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quote, currencyRates, displayCurrency) => {
+export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
         let h = Object.assign({}, holding);
-        let cost = h.cost[displayCurrency];
-        let realizedGain = h.realizedGain[displayCurrency];
-        let costOverall = h.costOverall[displayCurrency];
-        let shares = h.shares[displayCurrency];
-
-        if (quote &&
-            typeof shares === 'number' && typeof cost === 'number' &&
-            typeof realizedGain === 'number' &&
-            typeof costOverall === 'number') {
-                h.price = quote.current_price;
-                h.change = quote.change * 1;
-                h.changePercent = quote.changePercent * 1;
-                h.mkt_value = shares * h.price;
-                h.gain = h.mkt_value - cost;
-                h.gainPercent = divide(h.gain, cost);
-                h.daysGain = shares * h.change;
-        } else {
-            // If quote is not found, still make property available
-            // to avoid NaN in sum calculation.
-            h.price = 0;
-            h.mkt_value = 0;
-            h.gain = 0;
-            h.gainPercent = 0;
-            h.daysGain = 0;
-        }
-        h.gainOverall = h.gain + realizedGain;
-        h.gainOverallPercent = divide(h.gainOverall, costOverall);
-        /** TODO: another way to achieve this is to make a better getQuote selector
-         * Currently this calculation is triggered when anything in quote is new.
-         * A better getQuote function should filter API response with only the
-         * property that we care.
-         * That way this calculation function is only triggered when quote that we care
-         * is updated, and we can always return a new object instead of doing compare
-         * like below.
-         */
+        let cost = h.cost;
+        let realizedGain = h.realizedGain;
+        let costOverall = h.costOverall;
+        let shares = h.shares;
+        const rate = currencyRates.USDCAD;
+        ['price', 'change', 'mktValue', 'gain', 'gainPercent', 'daysGain', 'gainOverall',
+        'gainOverallPercent'].forEach(key => {
+            h[key] = new DollarValue();
+        });
+        const convertCurrency = (to, value) => {
+            if (!value) {
+                return 0;
+            }
+            const from = holding.currency;
+            if (from === to) {
+                return value;
+            }
+            return from === 'USD' ? value * rate : divide(value, rate);
+        };
+        quote = quote || {};
+        DollarValue.TYPES.forEach(c => {
+            h.price[c] = convertCurrency(c, quote.close);
+            h.change[c] = convertCurrency(c, quote.change);
+            h.quoteDate = quote.date || 'N/A';
+            h.changePercent = quote.changePercent || 0;
+            h.mktValue[c] = shares[c] * h.price[c];
+            h.gain[c] = h.mktValue[c] ? h.mktValue[c] - cost[c] : 0;
+            h.gainPercent[c] = divide(h.gain[c], cost[c]);
+            h.daysGain[c] = shares[c] * h.change[c];
+            h.gainOverall[c] = h.gain[c] + realizedGain[c];
+            h.gainOverallPercent[c] = divide(h.gainOverall[c], costOverall[c]);
+        });
         // Return a new object to trigger props update.
         return h;
 };
@@ -176,10 +172,11 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates, displ
 /**
  * Sum up holding's value and caculate total performance.
  * @param {array} holdings
+ * @param {array} currencyRates currency map
  * @returns {object}
  */
 export const calculateTotalPerformance = (holdings, displayCurrency) => {
-    const sumProps = ['mkt_value', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
+    const sumProps = ['mktValue', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
                    'realizedGain', 'dividend'];
     const rt = {holdings};
 

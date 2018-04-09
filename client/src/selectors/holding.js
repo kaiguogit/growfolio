@@ -125,6 +125,10 @@ class Holding {
             });
         });
     }
+
+    isUSD() {
+        return this.currency === 'USD';
+    }
 }
 
 Holding.HOLDING_PROPERTIES = HOLDING_PROPERTIES;

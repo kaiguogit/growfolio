@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 export default {
     portfolio: {
         displayCurrency: 'CAD',
@@ -19,12 +21,21 @@ export default {
     },
     quotes: {
         isFetching: false,
-        items: {},
-        lastUpdated: Date.now()
+        data: {},
+        meta: {},
+        displayDate: moment(),
+        lastUpdated: Date.now(),
+        useHistoricalQuote: false,
+        dialogModal: {
+            isOpened: false,
+            quote: null
+        }
     },
     currency: {
         isFetching: false,
-        rate: [],
+        rate: {
+            USDCAD: 1
+        },
         // TODO support CRUD watch list
         watchList: ['CNY', 'USD'],
         lastUpdated: Date.now()

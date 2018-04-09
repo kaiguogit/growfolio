@@ -31,10 +31,11 @@ dotenv.load({ path: '.env' });
  */
 const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
-const apiController = require('./controllers/api');
 // const contactController = require('./controllers/contact');
 const transactionController = require('./controllers/transaction');
 const allocationController = require('./controllers/allocation');
+const quoteController = require('./controllers/quote');
+const exchangeRateController = require('./controllers/exchangeRate');
 
 /**
  * API keys and Passport configuration.
@@ -126,9 +127,15 @@ app.route('/api/allocations')
   .get(allocationController.getAllocations)
   .post(allocationController.createAllocations)
   .delete(allocationController.deleteAllocations);
+app.route('/api/historical-quotes')
+  .get(quoteController.getHistoricalQuotes)
+  .post(quoteController.createHistoricalQuotes)
+  .put(quoteController.editHistoricalQuotes)
+  .delete(quoteController.deleteHistoricalQuotes);
 app.route('/api/quotes')
-  .get(apiController.getQuotes);
-
+  .get(quoteController.getQuoteHandler);
+app.route('/api/exchange-rate')
+  .get(exchangeRateController.getRealTimeExchangeRate);
 app.get('*', homeController.index);
 
 /**

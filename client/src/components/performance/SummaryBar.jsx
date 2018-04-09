@@ -61,7 +61,10 @@ const ExchangeRate = ({title, rate}) => (
 
 ExchangeRate.propTypes = {
     title: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired
+    rate: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired,
 };
 
 /*
@@ -77,7 +80,7 @@ class SummaryBar extends React.Component {
         return (
             <div className="col-12 col-sm-6 col-md-auto mr-md-3">
                 <span>Total Value</span>
-                <h2>{currency(2)(this.props.performance.mkt_value)}</h2>
+                <h2>{currency(2)(this.props.performance.mktValue)}</h2>
             </div>
         );
     }
@@ -86,9 +89,12 @@ class SummaryBar extends React.Component {
         const {performance, currencyRates} = this.props;
         //TODO hard coded exchange rate for now.
         // use watch list in future
-        const exchangeWatchList = (currencyRates || []).filter(rate => {
-            return ['CADCNY', 'CADUSD', 'USDCAD'].includes(rate.id);
-        });
+        const exchangeWatchList = ['CADCNY', 'CADUSD', 'USDCAD'].filter(rate => {
+            return currencyRates[rate];
+        }).map(rate => ({
+                name: rate,
+                rate: currencyRates[rate]
+        }));
 
         return(
             <div className="summary-bar row no-gutters">
@@ -104,7 +110,7 @@ class SummaryBar extends React.Component {
                     title="Overall Change"/>
                 {exchangeWatchList.map(rate => {
                     return (
-                        <ExchangeRate title={rate.Name} rate={rate.Rate} key={rate.id}/>
+                        <ExchangeRate title={rate.name} rate={rate.rate} key={rate.name}/>
                     );
                 })}
             </div>
@@ -114,7 +120,7 @@ class SummaryBar extends React.Component {
 
 SummaryBar.propTypes = {
     performance: PropTypes.object.isRequired,
-    currencyRates: PropTypes.array.isRequired,
+    currencyRates: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({

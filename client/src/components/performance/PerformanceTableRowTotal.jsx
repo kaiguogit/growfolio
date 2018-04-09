@@ -5,7 +5,7 @@ import { getTotalPerformance, getDisplayCurrency } from '../../selectors';
 import PERFORMANCE_COLUMNS from './columns';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const validColumn = ['cost', 'mkt_value', 'changePercent', 'daysGain', 'gain',
+const validColumn = ['cost', 'mktValue', 'changePercent', 'daysGain', 'gain',
 'gainPercent', 'gainOverall', 'gainOverallPercent', 'realizedGain', 'dividend', 'costOverall'];
 
 class PerformanceTableRowTotal extends React.Component {

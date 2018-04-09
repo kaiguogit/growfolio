@@ -1,193 +1,70 @@
 import types from '../constants/actionTypes';
-import $ from 'jquery';
-import Auth from '../services/Auth';
-import { num, log } from '../utils';
-
+import { log, getHeaders } from '../utils';
 import * as currencyActions from './currency';
 import { batchActions } from './';
 import { getHoldings } from '../selectors';
+import { makeActionCreator, callAPI } from './utils';
+// import fakeQuotes from './fixtures/quotes';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
-const REFRESH_QUOTES_TIMEOUT = 15000;
 
-export const requestQuotes = () => ({
-    type: types.REQUEST_QUOTES
-});
+export const requestQuotes = makeActionCreator(types.REQUEST_QUOTES);
+export const requestQuotesTimeout = makeActionCreator(types.REQUEST_QUOTES_TIMEOUT);
+export const setDisplayDate = makeActionCreator(types.SET_QUOTE_DISPLAY_DATE, 'displayDate');
+export const receiveQuotes = makeActionCreator(types.RECEIVE_QUOTES, 'data', 'meta');
+export const receiveSingleQuote = makeActionCreator(types.RECEIVE_SINGLE_QUOTE, 'data', 'meta');
 
-export const requestQuotesTimeout = () => ({
-    type: types.REQUEST_QUOTES_TIMEOUT
-});
+export const setQuoteDisplayDate = date => {
+    return batchActions([
+        setDisplayDate(date),
+        refreshQuotes()
+    ]);
+};
 
-export const receiveQuotes = (quotes) => ({
-    type: types.RECEIVE_QUOTES,
-    receivedAt: Date.now(),
-    quotes
-});
-
-/**
- * YAHOO Finance API version
- * makeQuotesUrl, processQuotes, fetchQuotes functions
- */
-// const makeQuotesUrl = symbols => {
-//     // concat symbols into \"YAHOO\",\"GOOGL\",\"AMZN\"
-//     let symbolsStr = symbols.map((symbol) => '\"' + symbol + '\"').join(',');
-//     let url = 'https://query.yahooapis.com/v1/public/yql';
-//     let params = {
-//       q: `select * from yahoo.finance.quotes where symbol in (${symbolsStr})`,
-//       format:'json',
-//       diagnostics: 'true',
-//       env: 'store://datatables.org/alltableswithkeys',
-//       callback: ''
-//     };
-//     return makeUrl(url, params);
-// };
-
-// const processQuotes = data => {
-//     let quotes = data.query.results.quote;
-//     // always return an Array.
-//     quotes = Array.isArray(quotes) ? quotes : [quotes];
-//     // convert to object map
-//     let result = {};
-//     quotes.forEach(quote => {
-//         const { symbol, LastTradePriceOnly: currentPrice, Change: change} = quote;
-//         result[quote.symbol] = {symbol, currentPrice, change};
-//     });
-//     return result;
-// };
+export const setUseHistoricalQuote = makeActionCreator(types.SET_USE_HISTORICAL_QUOTE, 'date');
+export const toggleQuoteModal = makeActionCreator(types.TOGGLE_QUOTE_MODAL, 'showModal', 'quote');
 
 /*
  * Async Actions
  * Return a function that takes dispatch, fed by React Thunk middleware
  */
-// export const fetchQuotes = symbols => dispatch => {
-//     if (!(symbols && Array.isArray(symbols) && symbols.length)) {
-//         // console.log("empty symbols, skip fetching");
-//         // empty symbols, skip fetching
-//         return;
-//     }
-//     dispatch(requestQuotes());
-//     return fetch(makeQuotesUrl(symbols))
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log("response is", data);
-//             let result = processQuotes(data);
-//             console.log("quotes result is", result);
-//             dispatch(receiveQuotes(result));
-//         })
-//         .catch(errorHandler);
-// };
-
-/**
- * Google Finance API
- * makeQuotesUrl, processQuotes, fetchQuotes functions
- * URL: http://finance.google.com/finance/info?client=ig&q=NASDAQ:YHOO,NASDAQ:GOOGL
- */
-
-// Moved to backend
-// const makeQuotesUrl = symbols => {
-//     symbols = symbols.map(x => {
-//         return x.exch ? `${x.exch}:${x.symbol}` : x.symbol;
-//     });
-//     let symbolsStr = symbols.join(',');
-//     let url = BASE_URI + "quotes";
-//     let params = {
-//         q: symbolsStr
-//     };
-//     return makeUrl(url, params);
-// };
-
-/**
- * Google API properties http://www.jarloo.com/real-time-google-stock-api/
- * t   Ticker
- * e   Exchange
- * l   Last Price
- * ltt Last Trade Time
- * l   Price
- * lt  Last Trade Time Formatted
- * lt_dts  Last Trade Date/Time
- * c   Change
- * cp  Change Percentage
- * el  After Hours Last Price
- * elt After Hours Last Trade Time Formatted
- * div Dividend
- * yld Dividend Yield
- */
-const processQuotes = quotes => {
-    // convert to object map
-    const result = {};
-    if (!quotes) {
-        return result;
-    }
-    // always return an Array.
-    quotes = Array.isArray(quotes) ? quotes : [quotes];
-    quotes.forEach(quote => {
-        const { t: symbol, l: current_price, c: change, cp: changePercent} = quote;
-        result[symbol] = {
-            $original: quote,
-            symbol,
-            current_price: num(current_price),
-            change: num(change),
-            changePercent: num(changePercent) / 100
-        };
+const fetchQuotes = () => (dispatch, getState) => {
+    const holdings = getHoldings(getState()).filter(holding => {
+        return holding.shares.CAD;
     });
-    return result;
-};
-
-/*
- * Async Actions
- * Return a function that takes dispatch, fed by React Thunk middleware
- */
-const fetchQuotes = symbols => {
-    if (!(symbols && Array.isArray(symbols) && symbols.length)) {
-        // empty symbols, skip fetching
-        return Promise.resolve([]);
-    }
-    return $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: __MY_API__ + 'quotes',
-        data: {symbols: JSON.stringify(symbols)},
-        headers: {
-            Authorization: `Bearer ${Auth.getToken()}`
-        },
-        timeout: 3000
-    }).then(data => {
-        if (!data.success) {
-            return {};
-        }
-        return processQuotes(data.result);
+    dispatch(requestQuotes());
+    return Promise.all(holdings.map(holding => {
+        let symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
+        return fetchSingleQuote(symbol, dispatch);
+    })).then(() => {
+        dispatch(receiveQuotes());
     });
 };
 
-export const refreshQuotes = () => (dispatch, getState) => {
-    const state = getState();
-    const holdings = getHoldings(state);
+const fetchSingleQuote = (symbol, dispatch) => {
+    return callAPI(__MY_API__ + 'quotes?symbols=' + symbol).then((quote) => {
+        dispatch(receiveSingleQuote(quote.data, quote.meta));
+    }).catch(log.error);
+};
 
-    dispatch(batchActions([
-        requestQuotes(),
-        currencyActions.requestCurrency()
-    ]));
 
-    let quotePromise = fetchQuotes(holdings.map(x => ({
-        symbol: x.symbol,
-        exch: x.exch
-    })));
-    let currencyPromise = currencyActions.fetchCurrency(state);
+export const createQuote = quote => (dispatch, getState) => {
+    dispatch(requestQuotes());
+    let quoteDate = getState().quotes.displayDate;
+    let quoteDateStr = quoteDate.format('MM-DD-YYYY');
+    quote.date = quoteDateStr;
+    return fetch(__MY_API__ + 'historical-quotes', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(quote)
+    }).then(response => response.json())
+    .then(() => refreshQuotes()(dispatch, getState))
+    .catch(log.error);
+};
 
-    Promise.timeout(REFRESH_QUOTES_TIMEOUT, Promise.all([quotePromise, currencyPromise]))
-    .then(([quotes, currency]) => {
-        // Dispatch two receive actions together to avoid updating components twice.
-        dispatch(batchActions([
-            receiveQuotes(quotes),
-            currencyActions.receiveCurrency(currency)
-        ]));
-    }).catch((error) => {
-        log.error(error);
-        dispatch(batchActions([
-            requestQuotesTimeout(),
-            currencyActions.requestCurrencyTimeout()
-        ]));
-    });
+export const refreshQuotes = () => (dispatch) => {
+    dispatch(fetchQuotes());
+    dispatch(currencyActions.fetchCurrency());
 };
 
 export const setIntervalRefreshQuotes = () => (dispatch, getState) => {

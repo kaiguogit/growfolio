@@ -24,9 +24,14 @@ const PERFORMANCE_COLUMNS = [
         className: 'hidden-sm-down'
     },
     {
-        selector: 'mkt_value',
+        selector: 'mktValue',
+        showOtherCurrency: true,
         filter: currency(2),
         title: 'Market Value',
+    },
+    {
+        selector: 'quoteDate',
+        title: 'Market Time'
     },
     {
         selector: 'averageCost',
@@ -78,6 +83,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gainPercent',
+        showOtherCurrency: true,
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Gain Percent'
@@ -92,6 +98,7 @@ const PERFORMANCE_COLUMNS = [
     },
     {
         selector: 'gainOverallPercent',
+        showOtherCurrency: true,
         filter: percentage,
         formatFunction: coloredCell,
         title: 'Overall Return Percent',

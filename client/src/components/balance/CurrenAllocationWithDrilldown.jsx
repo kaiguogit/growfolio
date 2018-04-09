@@ -9,9 +9,9 @@ class CurrenAllocationWithDrilldown extends React.Component {
     render() {
         const { holdings, balance } = this.props;
 
-        let data = holdings.filter(holding => holding.mkt_value > 0).map(holding => ({
+        let data = holdings.filter(holding => holding.mktValue > 0).map(holding => ({
             name: holding.symbol,
-            y: holding.mkt_value,
+            y: holding.mktValue,
             drilldown: null
         }));
 

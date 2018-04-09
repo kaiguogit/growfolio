@@ -7,6 +7,13 @@ It is intended to add some features that Yahoo Finance and Google Finance don't 
 * Automatically add dividend.
 * Calculate realized gain, dividend, yield for tax purpose.
 
+## Start backend server
+`npm start`
+or
+`nodemon --debug app.js` that auto restart when code change.
+## Start fontend webpack server
+`cd client & npm start`
+
 ## How to build
 `npm run build`
 ## How to deploy

@@ -10,12 +10,13 @@ import * as quotesActions from '../../actions/quotes';
 import * as portfolioActions from '../../actions/portfolio';
 
 import NProgress from 'nprogress';
-import isEqual from 'lodash.isequal';
+import {isEqual} from 'lodash';
 
 import NavLink from '../NavLink.jsx';
 import Performance from '../performance/Performance.jsx';
 import TscsContainer from '../tscs/TscsContainer.jsx';
 import Balance from '../balance/Balance.jsx';
+import Quote from '../quote/Quote.jsx';
 import PerformanceSetting from '../performance/PerformanceSetting.jsx';
 import ActionBar from './ActionBar.jsx';
 import NotFoundPage from '../NotFoundPage.jsx';
@@ -27,7 +28,7 @@ class Portfolio extends React.Component {
         if (tscs.length === 0) {
             this.props.actions.fetchTscs();
         }
-        this.props.actions.setIntervalRefreshQuotes();
+        // this.props.actions.setIntervalRefreshQuotes();
         this.fetchPortfolioSetting();
     }
 
@@ -35,7 +36,7 @@ class Portfolio extends React.Component {
         //Only refresh quotes when holdings or display currency changed
         if (!(isEqual(prevProps.tscs, this.props.tscs) &&
             prevProps.portfolio.displayCurrency === this.props.portfolio.displayCurrency)) {
-            this.props.actions.refreshQuotes();
+            // this.props.actions.refreshQuotes();
         }
     }
 
@@ -75,6 +76,11 @@ class Portfolio extends React.Component {
                                     <span>Balance</span>
                                 </NavLink>
                             </li>
+                            <li className={tabItem}>
+                                <NavLink className={tabButton} to={`${url}quote`} role="tab">
+                                    <span>Quote</span>
+                                </NavLink>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -96,6 +102,7 @@ class Portfolio extends React.Component {
                         <Route exact path={url + "transactions"} component={TscsContainer}/>
                         <Route exact path={url + "setting"} component={PerformanceSetting}/>
                         <Route exact path={url + "balance"} component={Balance}/>
+                        <Route exact path={url + "quote"} component={Quote}/>
                         <Route component={NotFoundPage}/>
                     </Switch>
                 </div>

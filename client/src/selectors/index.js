@@ -1,23 +1,11 @@
-import { createSelectorCreator, defaultMemoize } from 'reselect';
+
 import { generateAccountHoldingsMap,
          calculateHoldingPerformance,
          calculateTotalPerformance
 } from './holdingCalculator';
-import isEqual from 'lodash.isequal';
-
-// Memoized selector
-// Read more from https://github.com/reactjs/reselect
-/**
- * Create a selector function that uses lodash.isequal library to
- * compare new/old input to avoid recalculating
- * @param {Array} array of input selector functions, if input is not
- *     changed, won't run output selector
- * @param {Function} output selector function, process input from input
- *     selectors.
- * @return {SelectorFunction} func The memoized selector function
- *     that will return output selector function's result
- */
-export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
+import {makeSafe} from '../utils';
+import {getLatestQuote, getLatestQuotes} from './quoteSelector';
+import {createSelector, registerSelectors} from './selectorsUtils';
 
 /**
  * Input selectors
@@ -26,20 +14,11 @@ export const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isE
  */
 
 export const getTscs = state => state.tscs.items;
-export const getQuotes = state => state.quotes.items;
-export const getQuote = (state, props) => state.quotes.items[props.symbol];
 export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-export const getRealTimeRate = () => {
-    // TO-DO
-    // use API data
-    return {
-        USDCAD: 1
-    };
-};
-
+export const getRealTimeRate = state => state.currency.rate;
 
 /**
  * Selector function
@@ -73,9 +52,9 @@ export const getRealTimeRate = () => {
  * @param {object} props
  * @return {object}: key-value map, key is account, value is holdings array
  */
-export const getAccountHoldingsMap = createDeepEqualSelector(
+export const getAccountHoldingsMap = createSelector(
     [getTscs], generateAccountHoldingsMap);
-
+registerSelectors({getAccountHoldingsMap});
 /**
  * Get holdings for single account.
  * Usage.
@@ -90,10 +69,11 @@ export const getAccountHoldingsMap = createDeepEqualSelector(
    @param {string} props.account Account name.
  * @return {Array}: calculated holdings for the account.
  */
-export const getHoldings = createDeepEqualSelector(
+export const getHoldings = createSelector(
     [getDisplayAccount, getAccountHoldingsMap],
-    (account, accountHoldingsMap) => accountHoldingsMap[account] || []
+    makeSafe((account, accountHoldingsMap) => accountHoldingsMap[account] || [])
 );
+registerSelectors({getHoldings});
 
 /**
  * Selector function for 1 holding.
@@ -103,9 +83,9 @@ export const getHoldings = createDeepEqualSelector(
  * @param {string} props.account Account name.
  * @return {object} holding
  */
-export const getSingleHolding = createDeepEqualSelector(
+export const getSingleHolding = createSelector(
     [getHoldings, getSymbolFromProps],
-    (holdings, symbol) => (holdings || []).find(x => x.symbol === symbol)
+    makeSafe((holdings, symbol) => (holdings || []).find(x => x.symbol === symbol))
 );
 
 /**
@@ -128,7 +108,7 @@ export const getSingleHolding = createDeepEqualSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createDeepEqualSelector([getSingleHolding, getQuote, getRealTimeRate, getDisplayCurrency], calculateHoldingPerformance);
+    return createSelector([getSingleHolding, getLatestQuote, getRealTimeRate], calculateHoldingPerformance);
 };
 
 /**
@@ -136,26 +116,28 @@ export const makeGetHoldingPerformance = () => {
  * @param {object} pass the global state here
  * @return {Array}: calculated holdings with performance data.
  */
-export const getHoldingsPerformance = createDeepEqualSelector(
-    [getHoldings, getQuotes, getRealTimeRate, getDisplayCurrency],
-    (holdings, quotes, rates, currency) => {
+export const getHoldingsPerformance = createSelector(
+    [getHoldings, getLatestQuotes, getRealTimeRate],
+    makeSafe((holdings, quotes, rates) => {
         return (holdings || []).map(holding => {
-            return calculateHoldingPerformance(holding, quotes[holding.symbol], rates, currency);
+                return calculateHoldingPerformance(holding, quotes[holding.symbol], rates);
         });
-    }
+    })
 );
+registerSelectors({getHoldingsPerformance});
 
 /**
  * Selector function for total performance.
  * @param {object} pass the global state here
  * @return {object}: calculated total performance.
  */
-export const getTotalPerformance = createDeepEqualSelector(
-    [getHoldingsPerformance, getDisplayCurrency], calculateTotalPerformance);
+export const getTotalPerformance = createSelector([getHoldingsPerformance, getDisplayCurrency], calculateTotalPerformance);
+registerSelectors({getTotalPerformance});
 
-export const getBalanceArray = createDeepEqualSelector([getBalance], balance => {
+export const getBalanceArray = createSelector([getBalance], makeSafe(balance => {
     return Object.keys(balance).map(symbol => ({
         name: symbol,
         y: balance[symbol].percentage
     }));
-});
+}));
+registerSelectors({getBalanceArray});

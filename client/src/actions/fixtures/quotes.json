@@ -1,0 +1,97 @@
+{
+    "success": true,
+    "result": {
+        "meta": {
+            "VCN": {
+                "lastRefreshedDaily": "2018-04-03",
+                "_id": "5aca9f8c7afe0db3189e5886",
+                "_user": "588ef30efaa873001157606c",
+                "symbol": "BOTZ",
+                "lastRefreshedIntraday": "2018-04-05 16:00:00",
+                "__v": 0
+            }
+        },
+        "data": {
+            "VCN": {
+                "2018-04-05 16:00:00": {
+                    "_id": "5ac94cd5741b432b73f011d4",
+                    "_user": "588ef30efaa873001157606c",
+                    "isRealTime": true,
+                    "symbol": "VCN",
+                    "date": "2018-04-05 16:00:00",
+                    "open": 31.09,
+                    "high": 31.09,
+                    "low": 31.09,
+                    "close": 31.09,
+                    "volume": 100,
+                    "__v": 0
+                },
+                "2018-04-05 15:45:00": {
+                    "_id": "5ac94cd5741b432b73f011d7",
+                    "_user": "588ef30efaa873001157606c",
+                    "isRealTime": true,
+                    "symbol": "VCN",
+                    "date": "2018-04-05 15:45:00",
+                    "open": 31.1,
+                    "high": 31.1,
+                    "low": 31.1,
+                    "close": 31.1,
+                    "volume": 100,
+                    "__v": 0
+                },
+                "2018-04-05 15:50:00": {
+                    "_id": "5ac94cd5741b432b73f011d5",
+                    "_user": "588ef30efaa873001157606c",
+                    "isRealTime": true,
+                    "symbol": "VCN",
+                    "date": "2018-04-05 15:50:00",
+                    "open": 31.1,
+                    "high": 31.1,
+                    "low": 31.1,
+                    "close": 31.1,
+                    "volume": 300,
+                    "__v": 0
+                },
+                "2018-04-03": {
+                    "_id": "5aca9f8c7afe0db3189e5887",
+                    "_user": "588ef30efaa873001157606c",
+                    "isIntraday": false,
+                    "symbol": "BOTZ",
+                    "date": "2018-04-03",
+                    "open": 23.67,
+                    "high": 23.77,
+                    "low": 23.5,
+                    "close": 23.74,
+                    "volume": 874277,
+                    "__v": 0
+                },
+                "2018-04-02": {
+                    "_id": "5aca9f8c7afe0db3189e5889",
+                    "_user": "588ef30efaa873001157606c",
+                    "isIntraday": false,
+                    "symbol": "BOTZ",
+                    "date": "2018-04-02",
+                    "open": 24.01,
+                    "high": 24.13,
+                    "low": 23.43,
+                    "close": 23.61,
+                    "volume": 1459647,
+                    "__v": 0
+                },
+                "2018-03-29": {
+                    "_id": "5aca9f8c7afe0db3189e5888",
+                    "_user": "588ef30efaa873001157606c",
+                    "isIntraday": false,
+                    "symbol": "BOTZ",
+                    "date": "2018-03-29",
+                    "open": 23.82,
+                    "high": 24.335,
+                    "low": 23.81,
+                    "close": 24.19,
+                    "volume": 1149003,
+                    "__v": 0
+                }
+            }
+        }
+    }
+}
