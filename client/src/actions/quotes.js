@@ -33,10 +33,10 @@ const fetchQuotes = () => (dispatch, getState) => {
         return holding.shares.CAD;
     });
     dispatch(requestQuotes());
-    return Promise.all(holdings.map(holding => {
+    return holdings.reduce((previous, holding) => {
         let symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
-        return fetchSingleQuote(symbol, dispatch);
-    })).then(() => {
+        return previous.then(() => {return fetchSingleQuote(symbol, dispatch);});
+    }, Promise.resolve()).then(() => {
         dispatch(receiveQuotes());
     });
 };
@@ -63,8 +63,8 @@ export const createQuote = quote => (dispatch, getState) => {
 };
 
 export const refreshQuotes = () => (dispatch) => {
-    dispatch(fetchQuotes());
     dispatch(currencyActions.fetchCurrency());
+    dispatch(fetchQuotes());
 };
 
 export const setIntervalRefreshQuotes = () => (dispatch, getState) => {
