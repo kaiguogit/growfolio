@@ -33,10 +33,12 @@ if (!Promise.prototype.delay) {
 }
 
 // Add `finally()` to `Promise.prototype`
+// Realized I don't need it, just need to add a catch to chain, then add any promise to chain.
+
 // http://thecodebarbarian.com/using-promise-finally-in-node-js.html
 // https://stackoverflow.com/questions/35999072/what-is-the-equivalent-of-bluebird-promise-finally-in-native-es6-promises/35999141#35999141
-const promiseFinally = require('promise.prototype.finally');
-promiseFinally.shim();
+// const promiseFinally = require('promise.prototype.finally');
+// promiseFinally.shim();
 
 // if (!Promise.prototype.finally) {
 //     Promise.prototype.finally = function(onFinally) {

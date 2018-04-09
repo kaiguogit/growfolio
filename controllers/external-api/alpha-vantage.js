@@ -1,6 +1,7 @@
 const rp = require('request-promise-native');
 const BASE_URI = 'https://www.alphavantage.co/query';
 
+// Global variable to keep track API calls, make them synchronous to avoid calling it too frequently.
 let ongoingPromise;
 
 //TO-DO add timeout in case remote server is slow.
@@ -34,11 +35,8 @@ const delayedRequest = (params) => {
     } else {
         previous = Promise.resolve();
     }
-    let result = ongoingPromise = previous.catch(() => {}).finally(() => {
-        console.log('sending api to alpha vantage');
-    }).then(() => {
-        // Don't put this in finally function because finally function doesn't pass response.
-        // See reference in promise.js
+    let result = ongoingPromise = previous.catch(() => {})
+    .then(() => {
         return defaultRequest(params).then(basicErrorChecking);
     });
     const clearOngoing = () => {
@@ -47,7 +45,7 @@ const delayedRequest = (params) => {
             ongoingPromise = null;
         }
     };
-    result.then(clearOngoing);
+    result.then(clearOngoing, clearOngoing);
     return result;
 };
 
@@ -82,7 +80,7 @@ exports.intraDayQuote = (symbol) => {
     const params = {
         qs: {
             function: 'TIME_SERIES_INTRADAY',
-            interval: '15min',
+            interval: '5min',
             symbol
         }
     };

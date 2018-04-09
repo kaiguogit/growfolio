@@ -164,7 +164,7 @@ const removePrefix = (symbol) => {
     return symbol;
 };
 
-const getQuoteFromDb = (symbol, isIntraday, _user) => {
+const getQuoteFromDb = (symbol, isIntraday, _user, asFallback) => {
     let resultMeta;
     let resultData = {};
     symbol = removePrefix(symbol);
@@ -184,7 +184,7 @@ const getQuoteFromDb = (symbol, isIntraday, _user) => {
                 meta: resultMeta,
                 data: resultData,
                 // TODO can be deleted, added here to see if logic works well.
-                from: 'data'
+                from: asFallback ? 'db as fallback' : 'db'
             };
         },
         error => {
@@ -345,7 +345,7 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
                 return true;
             }
             if (marketOpened) {
-                if (moment.tz(lastRefreshedIntraday, 'America/New_York').isBefore(moment().subtract(15, 'minutes'))) {
+                if (moment.tz(lastRefreshedIntraday, 'America/New_York').isBefore(moment().subtract(5, 'minutes'))) {
                     return true;
                 }
             }
@@ -375,12 +375,7 @@ const getSingleQuote = (symbol, isIntraday, userId) => {
     return shouldCallApi(symbol, isIntraday, userId).then(necessary => {
         if (necessary) {
             return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch(() => {
-                if (isIntraday) {
-                    // Intraday api seem to be easy to fail. fallback to daily.
-                    return callDailyQuoteApi(symbol).then(saveQuotesFromAPI(false, userId));
-                }
-            }).catch(() => {
-                return getQuoteFromDb(symbol, isIntraday, userId);
+                return getQuoteFromDb(symbol, isIntraday, userId, true);
             });
         }
         return getQuoteFromDb(symbol, isIntraday, userId);
@@ -400,7 +395,8 @@ const getMultipleQuotes = (symbols, isIntraday, userId) => {
                 meta: {},
                 data: {},
                 // TODO can be deleted, added here to see if logic works well.
-                from: {}
+                dailyFrom: {},
+                intradayFrom: {}
             };
         }
         return symbols.reduce((p, symbol) => {
@@ -411,7 +407,8 @@ const getMultipleQuotes = (symbols, isIntraday, userId) => {
                     ['meta', 'data'].forEach(key => {
                         result[key][symbol] = merge({}, result[key][symbol], quote[key]);
                     });
-                    result.from[symbol] = quote.from;
+                    const fromKey = isIntraday ? 'intradayFrom' : 'dailyFrom';
+                    result[fromKey][symbol] = quote.from;
                 }
                 return result;
             });
@@ -426,7 +423,8 @@ const getMultipleQuotesAllTypes = (symbols, userId) => {
         meta: {},
         data: {},
         // TODO can be deleted, added here to see if logic works well.
-        from: {}
+        dailyFrom: {},
+        intradayFrom: {}
     }));
 };
 
