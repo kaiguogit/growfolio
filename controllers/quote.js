@@ -374,11 +374,11 @@ const getSingleQuote = (symbol, isIntraday, userId) => {
     const callApi = isIntraday ? callIntraDayQuoteApi : callDailyQuoteApi;
     // return Promise.resolve(fakeData)
     return shouldCallApi(symbol, isIntraday, userId).then(necessary => {
-        if (necessary) {
-            return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch(() => {
-                return getQuoteFromDb(symbol, isIntraday, userId, true);
-            });
-        }
+        // if (necessary) {
+        //     return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch(() => {
+        //         return getQuoteFromDb(symbol, isIntraday, userId, true);
+        //     });
+        // }
         return getQuoteFromDb(symbol, isIntraday, userId);
     });
 };
