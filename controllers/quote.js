@@ -4,7 +4,7 @@ const fakeDailyQuote = require('./fixtures/dailyQuote.json');
 const fakeIntradayQuote = require('./fixtures/intradayQuote.json');
 const merge = require('lodash/merge');
 const moment = require('moment-timezone');
-const {NEW_YORK_TIME_ZONE, isMarketOpened, lastWeekDay, yesterday} = require('../utils/time');
+const {NEW_YORK_TIME_ZONE, isMarketOpened, lastWeekDay, yesterday, isAfterMarketClose} = require('../utils/time');
 
 const {dailyQuote: callDailyQuoteApi, intraDayQuote: callIntraDayQuoteApi} = require('./external-api/alpha-vantage');
 process.moment = moment;
@@ -295,6 +295,7 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
         const lastRefreshedIntraday = foundMeta.lastRefreshedIntraday;
         const lastRefreshedDaily = foundMeta.lastRefreshedDaily;
         const marketOpened = isMarketOpened();
+        const afterMarketClose = isAfterMarketClose();
         if (isIntraday) {
             if (!lastRefreshedIntraday) {
                 return true;
@@ -308,7 +309,9 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
             if (!lastRefreshedDaily) {
                 return true;
             }
-            const expectedDate = marketOpened ? lastWeekDay(yesterday()) : lastWeekDay();
+            // After market is closed, expect to have today's closing price.
+            // Next day before market is open or weekend, expect previous weekday's closing price.
+            const expectedDate = afterMarketClose ? lastWeekDay() : lastWeekDay(yesterday());
             if (moment.tz(lastRefreshedDaily, NEW_YORK_TIME_ZONE).isBefore(expectedDate, 'day')) {
                 return true;
             }

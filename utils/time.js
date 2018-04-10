@@ -55,6 +55,19 @@ const isMarketOpened = () => {
     return false;
 };
 
+// Between Eastern Time weekday 4pm - 11:59pm. Other time include weekend day is considered
+// before market close.
+const isAfterMarketClose = () => {
+    if (isWeekDay()) {
+        const now = moment();
+        // Set to new york time's 9:30 - 16:00
+        const marketClose = moment.tz(NEW_YORK_TIME_ZONE).hour(16).minute(0).second(0);
+        const endOfDay = moment.tz(NEW_YORK_TIME_ZONE).hour(23).minute(59).second(59);
+        return now.isBetween(marketClose, endOfDay, 'second', '[]]');
+    }
+    return false;
+};
+
 const yesterday = () => {
     return moment().subtract(1, 'days');
 };
@@ -63,5 +76,6 @@ module.exports = {
     NEW_YORK_TIME_ZONE,
     lastWeekDay,
     isMarketOpened,
+    isAfterMarketClose,
     yesterday
 };
