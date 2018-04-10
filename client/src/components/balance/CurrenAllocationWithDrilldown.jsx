@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { getHoldingsPerformance } from '../../selectors';
+import { getHoldingsPerformance, getDisplayCurrency } from '../../selectors';
 import PieChart from '../../components/PieChart.jsx';
 
 class CurrenAllocationWithDrilldown extends React.Component {
     render() {
-        const { holdings, balance } = this.props;
+        const { holdings, balance, displayCurrency } = this.props;
 
-        let data = holdings.filter(holding => holding.mktValue > 0).map(holding => ({
+        let data = holdings.filter(holding => holding.mktValue[displayCurrency] > 0).map(holding => ({
             name: holding.symbol,
-            y: holding.mktValue,
+            y: holding.mktValue[displayCurrency],
             drilldown: null
         }));
 
@@ -87,12 +87,14 @@ class CurrenAllocationWithDrilldown extends React.Component {
 
 CurrenAllocationWithDrilldown.propTypes = {
     holdings: PropTypes.array.isRequired,
-    balance: PropTypes.object.isRequired
+    balance: PropTypes.object.isRequired,
+    displayCurrency: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({
     holdings: getHoldingsPerformance(state),
-    balance: state.balance
+    balance: state.balance,
+    displayCurrency: getDisplayCurrency(state)
 });
 
 export default connect(mapStateToProps)(CurrenAllocationWithDrilldown);

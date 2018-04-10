@@ -14,33 +14,35 @@ class TargetAllocationWithDrilldown extends React.Component {
         let drillDownlabels = {};
         Object.keys(balance).forEach(symbol => {
             let label = balance[symbol].label;
+            let percentage = balance[symbol].percentage;
+            if (percentage) {
+                if (label) {
+                    // create a object for the label for drill down array
+                    drillDownlabels[label] = drillDownlabels[label] || {
+                        name: label,
+                        id: label,
+                        data: []
+                    };
+                    // push holding to drill down label's list
+                    drillDownlabels[label].data.push([symbol, balance[symbol].percentage]);
 
-            if (label) {
-                // create a object for the label for drill down array
-                drillDownlabels[label] = drillDownlabels[label] || {
-                    name: label,
-                    id: label,
-                    data: []
-                };
-                // push holding to drill down label's list
-                drillDownlabels[label].data.push([symbol, balance[symbol].percentage]);
-
-                // Add Label object to slices list
-                let slice = slices.find(x => x.name === label);
-                if (slice) {
-                    slice.y += balance[symbol].percentage;
+                    // Add Label object to slices list
+                    let slice = slices.find(x => x.name === label);
+                    if (slice) {
+                        slice.y += balance[symbol].percentage;
+                    } else {
+                        slices.push({
+                            name: label,
+                            y: balance[symbol].percentage,
+                            drilldown: label
+                        });
+                    }
                 } else {
                     slices.push({
-                        name: label,
+                        name: symbol,
                         y: balance[symbol].percentage,
-                        drilldown: label
-                    });
+                        drilldown: null});
                 }
-            } else {
-                slices.push({
-                    name: symbol,
-                    y: balance[symbol].percentage,
-                    drilldown: null});
             }
         });
         let drilldown = Object.keys(drillDownlabels).map(label => drillDownlabels[label]);

@@ -7,7 +7,7 @@ import * as actions from '../../actions/balance';
 import {isEqual} from 'lodash';
 
 import { Input, Select } from '../shared/index.jsx';
-import { getTotalPerformance } from '../../selectors';
+import { getTotalPerformance, getDisplayCurrency } from '../../selectors';
 import { percentage, currency, redOrGreen } from '../../utils';
 
 class BalanceForm extends React.Component {
@@ -68,7 +68,7 @@ class BalanceForm extends React.Component {
         this.props.total.holdings.forEach(holding => {
             this.props.actions.updateBalancePercentage({
                 symbol: holding.symbol,
-                percentage: Math.floor(holding.mktValue / this.props.total.mktValue * 10000) / 100
+                percentage: Math.floor(holding.mktValue[this.props.displayCurrency] / this.props.total.mktValue * 10000) / 100
             });
         });
     }
@@ -118,13 +118,13 @@ class BalanceForm extends React.Component {
     }
 
     render() {
-        const { total } = this.props;
+        const { total, displayCurrency } = this.props;
         const balance = this.state.balance;
         const difference = (holding) => {
             let result = 0;
             let totalValue = total.mktValue + this.state.investAmount;
             if (balance[holding.symbol]) {
-                result = balance[holding.symbol].percentage / 100 * totalValue - holding.mktValue;
+                result = balance[holding.symbol].percentage / 100 * totalValue - holding.mktValue[displayCurrency];
             }
             return (
                 <span style={redOrGreen(result)}>
@@ -174,14 +174,14 @@ class BalanceForm extends React.Component {
                                 <tr key={holding.symbol}>
                                     <td>{holding.symbol}</td>
                                     <td>{this.renderLabelSelector(holding.symbol)}</td>
-                                    <td>{currency(2)(holding.mktValue)}</td>
+                                    <td>{currency(2)(holding.mktValue[displayCurrency])}</td>
                                     <td>
                                         <div className="row no-gutters">
                                             <div className="col-6">
-                                                <span className="align-middle">{percentage(holding.mktValue / total.mktValue)}</span>
+                                                <span className="align-middle">{percentage(holding.mktValue[displayCurrency] / total.mktValue)}</span>
                                             </div>
                                             <div className="col-6">
-                                                <button className="btn btn-info btn-sm" name={holding.symbol} value={holding.mktValue / total.mktValue * 100} onClick={this.handlePercentageChange}>
+                                                <button className="btn btn-info btn-sm" name={holding.symbol} value={holding.mktValue[displayCurrency] / total.mktValue * 100} onClick={this.handlePercentageChange}>
                                                 Clone
                                                 </button>
                                             </div>
@@ -214,15 +214,18 @@ BalanceForm.propTypes = {
     total: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     balance: PropTypes.object.isRequired,
+    displayCurrency: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => {
     const total = getTotalPerformance(state);
-    const filteredHoldings = total.holdings.slice(0).filter(holding => holding.mktValue > 0);
+    const displayCurrency = getDisplayCurrency(state);
+    const filteredHoldings = total.holdings.slice(0).filter(holding => holding.mktValue[displayCurrency] > 0);
     total.holdings = filteredHoldings;
     return {
-        total: total,
-        balance: state.balance
+        total,
+        balance: state.balance,
+        displayCurrency
     };
 };
 
