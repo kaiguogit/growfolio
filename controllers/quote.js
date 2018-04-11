@@ -249,7 +249,7 @@ const saveQuotesFromAPI = (isIntraday, _user) => (response) => {
             let refereshTimeKey = isIntraday ? 'lastRefreshedIntraday' : 'lastRefreshedDaily';
             if (foundMeta) {
                 quoteMeta = foundMeta;
-                quoteMeta[refereshTimeKey] = lastRefreshed;
+                quoteMeta[refereshTimeKey] = isIntraday ? lastRefreshed : moment.tz(lastRefreshed, NEW_YORK_TIME_ZONE).format('YYYY-MM-DD');
             } else {
                 quoteMeta = new QuoteMeta({
                     _user,
