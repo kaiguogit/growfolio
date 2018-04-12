@@ -57,7 +57,7 @@ const calculateQuote = (data, meta) => {
     lastDaily = data && data[lastDaily] && lastDaily;
     let keyToUse = lastIntraday || lastDaily;
     if (lastIntraday && lastDaily) {
-        keyToUse = parseDate(lastIntraday).isAfter(parseDate(lastDaily)) ? lastIntraday : lastDaily;
+        keyToUse = parseDate(lastIntraday).isAfter(parseDate(lastDaily), 'day') ? lastIntraday : lastDaily;
     }
     if (keyToUse) {
         const latestDate = findLatestDate(data, keyToUse);
