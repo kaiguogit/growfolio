@@ -26,8 +26,8 @@ export const makeActionCreator = (type, ...argNames) => {
     };
 };
 
-export const callAPI = (url) => {
-    return fetch(url, {headers: getHeaders()})
+export const callAPI = (url, params) => {
+    return fetch(url, Object.assign({headers: getHeaders()}, params))
     .then(response => response.json())
     .then(response => {
         if (!response.success) {

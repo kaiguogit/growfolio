@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getTotalPerformance } from '../../selectors';
+import { getTotalPerformance, getLatestExchangeRate } from '../../selectors';
 import styles from '../../styles';
 import { currency, percentage, round} from '../../utils';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
@@ -86,15 +86,7 @@ class SummaryBar extends React.Component {
     }
 
     render() {
-        const {performance, currencyRates} = this.props;
-        //TODO hard coded exchange rate for now.
-        // use watch list in future
-        const exchangeWatchList = ['CADCNY', 'CADUSD', 'USDCAD'].filter(rate => {
-            return currencyRates[rate];
-        }).map(rate => ({
-                name: rate,
-                rate: currencyRates[rate]
-        }));
+        const {performance, exchangeRate} = this.props;
 
         return(
             <div className="summary-bar row no-gutters">
@@ -108,11 +100,7 @@ class SummaryBar extends React.Component {
                 <Change change={performance.gainOverall}
                     changePercent={performance.gainOverallPercent}
                     title="Overall Change"/>
-                {exchangeWatchList.map(rate => {
-                    return (
-                        <ExchangeRate title={rate.name} rate={rate.rate} key={rate.name}/>
-                    );
-                })}
+                <ExchangeRate title="USDCAD" rate={exchangeRate} key="USDCAD"/>
             </div>
         );
     }
@@ -120,12 +108,12 @@ class SummaryBar extends React.Component {
 
 SummaryBar.propTypes = {
     performance: PropTypes.object.isRequired,
-    currencyRates: PropTypes.object.isRequired,
+    exchangeRate: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = state => ({
     performance: getTotalPerformance(state),
-    currencyRates: state.currency.rate
+    exchangeRate: getLatestExchangeRate(state)
 });
 
 export default connect(mapStateToProps)(SummaryBar);

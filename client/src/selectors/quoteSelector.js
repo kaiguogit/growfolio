@@ -23,7 +23,7 @@ const parseDate = (date) => {
  * @param date string format date 'YYYY-MM-DD', if not privoded, use today.
  * @return previous day's string format
  */
-const previousDateStr = date => {
+export const previousDateStr = date => {
     if (!date) {
         return parseDate().format(DATE_FORMAT);
     }
@@ -31,25 +31,23 @@ const previousDateStr = date => {
 };
 
 /**
- * Get quote before date
- * @param quotes quotes map
- * @param date specific date, if not provided, use today
+ * Get latest date in map before date
+ * @param {object} map date map
+ * @param {string} date if provided, find date before provided date.
+ * @return {string} date string, if not found return empty string.
  */
-const _findLatestQuote = (quotes, date) => {
-    if (quotes) {
-        const maxLength = Object.keys(quotes).length;
+export const findLatestDate = (map, date) => {
+    if (map) {
+        const maxLength = Object.keys(map).length;
         let count = 0;
         date = date || previousDateStr();
-        while (!quotes[date] && count < maxLength) {
+        while (!map[date] && count < maxLength) {
             date = previousDateStr(date);
             count++;
         }
-        return {
-            date,
-            quote: quotes[date]
-        };
+        return map[date] && date || '';
     }
-    return {};
+    return '';
 };
 
 const calculateQuote = (data, meta) => {
@@ -62,10 +60,11 @@ const calculateQuote = (data, meta) => {
         keyToUse = parseDate(lastIntraday).isAfter(parseDate(lastDaily)) ? lastIntraday : lastDaily;
     }
     if (keyToUse) {
-        const {date: latestDate, quote: latestQuote} = _findLatestQuote(data, keyToUse);
-        if (latestDate) {
-            const {quote: previousQuote} = _findLatestQuote(data, previousDateStr(latestDate));
-            return _calculateChange(latestQuote, previousQuote);
+        const latestDate = findLatestDate(data, keyToUse);
+        let latestQuote = data[latestDate];
+        if (latestDate && latestQuote) {
+            const previousDate = findLatestDate(data, previousDateStr(latestDate));
+            return _calculateChange(latestQuote, data[previousDate]);
         }
         return Object.assign({}, latestQuote);
     }

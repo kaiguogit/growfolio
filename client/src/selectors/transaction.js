@@ -1,11 +1,5 @@
 import { divide } from '../utils';
 import moment from 'moment-timezone';
-import historicalDailyExchangeRate from '../constants/dailyExchangeRate';
-
-const _getHistoricalDailyRate = date => {
-    return historicalDailyExchangeRate && historicalDailyExchangeRate.observations &&
-        historicalDailyExchangeRate.observations[date];
-};
 
 export class Transaction {
     /**
@@ -26,10 +20,10 @@ export class Transaction {
      * @param {number} data.capitalGain
      * @param {string} data.note
      */
-    constructor(data) {
+    constructor(data, exchangeRates) {
         Object.assign(this, data);
         this.processInitialData();
-        this.setRate();
+        this.setRate(exchangeRates);
         this.setDollarValues();
         this.setTotalandPrice();
     }
@@ -52,8 +46,8 @@ export class Transaction {
         this.date = moment(this.date);
     }
 
-    setRate() {
-        this.rate = _getHistoricalDailyRate(this.date.format('YYYY-MM-DD'));
+    setRate(exchangeRates) {
+        this.rate = exchangeRates[this.date.format('YYYY-MM-DD')];
         if (!this.rate) {
             this.rate = 1;
             this.unfoundRate = true;

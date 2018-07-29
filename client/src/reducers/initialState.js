@@ -33,11 +33,8 @@ export default {
     },
     currency: {
         isFetching: false,
-        rate: {
-            USDCAD: 1
-        },
-        // TODO support CRUD watch list
-        watchList: ['CNY', 'USD'],
+        data: {},
+        realTimeRate: 1,
         lastUpdated: Date.now()
     },
     symbols: {

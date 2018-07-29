@@ -4,7 +4,8 @@ import { generateAccountHoldingsMap,
          calculateTotalPerformance
 } from './holdingCalculator';
 import {makeSafe} from '../utils';
-import {getLatestQuote, getLatestQuotes} from './quoteSelector';
+import {lastWeekDay} from '../../../utils/time';
+import {getLatestQuote, getLatestQuotes, findLatestDate} from './quoteSelector';
 import {createSelector, registerSelectors} from './selectorsUtils';
 
 /**
@@ -18,7 +19,12 @@ export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getBalance = state => state.balance;
-export const getRealTimeRate = state => state.currency.rate;
+export const getExchangeRates = state => state.currency.data;
+export const getLatestExchangeRate = createSelector([getExchangeRates], data => {
+    const latestDate = findLatestDate(data, lastWeekDay().format('YYYY-MM-DD'));
+    const latestRate = data[latestDate];
+    return latestRate || 1;
+});
 
 /**
  * Selector function
@@ -53,7 +59,7 @@ export const getRealTimeRate = state => state.currency.rate;
  * @return {object}: key-value map, key is account, value is holdings array
  */
 export const getAccountHoldingsMap = createSelector(
-    [getTscs], generateAccountHoldingsMap);
+    [getTscs, getExchangeRates], generateAccountHoldingsMap);
 registerSelectors({getAccountHoldingsMap});
 /**
  * Get holdings for single account.
@@ -108,7 +114,7 @@ export const getSingleHolding = createSelector(
  * }
  */
 export const makeGetHoldingPerformance = () => {
-    return createSelector([getSingleHolding, getLatestQuote, getRealTimeRate], calculateHoldingPerformance);
+    return createSelector([getSingleHolding, getLatestQuote, getLatestExchangeRate], calculateHoldingPerformance);
 };
 
 /**
@@ -117,10 +123,10 @@ export const makeGetHoldingPerformance = () => {
  * @return {Array}: calculated holdings with performance data.
  */
 export const getHoldingsPerformance = createSelector(
-    [getHoldings, getLatestQuotes, getRealTimeRate],
-    makeSafe((holdings, quotes, rates) => {
+    [getHoldings, getLatestQuotes, getLatestExchangeRate],
+    makeSafe((holdings, quotes, rate) => {
         return (holdings || []).map(holding => {
-                return calculateHoldingPerformance(holding, quotes[holding.symbol], rates);
+                return calculateHoldingPerformance(holding, quotes[holding.symbol], rate);
         });
     })
 );

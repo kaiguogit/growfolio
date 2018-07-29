@@ -7,7 +7,6 @@ const moment = require('moment-timezone');
 const {NEW_YORK_TIME_ZONE, isMarketOpened, lastWeekDay, yesterday, isAfterMarketClose} = require('../utils/time');
 
 const {dailyQuote: callDailyQuoteApi, intraDayQuote: callIntraDayQuoteApi} = require('./external-api/alpha-vantage');
-process.moment = moment;
 
 /**
  * GET /historical-quotes

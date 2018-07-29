@@ -135,7 +135,11 @@ app.route('/api/quotes')
 app.route('/api/download-quotes')
   .get(quoteController.downloadQuotes);
 app.route('/api/exchange-rate')
-  .get(exchangeRateController.getRealTimeExchangeRate);
+  .get(exchangeRateController.getExchangeRates);
+app.route('/api/download-realtime-exchange-rate')
+  .post(exchangeRateController.getRealTimeExchangeRate);
+app.route('/api/download-exchange-rate')
+  .post(exchangeRateController.downloadExchangeRate);
 app.get('*', homeController.index);
 
 /**

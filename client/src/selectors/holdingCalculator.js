@@ -17,13 +17,13 @@ const compareDate = (a, b) => {
  * ]
  * @param {array} tscs transactions
  */
-const _calcHoldings = (tscs) => {
+const _calcHoldings = (tscs, exchangeRates) => {
     let holdings = [];
     // TODO verify tscs by date. Such as whether there is enough shares to
     // sell
     tscs.forEach(tsc => {
         // new object
-        tsc = new Transaction(tsc);
+        tsc = new Transaction(tsc, exchangeRates);
         // Create holding and add tsc to it.
         let holding = holdings.find(x => x.symbol === tsc.symbol);
         if (!holding) {
@@ -68,7 +68,7 @@ const _getTscAccountMap = tscs => {
  * @param {object} tscs transactions
  * @returns {object} key-value map, key is account, value is holdings array
  */
-export const generateAccountHoldingsMap = tscs => {
+export const generateAccountHoldingsMap = (tscs, exchangeRates) => {
     let tscAccountMap = _getTscAccountMap(tscs);
     // Generate holdings for each account
     let holdingAccountMap = ACCOUNTS.reduce((map, account) => {
@@ -76,7 +76,7 @@ export const generateAccountHoldingsMap = tscs => {
             return map;
         }
         if (tscAccountMap[account]) {
-            map[account] = _calcHoldings(tscAccountMap[account]);
+            map[account] = _calcHoldings(tscAccountMap[account], exchangeRates);
         }
         return map;
     }, {});
@@ -128,16 +128,15 @@ export const generateAccountHoldingsMap = tscs => {
  * }
  * @param {object} holding
  * @param {object} quote quote data for the holding
- * @param {array} currencyRates currency map
+ * @param {number} rate USD/CAD exchange rate
  * @returns {object} holding with performance data
  */
-export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
+export const calculateHoldingPerformance = (holding, quote, rate) => {
         let h = Object.assign({}, holding);
         let cost = h.cost;
         let realizedGain = h.realizedGain;
         let costOverall = h.costOverall;
         let shares = h.shares;
-        const rate = currencyRates.USDCAD;
         ['price', 'change', 'mktValue', 'gain', 'gainPercent', 'daysGain', 'gainOverall',
         'gainOverallPercent'].forEach(key => {
             h[key] = new DollarValue();
@@ -172,7 +171,6 @@ export const calculateHoldingPerformance = (holding, quote, currencyRates) => {
 /**
  * Sum up holding's value and caculate total performance.
  * @param {array} holdings
- * @param {array} currencyRates currency map
  * @returns {object}
  */
 export const calculateTotalPerformance = (holdings, displayCurrency) => {

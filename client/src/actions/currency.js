@@ -6,18 +6,8 @@ import { makeActionCreator, callAPI } from './utils';
 export const requestCurrency = makeActionCreator(types.REQUEST_CURRENCY);
 export const requestCurrencyTimeout = makeActionCreator(types.REQUEST_CURRENCY_TIMEOUT);
 
-export const receiveCurrency = makeActionCreator(types.RECEIVE_CURRENCY, 'rate');
+export const receiveCurrency = makeActionCreator(types.RECEIVE_CURRENCY, 'data');
 
-const processAPIResponse = (response) => {
-    if (response) {
-        const from = response.fromCurrency;
-        const to = response.toCurrency;
-        const rate = response.rate;
-        return {
-            [from + to]: rate
-        };
-    }
-};
 
 /**
  * Fetch currency based on holdings and displayCurrency
@@ -28,7 +18,25 @@ export const fetchCurrency = () => (dispatch) => {
     dispatch(requestCurrency());
     // return Promise.resolve(fakeExchangeRate)
     return callAPI(__MY_API__ + 'exchange-rate')
-    .then(processAPIResponse).then((result) => {
+    .then((result) => {
+        dispatch(receiveCurrency(result));
+    }).catch(error => {
+        log.error(error);
+    });
+};
+
+/**
+ * Fetch currency based on holdings and displayCurrency
+ * @param {object} state
+ * @returns {promise} fetch currency promise
+ */
+export const downloadCurrency = () => (dispatch) => {
+    dispatch(requestCurrency());
+    // return Promise.resolve(fakeExchangeRate)
+    return callAPI(__MY_API__ + 'download-exchange-rate', {
+        method: 'POST'
+    })
+    .then((result) => {
         dispatch(receiveCurrency(result));
     }).catch(error => {
         log.error(error);
