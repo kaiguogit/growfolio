@@ -218,23 +218,24 @@ const saveQuotesFromAPI = (isIntraday, _user) => (response) => {
         from: {}
     };
     if (meta && quotes) {
-        let symbol = removePrefix(meta['2. Symbol']);
-        let lastRefreshed = meta['3. Last Refreshed'];
+        const symbol = removePrefix(meta['2. Symbol']);
+        const lastRefreshed = meta['3. Last Refreshed'];
+        const data = result.data;
         const promises = Object.keys(quotes).map((date) => {
             return Quote.findOne({ date, symbol, _user }).exec().then(foundQuote => {
                 if (foundQuote) {
-                    result[symbol] = result[symbol] || {};
-                    result[symbol][date] = foundQuote;
+                    data[symbol] = data[symbol] || {};
+                    data[symbol][date] = foundQuote;
                 } else {
-                    const data = Object.assign({
+                    const newQuote = Object.assign({
                         _user,
                         isIntraday,
                         symbol,
                         date
                     }, normalizeAPIResult(quotes[date]));
-                    return new Quote(data).save().then(savedQuote => {
-                        result[symbol] = result[symbol] || {};
-                        result[symbol][date] = savedQuote;
+                    return new Quote(newQuote).save().then(savedQuote => {
+                        data[symbol] = data[symbol] || {};
+                        data[symbol][date] = savedQuote;
                     });
                 }
             }, error => {
