@@ -20,7 +20,7 @@ const basicErrorChecking = (response) => {
     }
     const message = response && (response.Information || response['Error Message']);
     if (message) {
-        return Promise.reject({message});
+        return Promise.reject(new Error(message));
     }
     return response;
 };

@@ -332,8 +332,16 @@ const downloadSingleQuote = (symbol, isIntraday, userId) => {
     // return Promise.resolve(fakeData)
     return shouldCallApi(symbol, isIntraday, userId).then(necessary => {
         if (necessary) {
-            return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch(() => {
-                return getQuoteFromDb(userId, symbol, true);
+            return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch((e) => {
+                const fallbackPromise = getQuoteFromDb(userId, symbol, true);
+                if (e) {
+                    return fallbackPromise.then(result => {
+                        result.error = result.error || {};
+                        result.error[symbol] = e.toString();
+                        return result;
+                    });
+                }
+                return fallbackPromise;
             });
         }
         return getQuoteFromDb(userId, symbol);
@@ -354,19 +362,25 @@ const downloadMultipleQuotes = (symbols, isIntraday, userId) => {
                 data: {},
                 // TODO can be deleted, added here to see if logic works well.
                 dailyFrom: {},
-                intradayFrom: {}
+                intradayFrom: {},
+                dailyError: {},
+                intradayError: {}
             };
         }
         return symbols.reduce((p, symbol) => {
+            symbol = removePrefix(symbol);
             return p.then(downloadSingleQuote.bind(null, symbol, isIntraday, userId))
             .then(quote => {
                 if (quote) {
-                    symbol = removePrefix(symbol);
                     ['meta', 'data'].forEach(key => {
                         result[key] = merge({}, result[key], quote[key]);
                     });
                     const fromKey = isIntraday ? 'intradayFrom' : 'dailyFrom';
+                    const errorKey = isIntraday ? 'intradayError' : 'dailyError';
                     result[fromKey][symbol] = quote.from[symbol];
+                    if (quote.error) {
+                        result[errorKey][symbol] = quote.error[symbol];
+                    }
                 }
                 return result;
             });
@@ -378,13 +392,7 @@ const downloadMultipleQuotesAllTypes = (symbols, userId) => {
     // TODO move this intraday loop into downloadSingleQuote.
     return [true, false].reduce((promise, isIntraday) => {
         return promise.then(downloadMultipleQuotes(symbols, isIntraday, userId));
-    }, Promise.resolve({
-        meta: {},
-        data: {},
-        // TODO can be deleted, added here to see if logic works well.
-        dailyFrom: {},
-        intradayFrom: {}
-    }));
+    }, Promise.resolve());
 };
 
 /**
