@@ -31,7 +31,9 @@ const delayedRequest = (params) => {
     // Break the chain by joining promise
     // https://stackoverflow.com/questions/28250680/how-do-i-access-previous-promise-results-in-a-then-chain/28250704
     if (ongoingPromise) {
-        previous = ongoingPromise.delay(1000);
+        // According to https://www.alphavantage.co/premium/
+        // Limit is 5 requests per minutes.
+        previous = ongoingPromise.delay(12000);
     } else {
         previous = Promise.resolve();
     }
