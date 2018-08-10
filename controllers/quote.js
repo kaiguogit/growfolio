@@ -327,9 +327,9 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
  * @param {object} userId
  */
 const downloadSingleQuote = (symbol, isIntraday, userId) => {
-    const fakeData = isIntraday ? fakeIntradayQuote : fakeDailyQuote;
-    const callApi = isIntraday ? callIntraDayQuoteApi : callDailyQuoteApi;
+    // const fakeData = isIntraday ? fakeIntradayQuote : fakeDailyQuote;
     // return Promise.resolve(fakeData)
+    const callApi = isIntraday ? callIntraDayQuoteApi : callDailyQuoteApi;
     return shouldCallApi(symbol, isIntraday, userId).then(necessary => {
         if (necessary) {
             return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch((e) => {
@@ -337,7 +337,7 @@ const downloadSingleQuote = (symbol, isIntraday, userId) => {
                 if (e) {
                     return fallbackPromise.then(result => {
                         result.error = result.error || {};
-                        result.error[symbol] = e.toString();
+                        result.error[removePrefix(symbol)] = e.toString();
                         return result;
                     });
                 }
@@ -355,44 +355,46 @@ const downloadSingleQuote = (symbol, isIntraday, userId) => {
  * @param {object} userId
  */
 const downloadMultipleQuotes = (symbols, isIntraday, userId) => {
-    return result => {
-        if (!result) {
-            result = {
-                meta: {},
-                data: {},
-                // TODO can be deleted, added here to see if logic works well.
-                dailyFrom: {},
-                intradayFrom: {},
-                dailyError: {},
-                intradayError: {}
-            };
-        }
-        return symbols.reduce((p, symbol) => {
-            symbol = removePrefix(symbol);
-            return p.then(downloadSingleQuote.bind(null, symbol, isIntraday, userId))
-            .then(quote => {
-                if (quote) {
-                    ['meta', 'data'].forEach(key => {
-                        result[key] = merge({}, result[key], quote[key]);
-                    });
-                    const fromKey = isIntraday ? 'intradayFrom' : 'dailyFrom';
-                    const errorKey = isIntraday ? 'intradayError' : 'dailyError';
-                    result[fromKey][symbol] = quote.from[symbol];
-                    if (quote.error) {
-                        result[errorKey][symbol] = quote.error[symbol];
-                    }
-                }
-                return result;
-            });
-        }, Promise.resolve());
-    };
+    const promises = symbols.map(symbol => {
+        return downloadSingleQuote(symbol, isIntraday, userId);
+    });
+    return Promise.all(promises).then(resps => {
+        return resps.reduce((previous, current) => {
+            return merge(previous, current);
+        }, {});
+    });
 };
 
 const downloadMultipleQuotesAllTypes = (symbols, userId) => {
     // TODO move this intraday loop into downloadSingleQuote.
-    return [true, false].reduce((promise, isIntraday) => {
-        return promise.then(downloadMultipleQuotes(symbols, isIntraday, userId));
-    }, Promise.resolve());
+    const promises = [true, false].map(isIntraday => {
+        return downloadMultipleQuotes(symbols, isIntraday, userId);
+    });
+    return Promise.all(promises).then(resps => {
+        return resps.reduce((result, quotes, index) => {
+            const isIntraday = !index;
+            if (quotes) {
+                ['meta', 'data'].forEach(key => {
+                    merge(result[key], quotes[key]);
+                });
+                const fromKey = isIntraday ? 'intradayFrom' : 'dailyFrom';
+                const errorKey = isIntraday ? 'intradayError' : 'dailyError';
+                merge(result[fromKey], quotes.from);
+                if (quotes.error) {
+                    merge(result[errorKey], quotes.error);
+                }
+            }
+            return result;
+        }, {
+            meta: {},
+            data: {},
+            // TODO can be deleted, added here to see if logic works well.
+            dailyFrom: {},
+            intradayFrom: {},
+            dailyError: {},
+            intradayError: {}
+        });
+    });
 };
 
 /**

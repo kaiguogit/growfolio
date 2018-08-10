@@ -18,9 +18,9 @@ Promise.timeout = (timeout, promise) => {
  * Creat a promise with delay.
  * https://stackoverflow.com/questions/39538473/using-settimeout-on-promise-chain
  */
-const delay = (t, v) => {
-    return new Promise(function(resolve) {
-        setTimeout(resolve.bind(null, v), t);
+const delay = (t, v, isReject) => {
+    return new Promise(function(resolve, reject) {
+        setTimeout((isReject ? reject : resolve).bind(null, v), t);
     });
  };
 
@@ -28,6 +28,8 @@ if (!Promise.prototype.delay) {
     Promise.prototype.delay = function(t) {
         return this.then(function(v) {
             return delay(t, v);
+        }, function(error) {
+            return delay(t, error, true);
         });
     };
 }
