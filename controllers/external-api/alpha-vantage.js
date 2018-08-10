@@ -77,9 +77,10 @@ exports.dailyQuote = (symbol) => {
 // Expect symbol for TSX to NOT have prefix "TSX:", e.g VFV
 // Different to daily quote, werid, I know.
 exports.intraDayQuote = (symbol) => {
-    if (symbol && symbol.startsWith('TSX:')) {
-        symbol = symbol.replace('TSX:', '');
-    }
+    // New: Since August 10, it seems require "TSX:" again.
+    // if (symbol && symbol.startsWith('TSX:')) {
+    //     symbol = symbol.replace('TSX:', '');
+    // }
     const params = {
         qs: {
             function: 'TIME_SERIES_INTRADAY',
