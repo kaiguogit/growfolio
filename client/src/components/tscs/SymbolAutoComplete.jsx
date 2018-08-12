@@ -9,20 +9,29 @@ import { bindActionCreators } from 'redux';
 import debounce from 'lodash/debounce';
 import {escapeRegexCharacters} from '../../utils';
 import IsolatedScroll from 'react-isolated-scroll';
+import {getHoldings} from '../../selectors';
 
 // Teach Autosuggest how to calculate suggestions for any given input value.
 // Match name or symbol
-const getMatchingSymbol = (value, symbols) => {
-    const escapedValue = escapeRegexCharacters(value.trim());
+// DEPRECATED yahoo finance is not working.
+// const getMatchingSymbol = (value, symbols) => {
+//     const escapedValue = escapeRegexCharacters(value.trim());
 
-    if (escapedValue === '') {
-        return [];
-    }
+//     if (escapedValue === '') {
+//         return [];
+//     }
 
-    const regex = new RegExp('^' + escapedValue, 'i');
+//     const regex = new RegExp('^' + escapedValue, 'i');
 
-    return (symbols || []).filter(symbol => {
-        return regex.test(symbol.$symbol);
+//     return (symbols || []).filter(symbol => {
+//         return regex.test(symbol.$symbol);
+//     });
+// };
+const getMatchingSymbol = (value, holdings) => {
+    return holdings.filter(holding => {
+        if (value) {
+            return holding.symbol.toLowerCase().indexOf(value.toLowerCase()) >= 0;
+        }
     });
 };
 
@@ -34,7 +43,7 @@ const getSuggestionValue = suggestion => suggestion.symbol;
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
     <div>
-        {getSuggestionValue(suggestion)}
+        {`${suggestion.symbol}: ${suggestion.name}`}
     </div>
 );
 
@@ -85,12 +94,15 @@ class SymbolAutoComplete extends React.Component {
     }
 
     loadSuggestions(value) {
-        this.props.actions.fetchSymbols(value).then(symbols => {
-            if (Array.isArray(symbols) && symbols.length) {
-                this.setState({
-                    suggestions: getMatchingSymbol(value, symbols)
-                });
-            }
+        // this.props.actions.fetchSymbols(value).then(symbols => {
+        //     if (Array.isArray(symbols) && symbols.length) {
+        //         this.setState({
+        //             suggestions: getMatchingSymbol(value, symbols)
+        //         });
+        //     }
+        // });
+        this.setState({
+            suggestions: getMatchingSymbol(value, this.props.holdings)
         });
     }
     // Autosuggest will call this function every time you need to update suggestions.
@@ -143,10 +155,13 @@ SymbolAutoComplete.propTypes = {
     data: PropTypes.object,
     onSelected: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
-    actions: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    holdings: PropTypes.array.isRequired
 };
 
-const mapStateToProps = state => ({state});
+const mapStateToProps = state => ({
+    holdings: getHoldings(state)
+});
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(actions, dispatch)

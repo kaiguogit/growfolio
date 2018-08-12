@@ -81,8 +81,8 @@ class TscsForm extends React.Component {
                 <FormGroup>
                     <label htmlFor="symbol">Symbol</label>
                     <SymbolAutoComplete data={tsc}
-                        onSelected={this.handleSymbolSuggestionSelected}
-                        onChange={this.handleSymbolChange}/>
+                        onSelected={this.handleSymbolSuggestionSelected.bind(this)}
+                        onChange={this.handleSymbolChange.bind(this)}/>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="name">Name</label>

@@ -44,6 +44,7 @@ const processSymbols = data => {
     return symbols;
 };
 
+// DEPRECATED. YAHOO API is not working.
 /**
  * Sample result
  * xch: "NYQ"
