@@ -21,6 +21,7 @@ export default {
     },
     quotes: {
         isFetching: false,
+        fetchingSymbol: '',
         data: {},
         meta: {},
         displayDate: moment(),

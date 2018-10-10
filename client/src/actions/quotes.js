@@ -7,7 +7,7 @@ import { makeActionCreator, callAPI } from './utils';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 
-export const requestQuotes = makeActionCreator(types.REQUEST_QUOTES);
+export const requestQuotes = makeActionCreator(types.REQUEST_QUOTES, 'symbol');
 export const requestQuotesTimeout = makeActionCreator(types.REQUEST_QUOTES_TIMEOUT);
 export const setQuoteDisplayDate = makeActionCreator(types.SET_QUOTE_DISPLAY_DATE, 'displayDate');
 export const receiveQuotes = makeActionCreator(types.RECEIVE_QUOTES, 'data', 'meta');
@@ -35,6 +35,7 @@ const downloadQuote = (dispatch, getState) => {
         return holding.shares.CAD;
     });
     return holdings.reduce((previous, holding) => {
+        dispatch(requestQuotes(holding.symbol));
         let symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
         return previous.then(() => {return fetchSingleQuote(symbol, dispatch);});
     }, Promise.resolve()).then(() => {

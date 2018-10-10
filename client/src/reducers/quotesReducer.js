@@ -2,14 +2,25 @@
 
 import initialState from './initialState';
 import types from '../constants/actionTypes';
-import {createReducer, setValueFromAction, setKeyValue, mergeObjectFromAction} from './reducerUtils';
+import {createReducer, setValueFromAction, mergeObjectFromAction} from './reducerUtils';
 import reduceReducers from 'reduce-reducers';
 
-const startFetching = setKeyValue('isFetching', true);
-const stopFetching = setKeyValue('isFetching', false);
+const stopFetching = state => {
+    return {
+        ...state,
+        isFetching: false,
+        fetchingSymbol: '',
+    };
+};
 
 const quotesReducer = createReducer(initialState.quotes, {
-    [types.REQUEST_QUOTES]: startFetching,
+    [types.REQUEST_QUOTES]: (state, action) => {
+        return {
+            ...state,
+            isFetching: true,
+            fetchingSymbol: action.symbol,
+        };
+    },
     [types.REQUEST_QUOTES_TIMEOUT]: stopFetching,
     [types.SET_QUOTE_DISPLAY_DATE]: setValueFromAction('displayDate'),
     [types.SET_USE_HISTORICAL_QUOTE]: setValueFromAction('useHistoricalQuote'),
