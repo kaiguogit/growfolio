@@ -35,7 +35,6 @@ const downloadQuote = (dispatch, getState) => {
         return holding.shares.CAD;
     });
     return holdings.reduce((previous, holding) => {
-        dispatch(requestQuotes(holding.symbol));
         let symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
         return previous.then(() => {return fetchSingleQuote(symbol, dispatch);});
     }, Promise.resolve()).then(() => {
@@ -44,6 +43,7 @@ const downloadQuote = (dispatch, getState) => {
 };
 
 const fetchSingleQuote = (symbol, dispatch) => {
+    dispatch(requestQuotes(symbol));
     return callAPI(__MY_API__ + 'download-quotes?symbols=' + symbol).then((quote) => {
         dispatch(receiveSingleQuote(quote.data, quote.meta));
     }).catch(log.error);
