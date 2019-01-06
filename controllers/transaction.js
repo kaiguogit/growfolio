@@ -114,8 +114,7 @@ const validateTransactionForm = (payload) => {
     errors.commission = 'Commission is invalid';
   }
 
-  if (!isString(payload.type) || (payload.type !== 'buy' && payload.type !== 'sell' &&
-    payload.type !== 'dividend')) {
+  if (!isString(payload.type) || ['buy', 'sell', 'dividend', 'deposit'].every(type => payload.type !== type)) {
     isFormValid = false;
     errors.type = 'Type can only be buy or sell or dividend';
   }
