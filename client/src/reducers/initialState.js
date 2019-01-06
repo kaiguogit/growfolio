@@ -11,7 +11,9 @@ export default {
     tscs: {
         isFetching: false,
         items: [],
-        collapse: {},
+        collapse: {
+            cash: true
+        },
         deleteTscModalData: {
             isOpened: false,
             tsc: null

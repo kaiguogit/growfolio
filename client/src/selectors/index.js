@@ -1,5 +1,5 @@
 
-import { generateAccountHoldingsMap,
+import { generateAccountsMap,
          calculateHoldingPerformance,
          calculateTotalPerformance
 } from './holdingCalculator';
@@ -61,9 +61,9 @@ export const getLatestExchangeRate = createSelector([getExchangeRates], data => 
  * @param {object} props
  * @return {object}: key-value map, key is account, value is holdings array
  */
-export const getAccountHoldingsMap = createSelector(
-    [getTscs, getExchangeRates], generateAccountHoldingsMap);
-registerSelectors({getAccountHoldingsMap});
+export const getAccountsMap = createSelector(
+    [getTscs, getExchangeRates], generateAccountsMap);
+registerSelectors({getAccountsMap});
 /**
  * Get holdings for single account.
  * Usage.
@@ -79,11 +79,16 @@ registerSelectors({getAccountHoldingsMap});
  * @return {Array}: calculated holdings for the account.
  */
 export const getHoldings = createSelector(
-    [getDisplayAccount, getAccountHoldingsMap],
-    makeSafe((account, accountHoldingsMap) => accountHoldingsMap[account] || [])
+    [getDisplayAccount, getAccountsMap],
+    makeSafe((account, accountsMap) => accountsMap[account].holdings)
 );
 registerSelectors({getHoldings});
 
+export const getCash = createSelector(
+    [getDisplayAccount, getAccountsMap],
+    makeSafe((account, accountsMap) => accountsMap[account].cash)
+);
+registerSelectors({getCash});
 
 export const getHoldingsAfterZeroShareFilter = createSelector(
     [getHoldings, getShowZeroShareHolding, getDisplayCurrency],

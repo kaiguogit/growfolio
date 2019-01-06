@@ -45,12 +45,19 @@ const validateTransactionForm = (payload) => {
     };
   }
 
-  if (!isString(payload.name) || payload.name.trim().length === 0) {
+  const validType = ['buy', 'sell', 'dividend', 'deposit', 'withdraw'];
+  if (!isString(payload.type) || validType.every(type => payload.type !== type)) {
+    isFormValid = false;
+    errors.type = 'Type can only be one of valid type: ' + validType.join();
+  }
+
+  let isCashTsc = payload.type === 'deposit' || payload.type === 'withdraw';
+  if ((!isString(payload.name) || payload.name.trim().length === 0 ) && !isCashTsc) {
     isFormValid = false;
     errors.name = 'Please provide ticker name.';
   }
 
-  if (!isString(payload.symbol) || payload.symbol.trim().length === 0) {
+  if ((!isString(payload.symbol) || payload.symbol.trim().length === 0) && !isCashTsc) {
     isFormValid = false;
     errors.symbol = 'Please provide ticker symbol.';
   }
@@ -112,11 +119,6 @@ const validateTransactionForm = (payload) => {
   if (!isValidNum(payload.commission)) {
     isFormValid = false;
     errors.commission = 'Commission is invalid';
-  }
-
-  if (!isString(payload.type) || ['buy', 'sell', 'dividend', 'deposit'].every(type => payload.type !== type)) {
-    isFormValid = false;
-    errors.type = 'Type can only be buy or sell or dividend';
   }
 
   if (!isFormValid) {

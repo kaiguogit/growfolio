@@ -16,6 +16,7 @@ class TableCategory extends React.Component {
     }
 
     render() {
+        const {titleFn} = this.props;
         return (
             // Use multiple tbody in table, so that we can return multiple <tr> in one element.
             // https://stackoverflow.com/a/37112662
@@ -27,7 +28,7 @@ class TableCategory extends React.Component {
                         <td colSpan={this.props.columnsCount} onClick={this.toggleCollapse.bind(this)} className="toggle-label">
                             <span className="table-category-title">
                                 <i className={"fa " + (this.props.collapse ? "fa-plus-square" : "fa-minus-square")} aria-hidden="true"/>
-                                <span>{this.props.titleFn()}</span>
+                                <span>{typeof titleFn === 'function' ? titleFn() : titleFn}</span>
                             </span>
                         </td>
                     </tr>
@@ -41,7 +42,10 @@ class TableCategory extends React.Component {
 }
 
 TableCategory.propTypes = {
-    titleFn: PropTypes.func.isRequired,
+    titleFn: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.string
+    ]),
     columnsCount: PropTypes.number.isRequired,
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),

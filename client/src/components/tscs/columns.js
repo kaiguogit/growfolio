@@ -1,5 +1,14 @@
 import { date, capitalize, currency, coloredCell } from '../../utils';
 
+export const CASH_COLUMNS = [{
+    selector: 'total',
+    title: 'Total',
+    filter: currency(2)
+}, {
+    selector: 'currency',
+    title: 'Currency'
+}];
+
 export const TSCS_COLUMNS = [
     {
         selector: 'symbol',

@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TSCS_COLUMNS } from './columns';
+import { TSCS_COLUMNS, CASH_COLUMNS } from './columns';
 import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const TscsTable = ({holdings, displayCurrency, startDate, endDate}) => {
+const TscsTable = ({holdings, displayCurrency, startDate, endDate, cash}) => {
     const categoryTitle = holding => {
         const render = () => {
+            if (holding.isCash) {
+                return <span>Cash</span>;
+            }
             return (
                 <span>
                     {holding.symbol + ': ' + holding.name}
@@ -27,6 +30,7 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate}) => {
         return render;
     };
 
+    const columnsSize = Math.max(TSCS_COLUMNS.length, CASH_COLUMNS.length);
     return (
         <table className="table table-sticky-first-column table-responsive table-bordered table-sm table-compact">
             <thead>
@@ -45,23 +49,55 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate}) => {
                 return (
                     <TableCategory
                         titleFn={categoryTitle(holding)}
-                        columnsCount={TSCS_COLUMNS.length + 1}
+                        columnsCount={columnsSize + 1}
                         key={holding.symbol}
                         symbol={holding.symbol}
                     >
                         {holding.getValidTscs(startDate, endDate).map(tsc => {
                             return (<TscsRow tsc={tsc} key={tsc._id}
+                                             columns={TSCS_COLUMNS}
                                              displayCurrency={displayCurrency}/>);
                         })}
                     </TableCategory>
                 );
             })}
+            {<TableCategory
+                titleFn="Cash"
+                columnsCount={columnsSize + 1}
+                symbol="cash">
+                <React.Fragment>
+                    <thead>
+                        <tr>
+                            {CASH_COLUMNS.map(column => {
+                                return (
+                                    <th key={column.selector}>
+                                        {column.title}
+                                    </th>
+                                );
+                            })}
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    {Object.entries(cash).map(([currency, cashEntry]) => {
+                        return (
+                            <tbody key={currency}>
+                                {cashEntry.transactions.map(tsc => {
+                                    return (<TscsRow tsc={tsc} key={tsc._id}
+                                        columns={CASH_COLUMNS}
+                                        displayCurrency={displayCurrency}/>);
+                                })}
+                            </tbody>
+                        );
+                    })}
+                </React.Fragment>
+            </TableCategory>}
         </table>
     );
 };
 
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
+    cash: PropTypes.object.isRequired,
     displayCurrency: PropTypes.string.isRequired,
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired
@@ -72,10 +108,10 @@ TscsTable.propTypes = {
 // https://www.robinwieruch.de/react-prevent-rerender-component/
 class TscsRow extends React.PureComponent {
     render() {
-        const {tsc, displayCurrency} = this.props;
+        const {tsc, displayCurrency, columns} = this.props;
         return (
             <tr>
-                {TSCS_COLUMNS.map(column => {
+                {columns.map(column => {
                     return (
                         <TableCell
                             key={column.selector}
@@ -98,7 +134,8 @@ class TscsRow extends React.PureComponent {
 
 TscsRow.propTypes = {
     tsc: PropTypes.object.isRequired,
-    displayCurrency: PropTypes.string.isRequired
+    displayCurrency: PropTypes.string.isRequired,
+    columns: PropTypes.array.isRequired
 };
 
 export default TscsTable;

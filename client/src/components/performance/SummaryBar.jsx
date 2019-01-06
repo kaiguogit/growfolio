@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getTotalPerformance, getLatestExchangeRate } from '../../selectors';
+import { getTotalPerformance, getLatestExchangeRate, getCash } from '../../selectors';
 import styles from '../../styles';
 import { currency, percentage, round} from '../../utils';
 import NumberChangeTransition from '../Animation/NumberChangeTransition.jsx';
@@ -73,7 +73,6 @@ ExchangeRate.propTypes = {
 class SummaryBar extends React.Component {
     constructor(props) {
         super(props);
-        this.totalValue = this.totalValue.bind(this);
     }
 
     totalValue() {
@@ -81,6 +80,18 @@ class SummaryBar extends React.Component {
             <div className="col-12 col-sm-6 col-md-auto mr-md-3">
                 <span>Total Value</span>
                 <h2>{currency(2)(this.props.performance.mktValue)}</h2>
+            </div>
+        );
+    }
+    cash() {
+        return (
+            <div className="col-12 col-sm-6 col-md-auto mr-md-3">
+                <span>Cash</span>
+                <h2>{Object.entries(this.props.cash).map(([currencyName, cash]) => {
+                    return (<span key={currencyName}>
+                        {currency(2)(cash.total[currencyName])}{currencyName}{' '}
+                    </span>);
+                })}</h2>
             </div>
         );
     }
@@ -100,6 +111,7 @@ class SummaryBar extends React.Component {
                 <Change change={performance.gainOverall}
                     title="Overall Change"/>
                 <ExchangeRate title="USDCAD" rate={exchangeRate} key="USDCAD"/>
+                {this.cash()}
             </div>
         );
     }
@@ -108,11 +120,13 @@ class SummaryBar extends React.Component {
 SummaryBar.propTypes = {
     performance: PropTypes.object.isRequired,
     exchangeRate: PropTypes.number.isRequired,
+    cash: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     performance: getTotalPerformance(state),
-    exchangeRate: getLatestExchangeRate(state)
+    exchangeRate: getLatestExchangeRate(state),
+    cash: getCash(state)
 });
 
 export default connect(mapStateToProps)(SummaryBar);

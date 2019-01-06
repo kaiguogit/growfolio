@@ -28,6 +28,17 @@ export class Transaction {
         this.setTotalandPrice();
     }
 
+    processInitialData() {
+        this.currency = this.currency.toUpperCase();
+        this.date = moment(this.date);
+        if (this.type === 'withdraw' || this.type === 'deposit') {
+            this.symbol = 'cash';
+            this.isCash = true;
+        } else {
+            this.isCash = false;
+        }
+    }
+
     setDollarValues() {
         let rate = this.isUSD() ? this.rate : divide(1, this.rate);
         let CADValue, USDValue;
@@ -39,11 +50,6 @@ export class Transaction {
         ['acbChange', 'realizedGain', 'newAcb', 'newAverageCost'].forEach(key => {
             this[key] = new DollarValue();
         });
-    }
-
-    processInitialData() {
-        this.currency = this.currency.toUpperCase();
-        this.date = moment(this.date);
     }
 
     setRate(exchangeRates) {
@@ -78,13 +84,14 @@ export class Transaction {
                 this.price[currency] = totalOrPerShare ?
                     divide(amount - commission, shares) :
                     amount;
-            }
-            if (type === 'sell') {
+            } else if (type === 'sell') {
                 this.total[currency] = totalOrPerShare ? amount :
                     (shares * amount - commission);
                 this.price[currency] = totalOrPerShare ?
                     divide(amount + commission, shares) :
                     amount;
+            } else if (this.isCash) {
+                this.total[currency] = amount;
             }
         });
     }

@@ -1,25 +1,118 @@
-import {DollarValue, DollarValueMap} from './transaction';
+import {Transaction, DollarValue, DollarValueMap} from './transaction';
 import { round, divide } from '../utils';
 
 const HOLDING_PROPERTIES = {
-    'shares': DollarValue,
-    'cost': DollarValue,
-    'costOverall': DollarValue,
-    'averageCost': DollarValue,
-    'realizedGain': DollarValue,
-    'realizedGainYearly': DollarValueMap,
-    'capitalGainYearly': DollarValueMap,
-    'dividend': DollarValue,
-    'dividendYearly': DollarValueMap
+    shares: DollarValue,
+    cost: DollarValue,
+    averageCost: DollarValue,
+    realizedGain: DollarValue,
+    realizedGainYearly: DollarValueMap,
+    capitalGainYearly: DollarValueMap,
+    dividend: DollarValue,
+    dividendYearly: DollarValueMap
 };
 
-const TSCS_PROPERTIES = [
-    'transactions',
-    'buyTransactions',
-    'sellTransactions'
-];
+const CASH_PROPERTIES = {
+    total: DollarValue
+};
 
-class Holding {
+const compareDate = (a, b) => {
+    return new Date(a.date) - new Date(b.date);
+};
+
+export class Account {
+    /**
+     * @param {array} data.tscs
+     * @param {number} data.exchangeRates
+     */
+    constructor(params) {
+        this.holdings = [];
+        this.cash = DollarValue.TYPES.reduce((result, currency) => {
+            result[currency] = new Cash({currency});
+            return result;
+        }, {});
+        if (params) {
+            this.init(params);
+        }
+    }
+
+    init({tscs, exchangeRates}) {
+        if (!(tscs && exchangeRates)) {
+            return;
+        }
+        // TODO verify tscs by date. Such as whether there is enough shares to
+        // sell
+        tscs.forEach(tsc => {
+            // new object
+            tsc = new Transaction(tsc, exchangeRates);
+            // Create holding and add tsc to it.
+            if (tsc.isCash) {
+                let cash = this.cash[tsc.currency];
+                if (!cash) {
+                    cash = this.cash[tsc.currency] = new Cash(tsc.currency);
+                }
+                cash.transactions.push(tsc);
+            } else {
+                let holding = this.holdings.find(x => x.symbol === tsc.symbol);
+                if (!holding) {
+                    holding = new Holding({
+                        name: tsc.name,
+                        symbol: tsc.symbol,
+                        currency: tsc.currency,
+                        exch: tsc.exch,
+                    });
+                    this.holdings.push(holding);
+                }
+                holding.transactions.push(tsc);
+            }
+        });
+
+        Object.values(this.cash).forEach(cash => {
+            cash.calculate();
+            cash.transactions.sort(compareDate);
+        });
+        this.holdings.forEach(holding => {
+            holding.transactions.sort(compareDate);
+            holding.calculate(this.cash);
+        });
+    }
+}
+
+export class Cash {
+    /**
+     * @param {string} data.currency
+     */
+    constructor(data) {
+        this.currency = data.currency;
+        this.transactions = [];
+        Object.entries(CASH_PROPERTIES).forEach(([key, valueClass]) => {
+            this[key] = new valueClass();
+        });
+    }
+    calculate() {
+        DollarValue.TYPES.forEach(currency => {
+            this.transactions.forEach(tsc => {
+                let {type, total, unfoundRate} = tsc;
+                this.unfoundRate = this.unfoundRate || unfoundRate;
+                if (type === 'deposit') {
+                    this.total[currency] += total[currency];
+                } else if (type === 'withdraw') {
+                    this.total[currency] -= total[currency];
+                }
+            });
+        });
+    }
+    clone() {
+        let cloned = new Cash(this);
+        cloned.unfoundRate = this.unfoundRate;
+        cloned.transactions = cloned.transactions.concat(this.transactions);
+        return cloned;
+    }
+}
+
+Cash.CASH_PROPERTIES = CASH_PROPERTIES;
+
+export class Holding {
     /**
      * @param {string} data.symbol
      * @param {string} data.exch
@@ -29,14 +122,7 @@ class Holding {
     constructor(data) {
         const {symbol, exch, name, currency} = data;
         Object.assign(this, {symbol, exch, name, currency});
-        this.init();
-    }
-
-    init() {
         this.transactions = [];
-        this.sellTransactions = [];
-        this.buyTransactions = [];
-        this.dividendTransactions = [];
         Object.entries(HOLDING_PROPERTIES).forEach(([key, valueClass]) => {
             this[key] = new valueClass();
         });
@@ -49,38 +135,36 @@ class Holding {
      * @return holding with calculated
      *     cost (current holding cost),
      *     averageCost (current holding's cost per share),
-     *     costOverall (accumulated buying cost),
      *     shares (current holding cost),
      *     realizedGain (sold value - holding cost * (sold shares / holding shares))
     */
-    calculate() {
+    calculate(cashes) {
         // Assuming the transactions here are already sorted by date.
         DollarValue.TYPES.forEach(currency => {
             this.transactions.forEach(tsc => {
                 let {type, acbChange, total, shares, realizedGain, returnOfCapital, capitalGain,
                     newAcb, newAverageCost, unfoundRate, date} = tsc;
                 this.unfoundRate = this.unfoundRate || unfoundRate;
+                const cash = cashes[currency];
                 const year = date.year();
                 // http://www.moneysense.ca/invest/calculating-capital-gains-on-u-s-stocks/
                 // Keep track of CAD based ACB.
                 // You need to determine the cost in Canadian dollars
                 // based on the exchange rate at the time of purchase and do the same for the sale proceeds
                 // based on the current exchange rate.
-                if (type === 'buy' || type === 'sell') {
-                    if (type === 'buy') {
-                        acbChange[currency] = total[currency];
-                        // Accumulate all buy cost or overall return.
-                        this.costOverall[currency] += acbChange[currency];
-                        this.shares[currency] += shares;
-                    } else if (type === 'sell') {
-                        // acb change is cost * (sold shares / holding shares)
-                        acbChange[currency] = - divide(this.cost[currency] * shares, this.shares[currency]);
-                        realizedGain[currency] = total[currency] + acbChange[currency];
-                        this.realizedGain[currency] += realizedGain[currency];
-                        this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
-                        this.capitalGainYearly.addValue(year, realizedGain[currency], currency);
-                        this.shares[currency] -= shares;
-                    }
+                if (type === 'buy') {
+                    acbChange[currency] = total[currency];
+                    cash.total[currency] -= total[currency];
+                    this.shares[currency] += shares;
+                } else if (type === 'sell') {
+                    // acb change is cost * (sold shares / holding shares)
+                    acbChange[currency] = - divide(this.cost[currency] * shares, this.shares[currency]);
+                    realizedGain[currency] = total[currency] + acbChange[currency];
+                    this.realizedGain[currency] += realizedGain[currency];
+                    this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
+                    this.capitalGainYearly.addValue(year, realizedGain[currency], currency);
+                    this.shares[currency] -= shares;
+                    cash.total[currency] += total[currency];
                 } else if (type === 'dividend') {
                     // http://canadianmoneyforum.com/showthread.php/10747-quot-Notional-distribution-quot-question
                     // Return of capital decrease cost
@@ -92,13 +176,16 @@ class Holding {
                     if (capitalGain[currency]) {
                         acbChange[currency] += capitalGain[currency];
                     }
-                    // Accumulate all buy cost or overall return.
-                    this.costOverall[currency] += acbChange[currency];
                     realizedGain[currency] = total[currency];
+                    cash.total[currency] += total[currency];
                     this.realizedGain[currency] += realizedGain[currency];
                     this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
                     this.dividend[currency] += realizedGain[currency];
                     this.dividendYearly.addValue(year, realizedGain[currency], currency);
+                } else {
+                    // There shouldn't be anything else. But return just in case.
+                    // Deposit and Withdraw type should be in Cash class.
+                    return;
                 }
                 this.cost[currency] += acbChange[currency];
                 acbChange[currency] = round(acbChange[currency], 3);
@@ -142,9 +229,7 @@ class Holding {
         Object.keys(HOLDING_PROPERTIES).forEach(key => {
             cloned[key] = this[key].clone();
         });
-        Holding.TSCS_PROPERTIES.forEach(key =>
-            cloned[key] = cloned[key].concat(this[key])
-        );
+        cloned.transactions = cloned.transactions.concat(this.transactions);
         return cloned;
     }
 
@@ -157,6 +242,3 @@ class Holding {
 }
 
 Holding.HOLDING_PROPERTIES = HOLDING_PROPERTIES;
-Holding.TSCS_PROPERTIES = TSCS_PROPERTIES;
-
-export default Holding;

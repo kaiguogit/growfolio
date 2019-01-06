@@ -76,38 +76,9 @@ class TscsForm extends React.Component {
         let {type, name, currency, exch, shares, amount, account, commission, notes, totalOrPerShare,
             returnOfCapital, capitalGain} = this.state;
         let {tsc} = this.props;
+        const isDepositOrWithDraw = () => this.state.type === 'deposit' || this.state.type === 'withdraw';
         return (
             <form className="tscs-form">
-                <FormGroup>
-                    <label htmlFor="symbol">Symbol</label>
-                    <SymbolAutoComplete data={tsc}
-                        onSelected={this.handleSymbolSuggestionSelected.bind(this)}
-                        onChange={this.handleSymbolChange.bind(this)}/>
-                </FormGroup>
-                <FormGroup>
-                    <label htmlFor="name">Name</label>
-                    <Input name="name" id="name"
-                        value={name} onChange={this.handleInputChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <label htmlFor="exch">Exchange Market</label>
-                    <Input name="exch" id="exch"
-                        value={exch} onChange={this.handleInputChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <label htmlFor="date">Date</label>
-                    <div>
-                        <DatePicker
-                            selected={this.state.date.toDate()}
-                            onChange={this.handleDateChange}
-                            className="form-control"
-                            showYearDropdown
-                            yearDropdownItemNumber={3}
-                            showMonthDropdown
-                            scrollableYearDropdown
-                        />
-                    </div>
-                </FormGroup>
                 <FormGroup>
                     <label htmlFor="type">Type</label>
                     <Select name="type" id="type"
@@ -116,6 +87,8 @@ class TscsForm extends React.Component {
                         <option value="buy">Buy</option>
                         <option value="sell">Sell</option>
                         <option value="dividend">Dividend</option>
+                        <option value="deposit">Deposit</option>
+                        <option value="withdraw">Withdraw</option>
                     </Select>
                 </FormGroup>
                 <FormGroup>
@@ -134,6 +107,42 @@ class TscsForm extends React.Component {
                     </Select>
                 </FormGroup>
                 <FormGroup>
+                    <label htmlFor="date">Date</label>
+                    <div>
+                        <DatePicker
+                            selected={this.state.date.toDate()}
+                            onChange={this.handleDateChange}
+                            className="form-control"
+                            showYearDropdown
+                            yearDropdownItemNumber={3}
+                            showMonthDropdown
+                            scrollableYearDropdown
+                        />
+                    </div>
+                </FormGroup>
+                {!isDepositOrWithDraw() &&
+                    <FormGroup>
+                        <label htmlFor="symbol">Symbol</label>
+                        <SymbolAutoComplete data={tsc}
+                            onSelected={this.handleSymbolSuggestionSelected.bind(this)}
+                            onChange={this.handleSymbolChange.bind(this)}/>
+                    </FormGroup>
+                }
+                {!isDepositOrWithDraw() &&
+                <FormGroup>
+                    <label htmlFor="name">Name</label>
+                    <Input name="name" id="name"
+                        value={name} onChange={this.handleInputChange}/>
+                </FormGroup>
+                }
+                {!isDepositOrWithDraw() &&
+                <FormGroup>
+                    <label htmlFor="exch">Exchange Market</label>
+                    <Input name="exch" id="exch"
+                        value={exch} onChange={this.handleInputChange}/>
+                </FormGroup>
+                }
+                <FormGroup>
                     <label htmlFor="currency">Currency</label>
                     <Select placeholder="select" name="currency" id="currency"
                         value={currency}
@@ -142,46 +151,61 @@ class TscsForm extends React.Component {
                         <option value="USD">USD</option>
                     </Select>
                 </FormGroup>
-                <FormGroup>
-                    <label htmlFor="shares">Shares</label>
-                    <Input type="number" name="shares" id="shares"
-                        value={shares} onChange={this.handleInputChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <label htmlFor="amount">Amount</label>
-                    <div className="row no-gutters">
-                        <div className="col-8">
+                {!isDepositOrWithDraw() &&
+                    <FormGroup>
+                        <label htmlFor="shares">Shares</label>
+                        <Input type="number" name="shares" id="shares"
+                            value={shares} onChange={this.handleInputChange}/>
+                    </FormGroup>
+                }
+                {isDepositOrWithDraw() &&
+                    <FormGroup>
+                        <label htmlFor="amount">Amount</label>
+                        <div className="row no-gutters">
                             <Input type="number" name="amount" id="amount"
                                 value={amount} onChange={this.handleInputChange}/>
                         </div>
-                        <div className="col-4">
-                            <Select placeholder="select" name="totalOrPerShare" id="totalOrPerShare"
-                                value={totalOrPerShare ? "true" : "false"}
-                                onChange={this.handleTotalOrPerShareChange}>
-                                <option value="true">Total</option>
-                                <option value="false">Per Share</option>
-                            </Select>
+                    </FormGroup>
+                }
+                {!isDepositOrWithDraw() &&
+                    <FormGroup>
+                        <label htmlFor="amount">Amount</label>
+                        <div className="row no-gutters">
+                            <div className="col-8">
+                                <Input type="number" name="amount" id="amount"
+                                    value={amount} onChange={this.handleInputChange}/>
+                            </div>
+                            <div className="col-4">
+                                <Select placeholder="select" name="totalOrPerShare" id="totalOrPerShare"
+                                    value={totalOrPerShare ? "true" : "false"}
+                                    onChange={this.handleTotalOrPerShareChange}>
+                                    <option value="true">Total</option>
+                                    <option value="false">Per Share</option>
+                                </Select>
+                            </div>
                         </div>
-                    </div>
-                </FormGroup>
-                <FormGroup>
-                    <label htmlFor="commission">Commission</label>
-                    <Input type="number" name="commission" id="commission"
-                        value={commission} onChange={this.handleInputChange}/>
-                </FormGroup>
-                {this.state.type === 'dividend' &&
-                <FormGroup>
-                    <label htmlFor="returnofcapital">Return of Capital</label>
-                    <Input type="number" name="returnOfCapital" id="returnofcapital"
-                        value={returnOfCapital} onChange={this.handleInputChange}/>
-                </FormGroup>
+                    </FormGroup>
+                }
+                {!isDepositOrWithDraw() &&
+                    <FormGroup>
+                        <label htmlFor="commission">Commission</label>
+                        <Input type="number" name="commission" id="commission"
+                            value={commission} onChange={this.handleInputChange}/>
+                    </FormGroup>
                 }
                 {this.state.type === 'dividend' &&
-                <FormGroup>
-                    <label htmlFor="capitalgain">Capital Gain</label>
-                    <Input type="number" name="capitalGain" id="capitalgain"
-                        value={capitalGain} onChange={this.handleInputChange}/>
-                </FormGroup>
+                    <FormGroup>
+                        <label htmlFor="returnofcapital">Return of Capital</label>
+                        <Input type="number" name="returnOfCapital" id="returnofcapital"
+                            value={returnOfCapital} onChange={this.handleInputChange}/>
+                    </FormGroup>
+                }
+                {this.state.type === 'dividend' &&
+                    <FormGroup>
+                        <label htmlFor="capitalgain">Capital Gain</label>
+                        <Input type="number" name="capitalGain" id="capitalgain"
+                            value={capitalGain} onChange={this.handleInputChange}/>
+                    </FormGroup>
                 }
                 <FormGroup>
                     <label htmlFor="notes">Notes</label>
