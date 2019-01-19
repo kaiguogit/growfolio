@@ -98,7 +98,6 @@ class SummaryBar extends React.Component {
                     changePercent={performance.gainPercent}
                     title="Total Change"/>
                 <Change change={performance.gainOverall}
-                    changePercent={performance.gainOverallPercent}
                     title="Overall Change"/>
                 <ExchangeRate title="USDCAD" rate={exchangeRate} key="USDCAD"/>
             </div>

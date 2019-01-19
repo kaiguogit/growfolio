@@ -173,20 +173,10 @@ export const getDollarValue = (obj, key, displayCurrency) => {
     return obj[key];
 };
 
-export const coloredCell = (entry, column, displayCurrency) => {
-    let value, refValue;
-    let selector = column.selector;
-    let ref_selector = column.ref_selector;
-    value = getDollarValue(entry, selector, displayCurrency);
-    if (ref_selector) {
-        refValue = getDollarValue(entry, ref_selector, displayCurrency);
-    } else {
-        refValue = value;
-    }
-
+export const coloredCell = (entry, value, refValue) => {
     return (
         <span style={redOrGreen(refValue)}>
-            {column.filter ? column.filter(value) : value}
+            {value}
         </span>
     );
 };

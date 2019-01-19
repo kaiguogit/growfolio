@@ -97,14 +97,6 @@ const PERFORMANCE_COLUMNS = [
         className: 'hidden-sm-down'
     },
     {
-        selector: 'gainOverallPercent',
-        showOtherCurrency: true,
-        filter: percentage,
-        formatFunction: coloredCell,
-        title: 'Overall Return Percent',
-        className: 'hidden-sm-down'
-    },
-    {
         selector: 'realizedGain',
         showOtherCurrency: true,
         filter: currency(2),
@@ -120,10 +112,30 @@ const PERFORMANCE_COLUMNS = [
         className: 'hidden-sm-down'
     },
     {
-        selector: 'costOverall',
+        selector: 'realizedGain2018',
+        valueFunction: entry => entry.realizedGainYearly.map['2018'],
+        formatFunction: coloredCell,
         showOtherCurrency: true,
         filter: currency(2),
-        title: 'Overall Cost',
+        title: 'Realized Gain 2018',
+        className: 'hidden-sm-down'
+    },
+    {
+        selector: 'realizedGain2017',
+        valueFunction: entry => entry.realizedGainYearly.map['2017'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Realized Gain 2017',
+        className: 'hidden-sm-down'
+    },
+    {
+        selector: 'realizedGain2016',
+        valueFunction: entry => entry.realizedGainYearly.map['2016'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Realized Gain 2016',
         className: 'hidden-sm-down'
     }
 ];

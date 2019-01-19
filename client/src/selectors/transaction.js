@@ -1,4 +1,4 @@
-import { divide } from '../utils';
+import { divide, avoidNaN } from '../utils';
 import moment from 'moment-timezone';
 
 export class Transaction {
@@ -86,11 +86,62 @@ export class Transaction {
 }
 
 export class DollarValue {
-    constructor(params = {}) {
-        let {CAD, USD} = params;
-        this.CAD = CAD || 0;
-        this.USD = USD || 0;
+    constructor(anotherDollorValue = {}) {
+        this.add(anotherDollorValue);
+    }
+    add(anotherDollorValue) {
+        if (!anotherDollorValue) {
+            throw new Error('anotherDollorValue is empty in DollarValue.add');
+        }
+        DollarValue.TYPES.forEach(currency => {
+            this[currency] = this[currency] || 0;
+            this[currency] += (anotherDollorValue[currency] || 0);
+        });
+    }
+    clone() {
+        return new DollarValue(this);
+    }
+    avoidNaN() {
+        DollarValue.TYPES.forEach(type => {
+            avoidNaN(type, this);
+        });
     }
 }
 
 DollarValue.TYPES = ['CAD', 'USD'];
+
+export class DollarValueMap {
+    constructor(anotherDollorValueMap = {map: {}}) {
+        this.map = {};
+        this.add(anotherDollorValueMap);
+    }
+    add(anotherDollorValueMap) {
+        if (!anotherDollorValueMap || !anotherDollorValueMap.map) {
+            throw new Error('anotherDollorValueMap is empty in DollarValueMap.add');
+        }
+        Object.entries(anotherDollorValueMap.map).forEach(([key, value]) => {
+            if (this.map[key]) {
+                this.map[key].add(value);
+            } else {
+                this.map[key] = value.clone();
+            }
+        });
+    }
+    addValue(key, value, currency) {
+        if (this.map[key]) {
+            this.map[key][currency] += value;
+        } else {
+            this.map[key] = new DollarValue({[currency]: value});
+        }
+    }
+    get(key) {
+        return this.map[key];
+    }
+    avoidNaN() {
+        Object.values(this.map).forEach(value => value.avoidNaN());
+    }
+    clone() {
+        return new DollarValueMap(this);
+    }
+}
+

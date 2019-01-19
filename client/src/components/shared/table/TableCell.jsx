@@ -4,27 +4,48 @@ import PropTypes from 'prop-types';
 import NumberChangeTransition from '../../Animation/NumberChangeTransition.jsx';
 import {getDollarValue} from '../../../utils';
 
-const TableCell = ({entry, column, displayCurrency}) => {
-    let value, refValue, otherValue, content, otherContent, filteredValue, otherfilteredValue;
-    let otherCurrency = displayCurrency === 'CAD' ? 'USD' : 'CAD';
-    let showOtherCurrency = column.showOtherCurrency && entry.currency !== displayCurrency;
-    let selector = column.selector;
+const processData = (entry, column, currency) => {
+    let value, filteredValue, refValue, content;
     let ref_selector = column.ref_selector;
-    value = getDollarValue(entry, selector, displayCurrency);
-    if (ref_selector) {
-        refValue = getDollarValue(entry, ref_selector, displayCurrency);
-    } else {
+    let selector = column.selector;
+    let valueFunction = column.valueFunction;
+    if (valueFunction) {
+        const valueResult = valueFunction(entry);
+        value = valueResult && valueResult[currency] || 0;
         refValue = value;
+    } else {
+        value = getDollarValue(entry, selector, currency);
+        if (ref_selector) {
+            refValue = getDollarValue(entry, ref_selector, currency);
+        } else {
+            refValue = value;
+        }
     }
     if (typeof refValue === 'object') {
         refValue = refValue.toString();
     }
     filteredValue = column.filter ? column.filter(value) : value;
-    content = column.formatFunction ? column.formatFunction(entry, column, displayCurrency) : filteredValue;
+    content = column.formatFunction ? column.formatFunction(entry, filteredValue, refValue) : filteredValue;
+    return {
+        value,
+        filteredValue,
+        refValue,
+        content
+    };
+};
+
+const TableCell = ({entry, column, displayCurrency}) => {
+    let refValue, content, otherContent;
+    let otherCurrency = displayCurrency === 'CAD' ? 'USD' : 'CAD';
+    let showOtherCurrency = column.showOtherCurrency && entry.currency !== displayCurrency;
+
+
+    const processedResult = processData(entry, column, displayCurrency);
+    content = processedResult.content;
+    refValue = processedResult.refValue;
     if (showOtherCurrency) {
-        otherValue = getDollarValue(entry, selector, otherCurrency);
-        otherfilteredValue = column.filter ? column.filter(otherValue) : otherValue;
-        otherContent = column.formatFunction ? column.formatFunction(entry, column, otherCurrency) : otherfilteredValue;
+        const processedResult = processData(entry, column, otherCurrency);
+        otherContent = processedResult.content;
     }
     let cellStyle = column.cellStyle;
     cellStyle = typeof cellStyle === 'function' ? cellStyle(entry) : cellStyle;

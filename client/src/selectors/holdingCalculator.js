@@ -1,5 +1,5 @@
 import { divide } from '../utils';
-import {Transaction, DollarValue} from './transaction';
+import {Transaction, DollarValue, DollarValueMap} from './transaction';
 import Holding from './holding';
 import ACCOUNTS from '../constants/accounts';
 
@@ -89,17 +89,15 @@ export const generateAccountHoldingsMap = (tscs, exchangeRates) => {
                 h.symbol === holding.symbol
             );
             if (combinedHolding) {
-                Holding.HOLDING_PROPERTIES.forEach(property => {
-                    DollarValue.TYPES.forEach(currency => {
-                        combinedHolding[property][currency] += holding[property][currency];
-                    });
+                Object.keys(Holding.HOLDING_PROPERTIES).forEach(key => {
+                    combinedHolding[key].add(holding[key]);
                 });
                 Holding.TSCS_PROPERTIES.forEach(property =>
                     combinedHolding[property] = combinedHolding[property].concat(holding[property])
                 );
                 combinedHolding.unfoundRate = combinedHolding.unfoundRate || holding.unfoundRate;
             } else {
-                combinedHolding = Holding.clone(holding);
+                combinedHolding = holding.clone();
                 result.push(combinedHolding);
             }
         });
@@ -175,14 +173,24 @@ export const calculateHoldingPerformance = (holding, quote, rate) => {
  */
 export const calculateTotalPerformance = (holdings, displayCurrency) => {
     const sumProps = ['mktValue', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
-                   'realizedGain', 'dividend'];
+                   'realizedGain', 'dividend', 'realizedGainYearly', 'dividendYearly'];
     const rt = {holdings};
 
     holdings.forEach(holding => {
         sumProps.forEach(prop => {
             rt[prop] = rt[prop] || 0;
-            if (typeof holding[prop] === 'object') {
+            if (holding[prop] instanceof DollarValue) {
                 rt[prop] += holding[prop][displayCurrency];
+            } else if (holding[prop] instanceof DollarValueMap) {
+                Object.entries(holding[prop].map).forEach(([key, value]) => {
+                    rt[prop] = rt[prop] || {
+                        map: {}
+                    };
+                    rt[prop].map[key] = rt[prop].map[key] || {
+                        [displayCurrency]: 0
+                    };
+                    rt[prop].map[key][displayCurrency] += value[displayCurrency];
+                });
             } else {
                 rt[prop] += holding[prop];
             }

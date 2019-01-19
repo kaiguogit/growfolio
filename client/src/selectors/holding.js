@@ -1,14 +1,16 @@
-import {DollarValue} from './transaction';
-import { round, divide, avoidNaN } from '../utils';
+import {DollarValue, DollarValueMap} from './transaction';
+import { round, divide } from '../utils';
 
-const HOLDING_PROPERTIES = [
-    'shares',
-    'cost',
-    'costOverall',
-    'averageCost',
-    'realizedGain',
-    'dividend'
-];
+const HOLDING_PROPERTIES = {
+    'shares': DollarValue,
+    'cost': DollarValue,
+    'costOverall': DollarValue,
+    'averageCost': DollarValue,
+    'realizedGain': DollarValue,
+    'realizedGainYearly': DollarValueMap,
+    'dividend': DollarValue,
+    'dividendYearly': DollarValueMap
+};
 
 const TSCS_PROPERTIES = [
     'transactions',
@@ -24,7 +26,8 @@ class Holding {
      * @param {string} data.currency
      */
     constructor(data) {
-        Object.assign(this, data);
+        const {symbol, exch, name, currency} = data;
+        Object.assign(this, {symbol, exch, name, currency});
         this.init();
     }
 
@@ -33,8 +36,8 @@ class Holding {
         this.sellTransactions = [];
         this.buyTransactions = [];
         this.dividendTransactions = [];
-        HOLDING_PROPERTIES.forEach(key => {
-            this[key] = new DollarValue();
+        Object.entries(HOLDING_PROPERTIES).forEach(([key, valueClass]) => {
+            this[key] = new valueClass();
         });
     }
 
@@ -54,9 +57,9 @@ class Holding {
         DollarValue.TYPES.forEach(currency => {
             this.transactions.forEach(tsc => {
                 let {type, acbChange, total, shares, realizedGain, returnOfCapital, capitalGain,
-                    newAcb, newAverageCost, unfoundRate} = tsc;
+                    newAcb, newAverageCost, unfoundRate, date} = tsc;
                 this.unfoundRate = this.unfoundRate || unfoundRate;
-
+                const year = date.year();
                 // http://www.moneysense.ca/invest/calculating-capital-gains-on-u-s-stocks/
                 // Keep track of CAD based ACB.
                 // You need to determine the cost in Canadian dollars
@@ -73,6 +76,7 @@ class Holding {
                         acbChange[currency] = - divide(this.cost[currency] * shares, this.shares[currency]);
                         realizedGain[currency] = total[currency] + acbChange[currency];
                         this.realizedGain[currency] += realizedGain[currency];
+                        this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
                         this.shares[currency] -= shares;
                     }
                 } else if (type === 'dividend') {
@@ -90,7 +94,9 @@ class Holding {
                     this.costOverall[currency] += acbChange[currency];
                     realizedGain[currency] = total[currency];
                     this.realizedGain[currency] += realizedGain[currency];
+                    this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
                     this.dividend[currency] += realizedGain[currency];
+                    this.dividendYearly.addValue(year, realizedGain[currency], currency);
                 }
                 this.cost[currency] += acbChange[currency];
                 acbChange[currency] = round(acbChange[currency], 3);
@@ -119,31 +125,29 @@ class Holding {
     }
 
     avoidNaN() {
-        HOLDING_PROPERTIES.forEach(key => {
-            DollarValue.TYPES.forEach(type => {
-                avoidNaN(type, this[key]);
-            });
+        Object.keys(HOLDING_PROPERTIES).forEach(key => {
+            this[key].avoidNaN();
         });
     }
 
     isUSD() {
         return this.currency === 'USD';
     }
+
+    clone() {
+        let cloned = new Holding(this);
+        cloned.unfoundRate = this.unfoundRate;
+        Object.keys(HOLDING_PROPERTIES).forEach(key => {
+            cloned[key] = this[key].clone();
+        });
+        Holding.TSCS_PROPERTIES.forEach(key =>
+            cloned[key] = cloned[key].concat(this[key])
+        );
+        return cloned;
+    }
 }
 
 Holding.HOLDING_PROPERTIES = HOLDING_PROPERTIES;
 Holding.TSCS_PROPERTIES = TSCS_PROPERTIES;
-Holding.clone = (holding) => {
-    let {symbol, exch, name, currency} = holding;
-    let cloned = new Holding({symbol, exch, name, currency});
-    cloned.unfoundRate = holding.unfoundRate;
-    HOLDING_PROPERTIES.forEach(key => {
-        cloned[key] = new DollarValue(holding[key]);
-    });
-    Holding.TSCS_PROPERTIES.forEach(property =>
-        cloned[property] = cloned[property].concat(holding[property])
-    );
-    return cloned;
-};
 
 export default Holding;
