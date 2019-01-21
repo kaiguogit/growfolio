@@ -8,6 +8,7 @@ const HOLDING_PROPERTIES = {
     'averageCost': DollarValue,
     'realizedGain': DollarValue,
     'realizedGainYearly': DollarValueMap,
+    'capitalGainYearly': DollarValueMap,
     'dividend': DollarValue,
     'dividendYearly': DollarValueMap
 };
@@ -77,6 +78,7 @@ class Holding {
                         realizedGain[currency] = total[currency] + acbChange[currency];
                         this.realizedGain[currency] += realizedGain[currency];
                         this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
+                        this.capitalGainYearly.addValue(year, realizedGain[currency], currency);
                         this.shares[currency] -= shares;
                     }
                 } else if (type === 'dividend') {

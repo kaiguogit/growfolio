@@ -173,7 +173,7 @@ export const calculateHoldingPerformance = (holding, quote, rate) => {
  */
 export const calculateTotalPerformance = (holdings, displayCurrency) => {
     const sumProps = ['mktValue', 'cost', 'gain', 'daysGain', 'gainOverall', 'costOverall',
-                   'realizedGain', 'dividend', 'realizedGainYearly', 'dividendYearly'];
+        'realizedGain', 'dividend', 'realizedGainYearly', 'capitalGainYearly', 'dividendYearly'];
     const rt = {holdings};
 
     holdings.forEach(holding => {
@@ -182,14 +182,9 @@ export const calculateTotalPerformance = (holdings, displayCurrency) => {
             if (holding[prop] instanceof DollarValue) {
                 rt[prop] += holding[prop][displayCurrency];
             } else if (holding[prop] instanceof DollarValueMap) {
-                Object.entries(holding[prop].map).forEach(([key, value]) => {
-                    rt[prop] = rt[prop] || {
-                        map: {}
-                    };
-                    rt[prop].map[key] = rt[prop].map[key] || {
-                        [displayCurrency]: 0
-                    };
-                    rt[prop].map[key][displayCurrency] += value[displayCurrency];
+                Object.entries(holding[prop].map).forEach(([key, dollarValue]) => {
+                    rt[prop] = rt[prop] || new DollarValueMap();
+                    rt[prop].addValue(key, dollarValue[displayCurrency], displayCurrency);
                 });
             } else {
                 rt[prop] += holding[prop];

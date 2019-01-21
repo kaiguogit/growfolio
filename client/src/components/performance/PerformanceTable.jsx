@@ -1,21 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PERFORMANCE_COLUMNS from './columns';
+import { connect } from 'react-redux';
+import { getHoldings, getDisplayCurrency } from '../../selectors';
 import PerformanceTableRow from './PerformanceTableRow.jsx';
 import PerformanceTableRowTotal from './PerformanceTableRowTotal.jsx';
+import SummaryBar from './SummaryBar.jsx';
 
 class PerformanceTable extends React.Component {
     render() {
-        const { symbols } = this.props;
-        const isEmpty = symbols.length === 0;
+        let { holdings, columns, showZeroShareHolding, displayCurrency} = this.props;
+        // Hide holding with 0 share.
+        if (!showZeroShareHolding) {
+            holdings = holdings.filter(holding => holding.shares[displayCurrency]);
+        }
+
+        const isEmpty = holdings.length === 0;
         return (
             <div>
+            <SummaryBar/>
             {isEmpty ? <h2>Empty.</h2>
               : <table className="table table-sticky-first-column table-responsive table-striped table-bordered table-sm table-compact">
                     <thead className="thead-default">
                         <tr>
-                            {PERFORMANCE_COLUMNS.map(column => {
+                            {columns.map(column => {
                                 return (
                                     <th className={column.className} key={column.selector}>
                                         {column.title}
@@ -25,10 +33,11 @@ class PerformanceTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <PerformanceTableRowTotal/>
-                        {this.props.symbols.map(symbol => {
+                        <PerformanceTableRowTotal columns={columns}/>
+                        {holdings.map(holding => {
                             return (
-                                <PerformanceTableRow key={symbol} symbol={symbol} />
+                                <PerformanceTableRow key={holding.symbol} symbol={holding.symbol}
+                                    columns={columns}/>
                             );
                         })}
                     </tbody>
@@ -40,7 +49,18 @@ class PerformanceTable extends React.Component {
 }
 
 PerformanceTable.propTypes = {
-    symbols: PropTypes.array.isRequired
+    holdings: PropTypes.array.isRequired,
+    columns: PropTypes.array.isRequired,
+    showZeroShareHolding: PropTypes.bool.isRequired,
+    displayCurrency: PropTypes.string.isRequired
 };
 
-export default PerformanceTable;
+const mapStateToProps = state => {
+    return {
+        holdings: getHoldings(state),
+        showZeroShareHolding: state.portfolio.showZeroShareHolding,
+        displayCurrency: getDisplayCurrency(state)
+    };
+};
+
+export default connect(mapStateToProps)(PerformanceTable);

@@ -2,12 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getTotalPerformance, getDisplayCurrency } from '../../selectors';
-import PERFORMANCE_COLUMNS from './columns';
 import TableCell from '../shared/table/TableCell.jsx';
-
-const validColumn = ['cost', 'mktValue', 'changePercent', 'daysGain', 'gain',
-'gainPercent', 'gainOverall', 'realizedGain', 'dividend', 'realizedGain2018',
-'realizedGain2017', 'realizedGain2016'];
 
 class PerformanceTableRowTotal extends React.Component {
     constructor(props) {
@@ -22,7 +17,7 @@ class PerformanceTableRowTotal extends React.Component {
     renderValidCell(column) {
         let {selector, className} = column;
         let {total, displayCurrency} = this.props;
-        if (validColumn.indexOf(selector) !== -1) {
+        if (column.supportTotal) {
             return (
                 <TableCell
                     key={selector}
@@ -42,7 +37,7 @@ class PerformanceTableRowTotal extends React.Component {
     render() {
         return (
             <tr>
-                {PERFORMANCE_COLUMNS.map(column => {
+                {this.props.columns.map(column => {
                     return this.renderValidCell(column);
                 })}
             </tr>
@@ -52,7 +47,8 @@ class PerformanceTableRowTotal extends React.Component {
 
 PerformanceTableRowTotal.propTypes = {
     total: PropTypes.object.isRequired,
-    displayCurrency: PropTypes.string.isRequired
+    displayCurrency: PropTypes.string.isRequired,
+    columns: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state) => {

@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeGetHoldingPerformance, getDisplayCurrency } from '../../selectors';
-import PERFORMANCE_COLUMNS from './columns';
 import TableCell from '../shared/table/TableCell.jsx';
 
 class PerformanceTableRow extends React.Component {
     render() {
-        const {holding, displayCurrency} = this.props;
+        const {holding, displayCurrency, columns} = this.props;
         return (
             <tr>
-                {PERFORMANCE_COLUMNS.map(column => {
+                {columns.map(column => {
                     return (
                         <TableCell
                             key={column.selector}
@@ -39,7 +38,8 @@ class PerformanceTableRow extends React.Component {
 PerformanceTableRow.propTypes = {
     symbol: PropTypes.string.isRequired,
     holding: PropTypes.object.isRequired,
-    displayCurrency: PropTypes.string.isRequired
+    displayCurrency: PropTypes.string.isRequired,
+    columns: PropTypes.array.isRequired
 };
 
 export default connect(makeMapStateToProps)(PerformanceTableRow);

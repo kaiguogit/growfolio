@@ -1,10 +1,6 @@
 import { percentage, currency, coloredCell } from '../../utils';
 
-const defaultColumn = {
-    // ref_selector: 'daysGain'
-};
-
-const PERFORMANCE_COLUMNS = [
+export const PERFORMANCE_COLUMNS = [
     {
         selector: 'symbol',
         title: 'Symbol',
@@ -21,13 +17,15 @@ const PERFORMANCE_COLUMNS = [
         showOtherCurrency: true,
         filter: currency(2),
         title: 'Cost',
-        className: 'hidden-sm-down'
+        className: 'hidden-sm-down',
+        supportTotal: true
     },
     {
         selector: 'mktValue',
         showOtherCurrency: true,
         filter: currency(2),
         title: 'Market Value',
+        supportTotal: true
     },
     {
         selector: 'quoteDate',
@@ -56,7 +54,7 @@ const PERFORMANCE_COLUMNS = [
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Change',
-        className: 'font-weight-bold'
+        className: 'font-weight-bold',
     },
     {
         selector: 'changePercent',
@@ -64,7 +62,8 @@ const PERFORMANCE_COLUMNS = [
         formatFunction: coloredCell,
         title: 'Change Percent',
         className: 'font-weight-bold',
-        ref_selector: 'change'
+        ref_selector: 'change',
+        supportTotal: true
     },
     {
         selector: 'daysGain',
@@ -72,21 +71,24 @@ const PERFORMANCE_COLUMNS = [
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Day\'s Gain',
-        className: 'font-weight-bold'
+        className: 'font-weight-bold',
+        supportTotal: true
     },
     {
         selector: 'gain',
         showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
-        title: 'Gain'
+        title: 'Gain',
+        supportTotal: true
     },
     {
         selector: 'gainPercent',
         showOtherCurrency: true,
         filter: percentage,
         formatFunction: coloredCell,
-        title: 'Gain Percent'
+        title: 'Gain Percent',
+        supportTotal: true
     },
     {
         selector: 'gainOverall',
@@ -94,14 +96,16 @@ const PERFORMANCE_COLUMNS = [
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Overall Return',
-        className: 'hidden-sm-down'
+        className: 'hidden-sm-down',
+        supportTotal: true
     },
     {
         selector: 'realizedGain',
         showOtherCurrency: true,
         filter: currency(2),
         formatFunction: coloredCell,
-        title: 'Realized Gain'
+        title: 'Realized Gain',
+        supportTotal: true
     },
     {
         selector: 'dividend',
@@ -109,6 +113,21 @@ const PERFORMANCE_COLUMNS = [
         filter: currency(2),
         formatFunction: coloredCell,
         title: 'Dividend',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    }
+];
+
+export const TAX_COLUMNS = [
+    {
+        selector: 'symbol',
+        title: 'Symbol',
+        formatFunction: coloredCell,
+        ref_selector: 'change'
+    },
+    {
+        selector: 'currency',
+        title: 'Currency',
         className: 'hidden-sm-down'
     },
     {
@@ -118,7 +137,28 @@ const PERFORMANCE_COLUMNS = [
         showOtherCurrency: true,
         filter: currency(2),
         title: 'Realized Gain 2018',
-        className: 'hidden-sm-down'
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'capitalGain2018',
+        valueFunction: entry => entry.capitalGainYearly.map['2018'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Capital Gain 2018',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'dividend2018',
+        valueFunction: entry => entry.dividendYearly.map['2018'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Dividend 2018',
+        className: 'hidden-sm-down',
+        supportTotal: true
     },
     {
         selector: 'realizedGain2017',
@@ -127,7 +167,28 @@ const PERFORMANCE_COLUMNS = [
         showOtherCurrency: true,
         filter: currency(2),
         title: 'Realized Gain 2017',
-        className: 'hidden-sm-down'
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'capitalGain2017',
+        valueFunction: entry => entry.capitalGainYearly.map['2017'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Capital Gain 2017',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'dividend2017',
+        valueFunction: entry => entry.dividendYearly.map['2017'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Dividend 2017',
+        className: 'hidden-sm-down',
+        supportTotal: true
     },
     {
         selector: 'realizedGain2016',
@@ -136,14 +197,27 @@ const PERFORMANCE_COLUMNS = [
         showOtherCurrency: true,
         filter: currency(2),
         title: 'Realized Gain 2016',
-        className: 'hidden-sm-down'
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'capitalGain2016',
+        valueFunction: entry => entry.capitalGainYearly.map['2016'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Capital Gain 2016',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'dividend2016',
+        valueFunction: entry => entry.dividendYearly.map['2016'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Dividend 2016',
+        className: 'hidden-sm-down',
+        supportTotal: true
     }
 ];
-
-PERFORMANCE_COLUMNS.forEach(column => {
-    Object.keys(defaultColumn).forEach(key => {
-        column[key] = column[key] || defaultColumn[key];
-    });
-});
-
-export default PERFORMANCE_COLUMNS;
