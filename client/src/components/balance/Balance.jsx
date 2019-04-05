@@ -1,11 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as quotesActions from '../../actions/quotes';
-import { getHoldings } from '../../selectors';
-
 // import CurrentAllocationPieChart from './CurrentAllocationPieChart.jsx';
 import TargetAllocationWithDrilldown from './TargetAllocationWithDrilldown.jsx';
 import CurrenAllocationWithDrilldown from './CurrenAllocationWithDrilldown.jsx';
@@ -31,21 +24,4 @@ class Balance extends React.Component {
     }
 }
 
-Balance.propTypes = {
-    holdings: PropTypes.array.isRequired,
-    actions: PropTypes.object.isRequired,
-    displayCurrency: PropTypes.string.isRequired
-};
-
-const mapStateToProps = state => {
-    return {
-        holdings: getHoldings(state),
-        displayCurrency: state.portfolio.displayCurrency
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators(quotesActions, dispatch)
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Balance);
+export default Balance;

@@ -58,6 +58,11 @@ export class Transaction {
         return this.currency === 'USD';
     }
 
+    isValid(startDate, endDate) {
+        return (this.date.isBefore(endDate, 'day') || this.date.isSame(endDate, 'day')) &&
+        (this.date.isAfter(startDate, 'day') || this.date.isSame(startDate, 'day'));
+    }
+
     setTotalandPrice() {
         const {type, totalOrPerShare, shares} = this;
         this.total = new DollarValue();

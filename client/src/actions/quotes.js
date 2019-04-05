@@ -1,7 +1,7 @@
 import types from '../constants/actionTypes';
 import { log, getHeaders } from '../utils';
 import * as currencyActions from './currency';
-import { getHoldings } from '../selectors';
+import { getHoldingsAfterZeroShareFilter } from '../selectors';
 import { makeActionCreator, callAPI } from './utils';
 // import fakeQuotes from './fixtures/quotes';
 import moment from 'moment-timezone';
@@ -38,9 +38,7 @@ const fetchQuotes = (download) => (dispatch, getState) => {
 };
 
 const downloadQuote = (dispatch, getState) => {
-    const holdings = getHoldings(getState()).filter(holding => {
-        return holding.shares.CAD;
-    });
+    const holdings = getHoldingsAfterZeroShareFilter(getState());
     return holdings.reduce((previous, holding) => {
         let symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
         return previous.then(() => {return fetchSingleQuote(symbol, dispatch);});

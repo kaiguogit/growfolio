@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { TSCS_COLUMNS } from './columns';
-import TableCategory from '../shared/table/TableCategory.jsx';
+import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
 
@@ -26,14 +26,6 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate}) => {
         };
         return render;
     };
-    const filterTsc = tsc => {
-        return (tsc.date.isBefore(endDate, 'day') || tsc.date.isSame(endDate, 'day')) &&
-            (tsc.date.isAfter(startDate, 'day') || tsc.date.isSame(startDate, 'day'));
-    };
-
-    const filterHolding = holding => {
-        return holding.transactions.filter(filterTsc).length;
-    };
 
     return (
         <table className="table table-sticky-first-column table-responsive table-bordered table-sm table-compact">
@@ -49,15 +41,17 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate}) => {
                     <th>Delete</th>
                 </tr>
             </thead>
-            {holdings.filter(filterHolding).map(holding => {
+            {holdings.map(holding => {
                 return (
                     <TableCategory
                         titleFn={categoryTitle(holding)}
                         columnsCount={TSCS_COLUMNS.length + 1}
                         key={holding.symbol}
+                        symbol={holding.symbol}
                     >
-                        {holding.transactions.filter(filterTsc).map(tsc => {
-                            return <TscsRow tsc={tsc} key={tsc._id} displayCurrency={displayCurrency}/>;
+                        {holding.getValidTscs(startDate, endDate).map(tsc => {
+                            return (<TscsRow tsc={tsc} key={tsc._id}
+                                             displayCurrency={displayCurrency}/>);
                         })}
                     </TableCategory>
                 );
@@ -73,32 +67,38 @@ TscsTable.propTypes = {
     endDate: PropTypes.object.isRequired
 };
 
-const TscsRow = ({tsc, displayCurrency}) => {
-    return (
-        <tr>
-            {TSCS_COLUMNS.map(column => {
-                return (
-                    <TableCell
-                        key={column.selector}
-                        entry={tsc}
-                        column={column}
-                        displayCurrency={displayCurrency}
-                    />
-                );
-            })}
-            <td>
-                <div className="tscs-action-buttons">
-                    <TscActionButton type="edit" tsc={tsc}/>
-                    <TscActionButton type="delete" tsc={tsc}/>
-                </div>
-            </td>
-        </tr>
-    );
-};
+// PureComponent does shallow compare on props and state in shouldComponentUpdate().
+// It can prevent row from re-rednering when collapse state changes.
+// https://www.robinwieruch.de/react-prevent-rerender-component/
+class TscsRow extends React.PureComponent {
+    render() {
+        const {tsc, displayCurrency} = this.props;
+        return (
+            <tr>
+                {TSCS_COLUMNS.map(column => {
+                    return (
+                        <TableCell
+                            key={column.selector}
+                            entry={tsc}
+                            column={column}
+                            displayCurrency={displayCurrency}
+                        />
+                    );
+                })}
+                <td>
+                    <div className="tscs-action-buttons">
+                        <TscActionButton type="edit" tsc={tsc}/>
+                        <TscActionButton type="delete" tsc={tsc}/>
+                    </div>
+                </td>
+            </tr>
+        );
+    }
+}
 
 TscsRow.propTypes = {
     tsc: PropTypes.object.isRequired,
-    displayCurrency: PropTypes.string.isRequired,
+    displayCurrency: PropTypes.string.isRequired
 };
 
 export default TscsTable;

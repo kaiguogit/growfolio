@@ -1,7 +1,10 @@
 import initialState from './initialState';
 import types from '../constants/actionTypes';
+import {setKeyValueFromAction} from './reducerUtils';
 
 const tscsReducer = (state = initialState.tscs, action) => {
+    let newHolding = false;
+    const newCollapseState = {};
     switch (action.type) {
         case types.REQUEST_TSCS:
         case types.ADD_TSCS:
@@ -12,8 +15,17 @@ const tscsReducer = (state = initialState.tscs, action) => {
                 isFetching: true
             };
         case types.RECEIVE_TSCS:
+            // Init collapse.
+            action.tscs.forEach(tsc => {
+                if (state.collapse[tsc.symbol] === undefined) {
+                    newCollapseState[tsc.symbol] = true;
+                    newHolding = true;
+                }
+            });
             return {
                 ...state,
+                collapse: newHolding ? Object.assign({}, state.collapse, newCollapseState) :
+                    state.collapse,
                 isFetching: false,
                 items: action.tscs,
                 lastUpdated: action.receivedAt
@@ -33,6 +45,19 @@ const tscsReducer = (state = initialState.tscs, action) => {
                     isOpened: !!action.showModal,
                     tsc: action.tsc ? Object.assign({}, action.tsc) : null
                 }
+            };
+        case types.SET_ALL_COLLAPSE_STATE:
+            return {
+                ...state,
+                collapse: Object.keys(state.collapse).reduce((acc, symbol) => {
+                    acc[symbol] = action.value;
+                    return acc;
+                }, {})
+            };
+        case types.SET_ONE_COLLAPSE_STATE:
+            return {
+                ...state,
+                collapse: setKeyValueFromAction('symbol', 'value')(state.collapse, action)
             };
         default:
             return state;

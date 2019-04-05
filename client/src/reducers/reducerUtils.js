@@ -45,6 +45,18 @@ export const setValueFromAction = key => (state, action) => {
 };
 
 /**
+ * Set state with dynamic key action.
+ * @param {string} keyName key name to use.
+ * @param {string} valueName key name to use.
+ */
+export const setKeyValueFromAction = (keyName, valueName) => (state, action) => {
+    return action[keyName] != undefined ? {
+        ...state,
+        [action[keyName]]: action[valueName]
+    } : state;
+};
+
+/**
  * Merge object with same key from action.
  * @param {string} key key name to use.
  */

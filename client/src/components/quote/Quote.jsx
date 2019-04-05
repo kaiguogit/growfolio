@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as quotesActions from '../../actions/quotes';
-import { getHoldings } from '../../selectors';
+import { getHoldingsAfterZeroShareFilter } from '../../selectors';
 import { getQuotes } from '../../selectors/quoteSelector';
 import DatePicker from 'react-datepicker';
 import { FormGroup } from '../shared/index.jsx';
@@ -41,11 +41,7 @@ class Quote extends React.Component {
     }
 
     render() {
-        let { showZeroShareHolding, holdings} = this.props;
-        // Hide holding with 0 share.
-        if (!showZeroShareHolding) {
-            holdings = holdings.filter(holding => holding.shares);
-        }
+        let {holdings} = this.props;
 
         return (
             <div>
@@ -89,15 +85,13 @@ Quote.propTypes = {
     actions: PropTypes.object.isRequired,
     displayDate: PropTypes.object.isRequired,
     quotes: PropTypes.object.isRequired,
-    showZeroShareHolding: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {
     return {
-        holdings: getHoldings(state),
+        holdings: getHoldingsAfterZeroShareFilter(state),
         displayDate: state.quotes.displayDate,
         quotes: getQuotes(state),
-        showZeroShareHolding: state.portfolio.showZeroShareHolding
     };
 };
 

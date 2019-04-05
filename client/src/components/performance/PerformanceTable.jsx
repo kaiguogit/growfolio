@@ -2,18 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { getHoldings, getDisplayCurrency } from '../../selectors';
+import { getHoldingsAfterZeroShareFilter } from '../../selectors';
 import PerformanceTableRow from './PerformanceTableRow.jsx';
 import PerformanceTableRowTotal from './PerformanceTableRowTotal.jsx';
 import SummaryBar from './SummaryBar.jsx';
 
 class PerformanceTable extends React.Component {
     render() {
-        let { holdings, columns, showZeroShareHolding, displayCurrency} = this.props;
-        // Hide holding with 0 share.
-        if (!showZeroShareHolding) {
-            holdings = holdings.filter(holding => holding.shares[displayCurrency]);
-        }
+        let { holdings, columns} = this.props;
 
         const isEmpty = holdings.length === 0;
         return (
@@ -51,15 +47,11 @@ class PerformanceTable extends React.Component {
 PerformanceTable.propTypes = {
     holdings: PropTypes.array.isRequired,
     columns: PropTypes.array.isRequired,
-    showZeroShareHolding: PropTypes.bool.isRequired,
-    displayCurrency: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => {
     return {
-        holdings: getHoldings(state),
-        showZeroShareHolding: state.portfolio.showZeroShareHolding,
-        displayCurrency: getDisplayCurrency(state)
+        holdings: getHoldingsAfterZeroShareFilter(state)
     };
 };
 

@@ -35,6 +35,15 @@ export const toggleTscsModal = (showModal, tsc) => ({
     showModal,
     tsc
 });
+export const setAllCollapse = (value) => ({
+    type: types.SET_ALL_COLLAPSE_STATE,
+    value,
+});
+export const setOneCollapse = (symbol, value) => ({
+    type: types.SET_ONE_COLLAPSE_STATE,
+    symbol,
+    value
+});
 
 // Fake API version
 // export const fetchTscs = () => dispatch => {

@@ -147,6 +147,13 @@ class Holding {
         );
         return cloned;
     }
+
+    getValidTscs(startDate, endDate) {
+        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate));
+    }
+    hasValidTscs(startDate, endDate) {
+        return this.getValidTscs(startDate, endDate).length;
+    }
 }
 
 Holding.HOLDING_PROPERTIES = HOLDING_PROPERTIES;

@@ -18,6 +18,9 @@ export const getTscs = state => state.tscs.items;
 export const getSymbolFromProps = (state, props) => props && props.symbol;
 export const getDisplayAccount = (state) => state.portfolio.displayAccount;
 export const getDisplayCurrency = state => state.portfolio.displayCurrency;
+export const getShowZeroShareHolding = state => state.portfolio.showZeroShareHolding;
+export const getStartDate = state => state.portfolio.startDate;
+export const getEndDate = state => state.portfolio.endDate;
 export const getBalance = state => state.balance;
 export const getExchangeRates = state => state.currency.data;
 export const getLatestExchangeRate = createSelector([getExchangeRates], data => {
@@ -80,6 +83,24 @@ export const getHoldings = createSelector(
     makeSafe((account, accountHoldingsMap) => accountHoldingsMap[account] || [])
 );
 registerSelectors({getHoldings});
+
+
+export const getHoldingsAfterZeroShareFilter = createSelector(
+    [getHoldings, getShowZeroShareHolding, getDisplayCurrency],
+    makeSafe((holdings, showZeroShareHolding, displayCurrency) => {
+        if (!showZeroShareHolding) {
+            return holdings.filter(holding => holding.shares[displayCurrency]);
+        }
+        return holdings;
+    })
+);
+
+export const getHoldingsWithValidTscs = createSelector(
+    [getHoldingsAfterZeroShareFilter, getStartDate, getEndDate],
+    makeSafe((holdings, startDate, endDate) => {
+        return holdings.filter(holding => holding.hasValidTscs(startDate, endDate));
+    })
+);
 
 /**
  * Selector function for 1 holding.
