@@ -12,7 +12,7 @@
 a.button,
 input[type="submit"],
 button {
-  &:not(.mod-bare) {
+  &:not(.mod-bare):not(.react-datepicker__navigation) {
     background: linear-gradient(to bottom, $light-gray-100 0%, $light-gray-200 100%);
     border: 0;
     border-radius: .3em;
@@ -34,8 +34,10 @@ button {
 a.button.mod-small,
 input[type="submit"].mod-small,
 button.mod-small {
+  &:not(.react-datepicker__navigation) {
     font-size: .7em;
     padding: .54em 0.93em;
+  }
 }
 
 a.button:focus,
@@ -44,7 +46,7 @@ input[type="submit"]:focus,
 input[type="submit"]:hover,
 button:not([disabled]):focus,
 button:not([disabled]):hover {
-    &:not(.mod-bare) {
+    &:not(.mod-bare):not(.react-datepicker__navigation) {
         background: linear-gradient(to bottom, $light-gray-200 0%, $light-gray-300 100%);
         color: $default-font-color;
     }
@@ -53,7 +55,7 @@ button:not([disabled]):hover {
 a.button:active,
 input[type="submit"]:active,
 button:not([disabled]):active {
-    &:not(.mod-bare) {
+    &:not(.mod-bare):not(.react-datepicker__navigation) {
       background: linear-gradient(to bottom, $light-gray-300 0%, $light-gray-400 100%);
       color: $default-font-color;
     }
@@ -85,11 +87,13 @@ button[disabled] {
   a.button.mod-primary,
   input[type="submit"].mod-primary,
   button.mod-primary {
-    background: linear-gradient(to bottom, $green-500 0%, $green-600 100%);
-    box-shadow: 0 1px 0 $green-900;
-    color: #fff;
-    padding-left: 1.8em;
-    padding-right: 1.8em;
+    &:not(.react-datepicker__navigation) {
+      background: linear-gradient(to bottom, $green-500 0%, $green-600 100%);
+      box-shadow: 0 1px 0 $green-900;
+      color: #fff;
+      padding-left: 1.8em;
+      padding-right: 1.8em;
+    }
   }
 
     a.button.mod-primary:focus,

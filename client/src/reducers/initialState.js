@@ -4,7 +4,9 @@ export default {
     portfolio: {
         displayCurrency: 'CAD',
         displayAccount: 'all',
-        showZeroShareHolding: false
+        showZeroShareHolding: false,
+        startDate: moment().dayOfYear(1),
+        endDate: moment()
     },
     tscs: {
         isFetching: false,

@@ -7,6 +7,10 @@
     "type": "git",
     "url": "https://github.com/kaiguogit/growfolio"
   },
+  "engines": {
+    "npm": "6.4.1",
+    "node": "10.11.0"
+  },
   "author": "Kai Guo",
   "license": "MIT",
   "scripts": {

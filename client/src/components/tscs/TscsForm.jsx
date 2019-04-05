@@ -56,7 +56,7 @@ class TscsForm extends React.Component {
     }
 
     handleDateChange(date) {
-        this.setState({date: date});
+        this.setState({date: moment(date)});
     }
 
     handleTotalOrPerShareChange(e) {
@@ -96,11 +96,17 @@ class TscsForm extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="date">Date</label>
-                    <DatePicker
-                        selected={this.state.date}
-                        onChange={this.handleDateChange}
-                        className="form-control"
-                    />
+                    <div>
+                        <DatePicker
+                            selected={this.state.date.toDate()}
+                            onChange={this.handleDateChange}
+                            className="form-control"
+                            showYearDropdown
+                            yearDropdownItemNumber={3}
+                            showMonthDropdown
+                            scrollableYearDropdown
+                        />
+                    </div>
                 </FormGroup>
                 <FormGroup>
                     <label htmlFor="type">Type</label>

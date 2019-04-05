@@ -52,7 +52,7 @@ class Quote extends React.Component {
                 <FormGroup>
                     <label htmlFor="date">Date</label>
                     <DatePicker
-                        selected={this.props.displayDate}
+                        selected={this.props.displayDate.toDate()}
                         onChange={this.handleDateChange}
                         className="form-control"
                     />

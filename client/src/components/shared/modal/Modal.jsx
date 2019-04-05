@@ -15,7 +15,7 @@ const Modal = (props) => {
                 isolatedScroll(modal);
             });
         }
-    }
+    };
 
     const handleSubmit = () =>{
         let result = props.onSubmit();

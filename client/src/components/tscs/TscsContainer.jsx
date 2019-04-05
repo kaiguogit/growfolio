@@ -9,7 +9,7 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 
 class TscsContainer extends React.Component {
     render() {
-        let { isFetching, holdings, showZeroShareHolding, displayCurrency } = this.props;
+        let { isFetching, holdings, showZeroShareHolding, displayCurrency, startDate, endDate} = this.props;
         const isEmpty = holdings.length === 0;
 
         // Hide holding with 0 share.
@@ -22,7 +22,8 @@ class TscsContainer extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable holdings={holdings} displayCurrency={displayCurrency}/>
+                      <TscsTable holdings={holdings} displayCurrency={displayCurrency} startDate={startDate}
+                        endDate={endDate}/>
                     </div>
                 }
                 <DeleteTscModal/>
@@ -35,7 +36,9 @@ TscsContainer.propTypes = {
     holdings: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,
     showZeroShareHolding: PropTypes.bool.isRequired,
-    displayCurrency: PropTypes.string.isRequired
+    displayCurrency: PropTypes.string.isRequired,
+    startDate: PropTypes.object.isRequired,
+    endDate: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
@@ -43,6 +46,8 @@ const mapStateToProps = state => {
         holdings: getHoldings(state),
         isFetching: state.tscs.isFetching,
         showZeroShareHolding: state.portfolio.showZeroShareHolding,
+        startDate: state.portfolio.startDate,
+        endDate: state.portfolio.endDate,
         displayCurrency: getDisplayCurrency(state)
     };
 };

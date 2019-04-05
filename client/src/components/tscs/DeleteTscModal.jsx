@@ -9,7 +9,7 @@ import Modal from '../shared/modal/Modal.jsx';
 class DeleteTscModal extends React.Component {
     constructor () {
         super();
-        this.state = {secModal: false}
+        this.state = {secModal: false};
         this.handleCloseModal = this.handleCloseModal.bind(this);
     }
     handleCloseModal() {

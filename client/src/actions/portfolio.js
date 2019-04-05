@@ -1,5 +1,6 @@
 import types from '../constants/actionTypes';
 import * as persist from '../utils/persist';
+import moment from 'moment-timezone';
 
 export const getSelectDisplayCurrency = () => {
     let displayCurrency = persist.get(types.SELECT_DISPLAY_CURRENCY);
@@ -14,6 +15,20 @@ export const selectDisplayCurrency = displayCurrency => {
     return {
         type: types.SELECT_DISPLAY_CURRENCY,
         displayCurrency
+    };
+};
+
+export const setStartDate = date => {
+    return {
+        type: types.SET_START_DATE,
+        startDate: moment(date)
+    };
+};
+
+export const setEndDate = date => {
+    return {
+        type: types.SET_END_DATE,
+        endDate: moment(date)
     };
 };
 

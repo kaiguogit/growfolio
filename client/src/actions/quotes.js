@@ -4,12 +4,19 @@ import * as currencyActions from './currency';
 import { getHoldings } from '../selectors';
 import { makeActionCreator, callAPI } from './utils';
 // import fakeQuotes from './fixtures/quotes';
+import moment from 'moment-timezone';
 
 const REFRESH_QUOTES_INTERVAL = 600000;
 
 export const requestQuotes = makeActionCreator(types.REQUEST_QUOTES, 'symbol');
 export const requestQuotesTimeout = makeActionCreator(types.REQUEST_QUOTES_TIMEOUT);
-export const setQuoteDisplayDate = makeActionCreator(types.SET_QUOTE_DISPLAY_DATE, 'displayDate');
+export const setQuoteDisplayDate = date => {
+    return {
+        type: types.SET_QUOTE_DISPLAY_DATE,
+        displayDate: moment(date)
+    };
+};
+
 export const receiveQuotes = makeActionCreator(types.RECEIVE_QUOTES, 'data', 'meta');
 export const receiveSingleQuote = makeActionCreator(types.RECEIVE_SINGLE_QUOTE, 'data', 'meta');
 
