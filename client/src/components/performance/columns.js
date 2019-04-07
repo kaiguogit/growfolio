@@ -131,6 +131,36 @@ export const TAX_COLUMNS = [
         className: 'hidden-sm-down'
     },
     {
+        selector: 'realizedGain2019',
+        valueFunction: entry => entry.realizedGainYearly.map['2019'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Realized Gain 2019',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'capitalGain2019',
+        valueFunction: entry => entry.capitalGainYearly.map['2019'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Capital Gain 2019',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
+        selector: 'dividend2019',
+        valueFunction: entry => entry.dividendYearly.map['2019'],
+        formatFunction: coloredCell,
+        showOtherCurrency: true,
+        filter: currency(2),
+        title: 'Dividend 2018',
+        className: 'hidden-sm-down',
+        supportTotal: true
+    },
+    {
         selector: 'realizedGain2018',
         valueFunction: entry => entry.realizedGainYearly.map['2018'],
         formatFunction: coloredCell,
