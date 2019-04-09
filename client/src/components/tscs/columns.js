@@ -32,6 +32,10 @@ export const CASH_COLUMNS = [
         title: 'Currency'
     },
     {
+        selector: 'account',
+        title: 'Account'
+    },
+    {
         selector: 'date',
         filter: date,
         title: 'Date'
