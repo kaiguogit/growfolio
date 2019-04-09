@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/tscs';
 
 // Create a collapsible row to show/hide its children
-class TableCategory extends React.Component {
+class TableCategory extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -33,9 +33,7 @@ class TableCategory extends React.Component {
                         </td>
                     </tr>
                 </tbody>
-                <tbody style={this.props.collapse ? {display: 'none'} : {}}>
-                    {this.props.children}
-                </tbody>
+                {this.props.children}
             </React.Fragment>
         );
     }

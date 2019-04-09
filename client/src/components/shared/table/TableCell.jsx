@@ -54,7 +54,7 @@ const TableCell = ({entry, column, displayCurrency}) => {
             <NumberChangeTransition data={refValue}>
                 <span>
                     {!showOtherCurrency && content}
-                    {showOtherCurrency &&
+                    {showOtherCurrency && content && otherContent &&
                         <div>
                             <div>{content}</div>
                             <div>{otherContent}({otherCurrency})</div>

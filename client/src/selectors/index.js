@@ -88,7 +88,11 @@ export const getCash = createSelector(
     [getDisplayAccount, getAccountsMap],
     makeSafe((account, accountsMap) => accountsMap[account].cash)
 );
-registerSelectors({getCash});
+
+export const getValidCashTscs = createSelector(
+    [getDisplayAccount, getAccountsMap, getStartDate, getEndDate],
+    makeSafe((account, accountsMap, startDate, endDate) => accountsMap[account].getCashTransactions(startDate, endDate))
+);
 
 export const getHoldingsAfterZeroShareFilter = createSelector(
     [getHoldings, getShowZeroShareHolding, getDisplayCurrency],

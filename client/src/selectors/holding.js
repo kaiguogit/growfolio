@@ -76,13 +76,34 @@ export class Account {
             holding.calculate(this.cash);
         });
     }
+
+    getCashTransactions(startDate, endDate) {
+        const result = Object.values(this.cash).reduce((acc, cash) => {
+            return acc.concat(cash.getValidTscs(startDate, endDate));
+        }, []);
+        result.sort(compareDate);
+        return result;
+    }
 }
 
-export class Cash {
+class Base {
+    constructor() {
+        this.transactions = [];
+    }
+    getValidTscs(startDate, endDate) {
+        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate));
+    }
+    hasValidTscs(startDate, endDate) {
+        return this.getValidTscs(startDate, endDate).length;
+    }
+}
+
+export class Cash extends Base {
     /**
      * @param {string} data.currency
      */
     constructor(data) {
+        super();
         this.currency = data.currency;
         this.transactions = [];
         Object.entries(CASH_PROPERTIES).forEach(([key, valueClass]) => {
@@ -112,7 +133,7 @@ export class Cash {
 
 Cash.CASH_PROPERTIES = CASH_PROPERTIES;
 
-export class Holding {
+export class Holding extends Base {
     /**
      * @param {string} data.symbol
      * @param {string} data.exch
@@ -120,9 +141,9 @@ export class Holding {
      * @param {string} data.currency
      */
     constructor(data) {
+        super();
         const {symbol, exch, name, currency} = data;
         Object.assign(this, {symbol, exch, name, currency});
-        this.transactions = [];
         Object.entries(HOLDING_PROPERTIES).forEach(([key, valueClass]) => {
             this[key] = new valueClass();
         });
@@ -145,7 +166,7 @@ export class Holding {
                 let {type, acbChange, total, shares, realizedGain, returnOfCapital, capitalGain,
                     newAcb, newAverageCost, unfoundRate, date} = tsc;
                 this.unfoundRate = this.unfoundRate || unfoundRate;
-                const cash = cashes[currency];
+                const cash = currency === tsc.currency ? cashes[currency] : null;
                 const year = date.year();
                 // http://www.moneysense.ca/invest/calculating-capital-gains-on-u-s-stocks/
                 // Keep track of CAD based ACB.
@@ -154,7 +175,9 @@ export class Holding {
                 // based on the current exchange rate.
                 if (type === 'buy') {
                     acbChange[currency] = total[currency];
-                    cash.total[currency] -= total[currency];
+                    if (cash) {
+                        cash.total[currency] -= total[currency];
+                    }
                     this.shares[currency] += shares;
                 } else if (type === 'sell') {
                     // acb change is cost * (sold shares / holding shares)
@@ -164,7 +187,9 @@ export class Holding {
                     this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
                     this.capitalGainYearly.addValue(year, realizedGain[currency], currency);
                     this.shares[currency] -= shares;
-                    cash.total[currency] += total[currency];
+                    if (cash) {
+                        cash.total[currency] += total[currency];
+                    }
                 } else if (type === 'dividend') {
                     // http://canadianmoneyforum.com/showthread.php/10747-quot-Notional-distribution-quot-question
                     // Return of capital decrease cost
@@ -177,7 +202,9 @@ export class Holding {
                         acbChange[currency] += capitalGain[currency];
                     }
                     realizedGain[currency] = total[currency];
-                    cash.total[currency] += total[currency];
+                    if (cash) {
+                        cash.total[currency] += total[currency];
+                    }
                     this.realizedGain[currency] += realizedGain[currency];
                     this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
                     this.dividend[currency] += realizedGain[currency];
@@ -231,13 +258,6 @@ export class Holding {
         });
         cloned.transactions = cloned.transactions.concat(this.transactions);
         return cloned;
-    }
-
-    getValidTscs(startDate, endDate) {
-        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate));
-    }
-    hasValidTscs(startDate, endDate) {
-        return this.getValidTscs(startDate, endDate).length;
     }
 }
 

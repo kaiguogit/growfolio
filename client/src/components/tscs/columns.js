@@ -1,13 +1,42 @@
 import { date, capitalize, currency, coloredCell } from '../../utils';
+import React from 'react';
+import styles from '../../styles';
 
-export const CASH_COLUMNS = [{
-    selector: 'total',
-    title: 'Total',
-    filter: currency(2)
-}, {
-    selector: 'currency',
-    title: 'Currency'
-}];
+export const CASH_COLUMNS = [
+    {
+        selector: 'total',
+        title: 'Deposit',
+        filter: currency(2),
+        showOtherCurrency: true,
+        formatFunction(tsc, filteredValue) {
+            if (tsc.type === 'deposit') {
+                return (<span style={styles.up}>{filteredValue}</span>);
+            }
+            return '';
+        }
+    },
+    {
+        selector: 'total',
+        title: 'Withdraw',
+        filter: currency(2),
+        showOtherCurrency: true,
+        formatFunction(tsc, filteredValue) {
+            if (tsc.type === 'withdraw') {
+                return (<span style={styles.down}>{filteredValue}</span>);
+            }
+            return '';
+        }
+    },
+    {
+        selector: 'currency',
+        title: 'Currency'
+    },
+    {
+        selector: 'date',
+        filter: date,
+        title: 'Date'
+    },
+];
 
 export const TSCS_COLUMNS = [
     {

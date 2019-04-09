@@ -6,12 +6,9 @@ import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const TscsTable = ({holdings, displayCurrency, startDate, endDate, cash}) => {
+const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, collapse}) => {
     const categoryTitle = holding => {
         const render = () => {
-            if (holding.isCash) {
-                return <span>Cash</span>;
-            }
             return (
                 <span>
                     {holding.symbol + ': ' + holding.name}
@@ -53,11 +50,13 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cash}) => {
                         key={holding.symbol}
                         symbol={holding.symbol}
                     >
-                        {holding.getValidTscs(startDate, endDate).map(tsc => {
-                            return (<TscsRow tsc={tsc} key={tsc._id}
-                                             columns={TSCS_COLUMNS}
-                                             displayCurrency={displayCurrency}/>);
-                        })}
+                        <tbody style={collapse[holding.symbol] ? {display: 'none'} : {}}>
+                            {holding.getValidTscs(startDate, endDate).map(tsc => {
+                                return (<TscsRow tsc={tsc} key={tsc._id}
+                                                columns={TSCS_COLUMNS}
+                                                displayCurrency={displayCurrency}/>);
+                            })}
+                        </tbody>
                     </TableCategory>
                 );
             })}
@@ -65,31 +64,25 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cash}) => {
                 titleFn="Cash"
                 columnsCount={columnsSize + 1}
                 symbol="cash">
-                <React.Fragment>
-                    <thead>
-                        <tr>
-                            {CASH_COLUMNS.map(column => {
-                                return (
-                                    <th key={column.selector}>
-                                        {column.title}
-                                    </th>
-                                );
-                            })}
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    {Object.entries(cash).map(([currency, cashEntry]) => {
-                        return (
-                            <tbody key={currency}>
-                                {cashEntry.transactions.map(tsc => {
-                                    return (<TscsRow tsc={tsc} key={tsc._id}
-                                        columns={CASH_COLUMNS}
-                                        displayCurrency={displayCurrency}/>);
-                                })}
-                            </tbody>
-                        );
+                <thead style={collapse.cash ? {display: 'none'} : {}}>
+                    <tr>
+                        {CASH_COLUMNS.map(column => {
+                            return (
+                                <th key={column.selector}>
+                                    {column.title}
+                                </th>
+                            );
+                        })}
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody style={collapse.cash ? {display: 'none'} : {}}>
+                    {cashTscs.map(tsc => {
+                        return (<TscsRow tsc={tsc} key={tsc._id}
+                            columns={CASH_COLUMNS}
+                            displayCurrency={displayCurrency}/>);
                     })}
-                </React.Fragment>
+                </tbody>
             </TableCategory>}
         </table>
     );
@@ -97,10 +90,11 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cash}) => {
 
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
-    cash: PropTypes.object.isRequired,
+    cashTscs: PropTypes.array.isRequired,
     displayCurrency: PropTypes.string.isRequired,
     startDate: PropTypes.object.isRequired,
-    endDate: PropTypes.object.isRequired
+    endDate: PropTypes.object.isRequired,
+    collapse: PropTypes.object.isRequired
 };
 
 // PureComponent does shallow compare on props and state in shouldComponentUpdate().

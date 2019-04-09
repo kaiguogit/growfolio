@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { getHoldingsWithValidTscs, getDisplayCurrency, getCash } from '../../selectors';
+import { getHoldingsWithValidTscs, getDisplayCurrency, getValidCashTscs } from '../../selectors';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/tscs';
 
@@ -12,8 +12,8 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 class TscsContainer extends React.Component {
     render() {
         let { isFetching, holdings, displayCurrency, actions, startDate,
-            endDate, cash} = this.props;
-        const isEmpty = holdings.length === 0;
+            endDate, cashTscs, collapse} = this.props;
+        const isEmpty = !holdings.length && !cashTscs.length;
 
         return (
             <div>
@@ -22,9 +22,10 @@ class TscsContainer extends React.Component {
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
                       <TscsTable holdings={holdings} displayCurrency={displayCurrency}
                         setCollapse={actions.setOneCollapse}
-                        cash={cash}
+                        cashTscs={cashTscs}
                         startDate={startDate}
-                        endDate={endDate}/>
+                        endDate={endDate}
+                        collapse={collapse}/>
                     </div>
                 }
                 <DeleteTscModal/>
@@ -35,22 +36,24 @@ class TscsContainer extends React.Component {
 
 TscsContainer.propTypes = {
     holdings: PropTypes.array.isRequired,
-    cash: PropTypes.object.isRequired,
+    cashTscs: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,
     displayCurrency: PropTypes.string.isRequired,
     actions: PropTypes.object.isRequired,
     startDate: PropTypes.object.isRequired,
-    endDate: PropTypes.object.isRequired
+    endDate: PropTypes.object.isRequired,
+    collapse: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
     return {
         holdings: getHoldingsWithValidTscs(state),
-        cash: getCash(state),
+        cashTscs: getValidCashTscs(state),
         isFetching: state.tscs.isFetching,
         displayCurrency: getDisplayCurrency(state),
         startDate: state.portfolio.startDate,
-        endDate: state.portfolio.endDate
+        endDate: state.portfolio.endDate,
+        collapse: state.tscs.collapse
     };
 };
 
