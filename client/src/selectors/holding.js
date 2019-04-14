@@ -163,7 +163,7 @@ export class Holding extends Base {
         // Assuming the transactions here are already sorted by date.
         DollarValue.TYPES.forEach(currency => {
             this.transactions.forEach(tsc => {
-                let {type, acbChange, total, shares, realizedGain, returnOfCapital, capitalGain,
+                let {type, acbChange, total, shares, deductFromCash, realizedGain, returnOfCapital, capitalGain,
                     newAcb, newAverageCost, unfoundRate, date} = tsc;
                 this.unfoundRate = this.unfoundRate || unfoundRate;
                 const cash = currency === tsc.currency ? cashes[currency] : null;
@@ -175,7 +175,7 @@ export class Holding extends Base {
                 // based on the current exchange rate.
                 if (type === 'buy') {
                     acbChange[currency] = total[currency];
-                    if (cash) {
+                    if (cash && deductFromCash) {
                         cash.total[currency] -= total[currency];
                     }
                     this.shares[currency] += shares;
@@ -187,7 +187,7 @@ export class Holding extends Base {
                     this.realizedGainYearly.addValue(year, realizedGain[currency], currency);
                     this.capitalGainYearly.addValue(year, realizedGain[currency], currency);
                     this.shares[currency] -= shares;
-                    if (cash) {
+                    if (cash && deductFromCash) {
                         cash.total[currency] += total[currency];
                     }
                 } else if (type === 'dividend') {
@@ -202,7 +202,7 @@ export class Holding extends Base {
                         acbChange[currency] += capitalGain[currency];
                     }
                     realizedGain[currency] = total[currency];
-                    if (cash) {
+                    if (cash && deductFromCash) {
                         cash.total[currency] += total[currency];
                     }
                     this.realizedGain[currency] += realizedGain[currency];

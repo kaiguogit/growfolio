@@ -7,6 +7,7 @@ const transactionSchema = new mongoose.Schema({
   exch: String,
   shares: Number,
   amount: Number,
+  deductFromCash: Boolean,
   // Is amount for total or pershare?
   totalOrPerShare: Boolean,
   // Dividend's return of capital

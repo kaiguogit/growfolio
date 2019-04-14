@@ -55,7 +55,8 @@ NumberChangeTransition.propTypes = {
     // Data is used as key, changing data will trigger animation.
     data: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.number
+        PropTypes.number,
+        PropTypes.bool,
     ]),
     children: PropTypes.node
 };

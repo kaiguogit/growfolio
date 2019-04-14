@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 
 // Bootstrap 4 custom input
 // https://v4-alpha.getbootstrap.com/components/forms/#checkboxes
-export const CheckBox = ({title, onChange, checked}) => {
+export const CheckBox = ({title, onChange, checked, name}) => {
 
     const _onChange = (event) => {
-        onChange(event.target.checked);
+        onChange(event);
     };
 
     return (
         <label className="custom-control custom-checkbox">
           <input type="checkbox" className="custom-control-input"
+            name={name}
             onChange={_onChange} checked={checked}/>
           <span className="custom-control-indicator"/>
           <span className="custom-control-description">{title}</span>
@@ -21,6 +22,7 @@ export const CheckBox = ({title, onChange, checked}) => {
 
 CheckBox.propTypes = {
     title: PropTypes.string.isRequired,
+    name: PropTypes.string,
     onChange: PropTypes.func,
     checked: PropTypes.bool
 };

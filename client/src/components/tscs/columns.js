@@ -47,6 +47,21 @@ export const CASH_COLUMNS = [
         title: 'Account'
     },
     {
+        selector: 'rate',
+        title: 'Exchange Rate',
+        formatFunction: entry =>{
+            return entry.unfoundRate && 'Rate not found' || entry.rate;
+        },
+        cellStyle: entry => {
+            if (entry.unfoundRate) {
+                return {
+                    backgroundColor: 'red',
+                    color: 'white'
+                };
+            }
+        }
+    },
+    {
         selector: 'date',
         filter: date,
         title: 'Date'
@@ -116,6 +131,13 @@ export const TSCS_COLUMNS = [
                     color: 'white'
                 };
             }
+        }
+    },
+    {
+        selector: 'deductFromCash',
+        title: 'Deduct From Cash',
+        formatFunction(entry, value) {
+            return value ? 'True' : 'False';
         }
     },
     {

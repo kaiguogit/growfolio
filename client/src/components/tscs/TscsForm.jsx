@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 // import SymbolAutoComplete from '../SymbolAutoComplete.jsx';
 import SymbolAutoComplete from './SymbolAutoComplete.jsx';
-import {Input, FormGroup, Select} from '../shared/index.jsx';
+import {Input, FormGroup, Select, CheckBox} from '../shared/index.jsx';
 import {DollarValue} from '../../selectors/transaction';
 
 class TscsForm extends React.Component {
@@ -34,6 +34,7 @@ class TscsForm extends React.Component {
                 returnOfCapital: '',
                 capitalGain: '',
                 account: '',
+                deductFromCash: true,
                 totalOrPerShare: true,
                 commission: '',
                 notes: ''
@@ -43,6 +44,7 @@ class TscsForm extends React.Component {
         this.getState = this.getState.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.handleCheckBoxClick = this.handleCheckBoxClick.bind(this);
         this.handleSymbolChange = this.handleSymbolChange.bind(this);
         this.handleTotalOrPerShareChange = this.handleTotalOrPerShareChange.bind(this);
     }
@@ -53,6 +55,10 @@ class TscsForm extends React.Component {
 
     handleInputChange(e) {
         this.setState({[e.target.name]: e.target.value});
+    }
+
+    handleCheckBoxClick(e) {
+        this.setState({[e.target.name]: e.target.checked});
     }
 
     handleDateChange(date) {
@@ -74,7 +80,7 @@ class TscsForm extends React.Component {
 
     render() {
         let {type, name, currency, exch, shares, amount, account, commission, notes, totalOrPerShare,
-            returnOfCapital, capitalGain} = this.state;
+            returnOfCapital, capitalGain, deductFromCash} = this.state;
         let {tsc} = this.props;
         const isDepositOrWithDraw = () => this.state.type === 'deposit' || this.state.type === 'withdraw';
         return (
@@ -191,6 +197,15 @@ class TscsForm extends React.Component {
                         <label htmlFor="commission">Commission</label>
                         <Input type="number" name="commission" id="commission"
                             value={commission} onChange={this.handleInputChange}/>
+                    </FormGroup>
+                }
+                {!isDepositOrWithDraw() &&
+                    <FormGroup>
+                        <CheckBox
+                            title="Deduct From Cash"
+                            name="deductFromCash"
+                            onChange={this.handleCheckBoxClick}
+                            checked={deductFromCash}/>
                     </FormGroup>
                 }
                 {this.state.type === 'dividend' &&

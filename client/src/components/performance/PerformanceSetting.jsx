@@ -27,6 +27,11 @@ const GoBackButton = withRouter(({ history }) => {
 });
 
 class PerformanceSetting extends React.Component {
+
+    onCheckBoxkClick(e) {
+        this.props.actions.setShowZeroShareHolding(e.target.checked);
+    }
+
     render() {
         return (
             <div className="card">
@@ -36,7 +41,7 @@ class PerformanceSetting extends React.Component {
                     <div>
                         <CheckBox
                             title="Show 0-share holdings"
-                            onChange={this.props.actions.setShowZeroShareHolding}
+                            onChange={this.onCheckBoxkClick.bind(this)}
                             checked={this.props.showZeroShareHolding}/>
                     </div>
                     <DisplayDateRange/>

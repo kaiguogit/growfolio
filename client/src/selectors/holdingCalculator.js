@@ -178,6 +178,7 @@ export const calculateTotalCashTscs = tscs => {
                     sum[prop] = sum[prop] || 0;
                     if (tsc.total instanceof DollarValue && tsc.type === prop) {
                         sum[prop] += tsc.total[currency];
+                        sum.total += tsc.total[currency];
                     }
                 });
             }

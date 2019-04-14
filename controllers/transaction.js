@@ -116,6 +116,11 @@ const validateTransactionForm = (payload) => {
     errors.totalOrPerShare = 'TotalOrPerShare can only be true or false';
   }
 
+  if (typeof payload.deductFromCash !== 'boolean') {
+    isFormValid = false;
+    errors.deductFromCash = 'deductFromCash can only be true or false';
+  }
+
   if (!isValidNum(payload.commission)) {
     isFormValid = false;
     errors.commission = 'Commission is invalid';
@@ -139,13 +144,14 @@ const returnError = (message, errors) => ({
 });
 
 const createOrEditTransactions = isEdit => (req, res) => {
-  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'totalOrPerShare', 'amount', 'type',
+  const keys = ['name', 'symbol', 'currency', 'exch', 'shares', 'deductFromCash', 'totalOrPerShare', 'amount', 'type',
     'account', 'commission', 'date', 'notes', 'returnOfCapital', 'capitalGain'];
   const data = {};
   keys.forEach((key) => {
     data[key] = req.body[key];
   });
   data.totalOrPerShare = !!req.body.totalOrPerShare;
+  data.deductFromCash = !!req.body.deductFromCash;
 
   const validationResult = validateTransactionForm(data);
   if (!validationResult.success) {

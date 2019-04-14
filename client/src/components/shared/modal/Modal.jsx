@@ -39,9 +39,7 @@ const Modal = (props) => {
                 beforeClose: 'modal-dialog-leave',
                 afterOpen: 'modal-dialog-show'
             }}
-            overlayClassName={{
-                base: 'modal fade react-modal',
-            }}
+            overlayClassName="modal fade react-modal"
         >
             <div className="modal-content">
                 <div className="modal-header">

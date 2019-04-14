@@ -68,7 +68,7 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, tot
                     <tr>
                         {CASH_COLUMNS.map(column => {
                             return (
-                                <th key={column.title}>
+                                <th key={column.selector+column.title}>
                                     {column.title}
                                 </th>
                             );
@@ -114,7 +114,7 @@ class TscsRow extends React.PureComponent {
                 {columns.map(column => {
                     return (
                         <TableCell
-                            key={column.selector}
+                            key={column.selector+column.title}
                             entry={tsc}
                             column={column}
                             displayCurrency={displayCurrency}
