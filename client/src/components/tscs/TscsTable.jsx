@@ -6,7 +6,7 @@ import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, collapse}) => {
+const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, totalCashTscs, collapse}) => {
     const categoryTitle = holding => {
         const render = () => {
             return (
@@ -68,7 +68,7 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, col
                     <tr>
                         {CASH_COLUMNS.map(column => {
                             return (
-                                <th key={column.selector}>
+                                <th key={column.title}>
                                     {column.title}
                                 </th>
                             );
@@ -82,6 +82,11 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, col
                             columns={CASH_COLUMNS}
                             displayCurrency={displayCurrency}/>);
                     })}
+                    {Object.entries(totalCashTscs).map(([currency, tsc]) => {
+                        return (<TscsRow tsc={tsc} key={currency}
+                            columns={CASH_COLUMNS}
+                            displayCurrency={displayCurrency}/>);
+                    })}
                 </tbody>
             </TableCategory>}
         </table>
@@ -91,6 +96,7 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, col
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
     cashTscs: PropTypes.array.isRequired,
+    totalCashTscs: PropTypes.object.isRequired,
     displayCurrency: PropTypes.string.isRequired,
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired,

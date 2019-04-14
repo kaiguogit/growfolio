@@ -4,13 +4,22 @@ import styles from '../../styles';
 
 export const CASH_COLUMNS = [
     {
+        selector: 'isTotal',
+        title: '',
+        formatFunction(tsc, value) {
+            return value ? 'Total' : '';
+        }
+    },
+    {
         selector: 'total',
         title: 'Deposit',
         filter: currency(2),
-        showOtherCurrency: true,
         formatFunction(tsc, filteredValue) {
             if (tsc.type === 'deposit') {
                 return (<span style={styles.up}>{filteredValue}</span>);
+            }
+            if (tsc.isTotal) {
+                return (<span style={styles.up}>{currency(2)(tsc.deposit)}</span>);
             }
             return '';
         }
@@ -19,10 +28,12 @@ export const CASH_COLUMNS = [
         selector: 'total',
         title: 'Withdraw',
         filter: currency(2),
-        showOtherCurrency: true,
         formatFunction(tsc, filteredValue) {
             if (tsc.type === 'withdraw') {
                 return (<span style={styles.down}>{filteredValue}</span>);
+            }
+            if (tsc.isTotal) {
+                return (<span style={styles.down}>{currency(2)(tsc.withdraw)}</span>);
             }
             return '';
         }

@@ -107,7 +107,7 @@ export const date = date => {
     // catch(e) {
     //     return dateStr;
     // }
-    return date.format('YYYY-MM-DD');
+    return date ? date.format('YYYY-MM-DD') : '';
 };
 
 export const capitalize = str => {

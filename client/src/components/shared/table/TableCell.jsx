@@ -25,7 +25,7 @@ const processData = (entry, column, currency) => {
         refValue = refValue.toString();
     }
     filteredValue = column.filter ? column.filter(value) : value;
-    content = column.formatFunction ? column.formatFunction(entry, filteredValue, refValue) : filteredValue;
+    content = column.formatFunction ? column.formatFunction(entry, filteredValue, refValue, column) : filteredValue;
     return {
         value,
         filteredValue,

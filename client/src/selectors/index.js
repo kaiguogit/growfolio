@@ -1,7 +1,8 @@
 
 import { generateAccountsMap,
          calculateHoldingPerformance,
-         calculateTotalPerformance
+         calculateTotalPerformance,
+         calculateTotalCashTscs
 } from './holdingCalculator';
 import {makeSafe} from '../utils';
 import {lastWeekDay} from '../../../utils/time';
@@ -93,6 +94,8 @@ export const getValidCashTscs = createSelector(
     [getDisplayAccount, getAccountsMap, getStartDate, getEndDate],
     makeSafe((account, accountsMap, startDate, endDate) => accountsMap[account].getCashTransactions(startDate, endDate))
 );
+
+export const getValidCashTscsTotal = createSelector([getValidCashTscs], makeSafe(calculateTotalCashTscs));
 
 export const getHoldingsAfterZeroShareFilter = createSelector(
     [getHoldings, getShowZeroShareHolding, getDisplayCurrency],

@@ -163,3 +163,25 @@ export const calculateTotalPerformance = (holdings, displayCurrency) => {
     rt.changePercent = divide(rt.daysGain, rt.cost);
     return rt;
 };
+
+export const calculateTotalCashTscs = tscs => {
+    const sumProps = ['deposit', 'withdraw'];
+    const rt = {};
+    DollarValue.TYPES.forEach(currency => {
+        const sum = rt[currency] = {
+            currency,
+            isTotal: true
+        };
+        tscs.forEach(tsc => {
+            if (tsc.currency === currency) {
+                sumProps.forEach(prop => {
+                    sum[prop] = sum[prop] || 0;
+                    if (tsc.total instanceof DollarValue && tsc.type === prop) {
+                        sum[prop] += tsc.total[currency];
+                    }
+                });
+            }
+        });
+    });
+    return rt;
+};

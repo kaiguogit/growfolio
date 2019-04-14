@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { getHoldingsWithValidTscs, getDisplayCurrency, getValidCashTscs } from '../../selectors';
+import { getHoldingsWithValidTscs, getDisplayCurrency, getValidCashTscs, getValidCashTscsTotal } from '../../selectors';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/tscs';
 
@@ -12,7 +12,7 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 class TscsContainer extends React.Component {
     render() {
         let { isFetching, holdings, displayCurrency, actions, startDate,
-            endDate, cashTscs, collapse} = this.props;
+            endDate, cashTscs, totalCashTscs, collapse} = this.props;
         const isEmpty = !holdings.length && !cashTscs.length;
 
         return (
@@ -23,6 +23,7 @@ class TscsContainer extends React.Component {
                       <TscsTable holdings={holdings} displayCurrency={displayCurrency}
                         setCollapse={actions.setOneCollapse}
                         cashTscs={cashTscs}
+                        totalCashTscs={totalCashTscs}
                         startDate={startDate}
                         endDate={endDate}
                         collapse={collapse}/>
@@ -49,6 +50,7 @@ const mapStateToProps = state => {
     return {
         holdings: getHoldingsWithValidTscs(state),
         cashTscs: getValidCashTscs(state),
+        totalCashTscs: getValidCashTscsTotal(state),
         isFetching: state.tscs.isFetching,
         displayCurrency: getDisplayCurrency(state),
         startDate: state.portfolio.startDate,
