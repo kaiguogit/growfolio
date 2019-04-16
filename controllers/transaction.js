@@ -79,6 +79,7 @@ const validateTransactionForm = (payload) => {
       payload.account !== 'kai-rrsp' &&
       payload.account !== 'kai-spouse-rrsp' &&
       payload.account !== 'kai-non-registered' &&
+      payload.account !== 'kai-charles-schwab' &&
       payload.account !== 'crystal-tfsa' &&
       payload.account !== 'crystal-rrsp' &&
       payload.account !== 'crystal-non-registered')) {
