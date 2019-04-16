@@ -10,6 +10,7 @@ import CurrencySelector from './CurrencySelector.jsx';
 import AccountSelector from './AccountSelector.jsx';
 import DisplayDateRange from './DisplayDateRange.jsx';
 import {CheckBox} from '../shared/index.jsx';
+import FilterSelector from './FilterSelector.jsx';
 
 const GoBackButton = withRouter(({ history }) => {
     const onClick = () => {
@@ -45,6 +46,7 @@ class PerformanceSetting extends React.Component {
                             checked={this.props.showZeroShareHolding}/>
                     </div>
                     <DisplayDateRange/>
+                    <FilterSelector/>
                     <GoBackButton/>
                 </div>
             </div>

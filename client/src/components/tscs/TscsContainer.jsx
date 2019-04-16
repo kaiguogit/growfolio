@@ -12,7 +12,7 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 class TscsContainer extends React.Component {
     render() {
         let { isFetching, holdings, displayCurrency, actions, startDate,
-            endDate, cashTscs, totalCashTscs, collapse} = this.props;
+            endDate, cashTscs, totalCashTscs, typeFilter, collapse} = this.props;
         const isEmpty = !holdings.length && !cashTscs.length;
 
         return (
@@ -22,6 +22,7 @@ class TscsContainer extends React.Component {
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
                       <TscsTable holdings={holdings} displayCurrency={displayCurrency}
                         setCollapse={actions.setOneCollapse}
+                        typeFilter={typeFilter}
                         cashTscs={cashTscs}
                         totalCashTscs={totalCashTscs}
                         startDate={startDate}
@@ -38,6 +39,8 @@ class TscsContainer extends React.Component {
 TscsContainer.propTypes = {
     holdings: PropTypes.array.isRequired,
     cashTscs: PropTypes.array.isRequired,
+    totalCashTscs: PropTypes.object.isRequired,
+    typeFilter: PropTypes.string.isRequired,
     isFetching: PropTypes.bool.isRequired,
     displayCurrency: PropTypes.string.isRequired,
     actions: PropTypes.object.isRequired,
@@ -49,6 +52,7 @@ TscsContainer.propTypes = {
 const mapStateToProps = state => {
     return {
         holdings: getHoldingsWithValidTscs(state),
+        typeFilter: state.tscs.filter.type,
         cashTscs: getValidCashTscs(state),
         totalCashTscs: getValidCashTscsTotal(state),
         isFetching: state.tscs.isFetching,

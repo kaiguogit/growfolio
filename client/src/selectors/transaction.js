@@ -64,7 +64,10 @@ export class Transaction {
         return this.currency === 'USD';
     }
 
-    isValid(startDate, endDate) {
+    isValid(startDate, endDate, typeFilter) {
+        if (typeFilter && this.type !== typeFilter) {
+            return false;
+        }
         return (this.date.isBefore(endDate, 'day') || this.date.isSame(endDate, 'day')) &&
         (this.date.isAfter(startDate, 'day') || this.date.isSame(startDate, 'day'));
     }

@@ -59,6 +59,14 @@ const tscsReducer = (state = initialState.tscs, action) => {
                 ...state,
                 collapse: setKeyValueFromAction('symbol', 'value')(state.collapse, action)
             };
+        case types.SET_TSC_TYPE_FILTER:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    type: action.filter
+                }
+            };
         default:
             return state;
     }

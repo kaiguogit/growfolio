@@ -6,7 +6,7 @@ import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, totalCashTscs, collapse}) => {
+const TscsTable = ({holdings, displayCurrency, typeFilter, startDate, endDate, cashTscs, totalCashTscs, collapse}) => {
     const categoryTitle = holding => {
         const render = () => {
             return (
@@ -51,7 +51,7 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, tot
                         symbol={holding.symbol}
                     >
                         <tbody style={collapse[holding.symbol] ? {display: 'none'} : {}}>
-                            {holding.getValidTscs(startDate, endDate).map(tsc => {
+                            {holding.getValidTscs(startDate, endDate, typeFilter).map(tsc => {
                                 return (<TscsRow tsc={tsc} key={tsc._id}
                                                 columns={TSCS_COLUMNS}
                                                 displayCurrency={displayCurrency}/>);
@@ -95,6 +95,7 @@ const TscsTable = ({holdings, displayCurrency, startDate, endDate, cashTscs, tot
 
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
+    typeFilter: PropTypes.string.isRequired,
     cashTscs: PropTypes.array.isRequired,
     totalCashTscs: PropTypes.object.isRequired,
     displayCurrency: PropTypes.string.isRequired,

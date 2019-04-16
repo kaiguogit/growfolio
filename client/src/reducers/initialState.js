@@ -14,6 +14,9 @@ export default {
         collapse: {
             cash: true
         },
+        filter: {
+            type: ''
+        },
         deleteTscModalData: {
             isOpened: false,
             tsc: null

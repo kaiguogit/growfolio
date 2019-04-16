@@ -22,6 +22,7 @@ export const getDisplayCurrency = state => state.portfolio.displayCurrency;
 export const getShowZeroShareHolding = state => state.portfolio.showZeroShareHolding;
 export const getStartDate = state => state.portfolio.startDate;
 export const getEndDate = state => state.portfolio.endDate;
+export const getTscTypeFilter = state => state.tscs.filter.type;
 export const getBalance = state => state.balance;
 export const getExchangeRates = state => state.currency.data;
 export const getLatestExchangeRate = createSelector([getExchangeRates], data => {
@@ -108,9 +109,9 @@ export const getHoldingsAfterZeroShareFilter = createSelector(
 );
 
 export const getHoldingsWithValidTscs = createSelector(
-    [getHoldingsAfterZeroShareFilter, getStartDate, getEndDate],
-    makeSafe((holdings, startDate, endDate) => {
-        return holdings.filter(holding => holding.hasValidTscs(startDate, endDate));
+    [getHoldingsAfterZeroShareFilter, getStartDate, getEndDate, getTscTypeFilter],
+    makeSafe((holdings, startDate, endDate, typeFilter) => {
+        return holdings.filter(holding => holding.hasValidTscs(startDate, endDate, typeFilter));
     })
 );
 

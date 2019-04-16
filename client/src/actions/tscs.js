@@ -44,6 +44,10 @@ export const setOneCollapse = (symbol, value) => ({
     symbol,
     value
 });
+export const setTscTypeFilter = filter => ({
+    type: types.SET_TSC_TYPE_FILTER,
+    filter
+});
 
 // Fake API version
 // export const fetchTscs = () => dispatch => {

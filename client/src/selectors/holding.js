@@ -90,11 +90,11 @@ class Base {
     constructor() {
         this.transactions = [];
     }
-    getValidTscs(startDate, endDate) {
-        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate));
+    getValidTscs(startDate, endDate, hasValidTscs) {
+        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate, hasValidTscs));
     }
-    hasValidTscs(startDate, endDate) {
-        return this.getValidTscs(startDate, endDate).length;
+    hasValidTscs(startDate, endDate, hasValidTscs) {
+        return this.getValidTscs(startDate, endDate, hasValidTscs).length;
     }
 }
 

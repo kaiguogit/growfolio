@@ -14,12 +14,12 @@ export const CASH_COLUMNS = [
         selector: 'total',
         title: 'Deposit',
         filter: currency(2),
-        formatFunction(tsc, filteredValue) {
+        formatFunction(tsc) {
             if (tsc.type === 'deposit') {
-                return (<span style={styles.up}>{filteredValue}</span>);
+                return (<span style={styles.up}>{currency(2)(tsc.total[tsc.currency])}{tsc.currency === 'USD' ? '(USD)' : ''}</span>);
             }
             if (tsc.isTotal) {
-                return (<span style={styles.up}>{currency(2)(tsc.deposit)}</span>);
+                return (<span style={styles.up}>{currency(2)(tsc.deposit)}{tsc.currency === 'USD' ? '(USD)' : ''}</span>);
             }
             return '';
         }
@@ -28,12 +28,12 @@ export const CASH_COLUMNS = [
         selector: 'total',
         title: 'Withdraw',
         filter: currency(2),
-        formatFunction(tsc, filteredValue) {
+        formatFunction(tsc) {
             if (tsc.type === 'withdraw') {
-                return (<span style={styles.down}>{filteredValue}</span>);
+                return (<span style={styles.down}>{currency(2)(tsc.total[tsc.currency])}{tsc.currency === 'USD' ? '(USD)' : ''}</span>);
             }
             if (tsc.isTotal) {
-                return (<span style={styles.down}>{currency(2)(tsc.withdraw)}</span>);
+                return (<span style={styles.down}>{currency(2)(tsc.withdraw)}{tsc.currency === 'USD' ? '(USD)' : ''}</span>);
             }
             return '';
         }
