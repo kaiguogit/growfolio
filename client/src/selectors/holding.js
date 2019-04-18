@@ -49,7 +49,7 @@ export class Account {
             if (tsc.isCash) {
                 let cash = this.cash[tsc.currency];
                 if (!cash) {
-                    cash = this.cash[tsc.currency] = new Cash(tsc.currency);
+                    cash = this.cash[tsc.currency] = new Cash({currency: tsc.currency});
                 }
                 cash.transactions.push(tsc);
             } else {
@@ -104,23 +104,24 @@ export class Cash extends Base {
      */
     constructor(data) {
         super();
-        this.currency = data.currency;
+        this.currency = data.currency.toUpperCase();
         this.transactions = [];
         Object.entries(CASH_PROPERTIES).forEach(([key, valueClass]) => {
             this[key] = new valueClass();
         });
     }
     calculate() {
-        DollarValue.TYPES.forEach(currency => {
-            this.transactions.forEach(tsc => {
-                let {type, total, unfoundRate} = tsc;
-                this.unfoundRate = this.unfoundRate || unfoundRate;
-                if (type === 'deposit') {
-                    this.total[currency] += total[currency];
-                } else if (type === 'withdraw') {
-                    this.total[currency] -= total[currency];
-                }
-            });
+        this.transactions.forEach(tsc => {
+            let {type, total, unfoundRate, currency} = tsc;
+            if (tsc.currency !== currency) {
+                return;
+            }
+            this.unfoundRate = this.unfoundRate || unfoundRate;
+            if (type === 'deposit') {
+                this.total[currency] += total[currency];
+            } else if (type === 'withdraw') {
+                this.total[currency] -= total[currency];
+            }
         });
     }
     clone() {
