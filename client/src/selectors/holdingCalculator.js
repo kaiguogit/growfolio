@@ -68,10 +68,12 @@ export const generateAccountsMap = (tscs, exchangeRates) => {
                 result.cash[currency] = combinedCash;
             }
         };
+        Array.prototype.push.apply(result.transactions, account.transactions);
         account.holdings.forEach(clone);
         Object.entries(account.cash).forEach(cloneCash);
         return result;
     }, new Account());
+    accountMap.all.transactions.sort(compareDate);
     accountMap.all.holdings.forEach(holding =>
         holding.transactions.sort(compareDate)
     );

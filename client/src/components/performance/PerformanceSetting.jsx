@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as actions from '../../actions/portfolio';
+import * as portfolioActions from '../../actions/portfolio';
+import * as tscsActions from '../../actions/tscs';
 
 import CurrencySelector from './CurrencySelector.jsx';
 import AccountSelector from './AccountSelector.jsx';
@@ -29,8 +30,11 @@ const GoBackButton = withRouter(({ history }) => {
 
 class PerformanceSetting extends React.Component {
 
-    onCheckBoxkClick(e) {
-        this.props.actions.setShowZeroShareHolding(e.target.checked);
+    setShow0ShareHoldings(e) {
+        this.props.portfolioActions.setShowZeroShareHolding(e.target.checked);
+    }
+    setTscGrouping(e) {
+        this.props.tscsActions.setTscGrouping(e.target.checked);
     }
 
     render() {
@@ -42,11 +46,17 @@ class PerformanceSetting extends React.Component {
                     <div>
                         <CheckBox
                             title="Show 0-share holdings"
-                            onChange={this.onCheckBoxkClick.bind(this)}
+                            onChange={this.setShow0ShareHoldings.bind(this)}
                             checked={this.props.showZeroShareHolding}/>
                     </div>
                     <DisplayDateRange/>
                     <FilterSelector/>
+                    <div>
+                        <CheckBox
+                            title="Group Transactions by symbol"
+                            onChange={this.setTscGrouping.bind(this)}
+                            checked={this.props.tscGrouping}/>
+                    </div>
                     <GoBackButton/>
                 </div>
             </div>
@@ -56,15 +66,19 @@ class PerformanceSetting extends React.Component {
 
 PerformanceSetting.propTypes = {
     showZeroShareHolding: PropTypes.bool.isRequired,
-    actions: PropTypes.object.isRequired
+    tscGrouping: PropTypes.bool.isRequired,
+    portfolioActions: PropTypes.object.isRequired,
+    tscsActions: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-    showZeroShareHolding: state.portfolio.showZeroShareHolding
+    showZeroShareHolding: state.portfolio.showZeroShareHolding,
+    tscGrouping: state.tscs.grouping
 });
 
 const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators(actions, dispatch)
+    portfolioActions: bindActionCreators(portfolioActions, dispatch),
+    tscsActions: bindActionCreators(tscsActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PerformanceSetting);

@@ -48,6 +48,10 @@ export const setTscTypeFilter = filter => ({
     type: types.SET_TSC_TYPE_FILTER,
     filter
 });
+export const setTscGrouping = value => ({
+    type: types.SET_TSC_GROUPING,
+    grouping: value
+});
 
 // Fake API version
 // export const fetchTscs = () => dispatch => {

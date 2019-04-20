@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { getHoldingsWithValidTscs, getDisplayCurrency, getValidCashTscs, getValidCashTscsTotal } from '../../selectors';
+import { getHoldingsWithValidTscs, getAllValidTransactions, getDisplayCurrency, getValidCashTscs, getValidCashTscsTotal } from '../../selectors';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/tscs';
 
@@ -11,8 +11,8 @@ import DeleteTscModal from './DeleteTscModal.jsx';
 
 class TscsContainer extends React.Component {
     render() {
-        let { isFetching, holdings, displayCurrency, actions, startDate,
-            endDate, cashTscs, totalCashTscs, typeFilter, collapse} = this.props;
+        let { isFetching, holdings, allTscs, displayCurrency, actions, startDate,
+            endDate, cashTscs, totalCashTscs, typeFilter, collapse, tscGrouping} = this.props;
         const isEmpty = !holdings.length && !cashTscs.length;
 
         return (
@@ -20,14 +20,17 @@ class TscsContainer extends React.Component {
                 {isEmpty
                   ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                   : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                      <TscsTable holdings={holdings} displayCurrency={displayCurrency}
+                      <TscsTable holdings={holdings}
+                        allTscs={allTscs}
+                        displayCurrency={displayCurrency}
                         setCollapse={actions.setOneCollapse}
                         typeFilter={typeFilter}
                         cashTscs={cashTscs}
                         totalCashTscs={totalCashTscs}
                         startDate={startDate}
                         endDate={endDate}
-                        collapse={collapse}/>
+                        collapse={collapse}
+                        tscGrouping={tscGrouping}/>
                     </div>
                 }
                 <DeleteTscModal/>
@@ -38,6 +41,7 @@ class TscsContainer extends React.Component {
 
 TscsContainer.propTypes = {
     holdings: PropTypes.array.isRequired,
+    allTscs: PropTypes.array.isRequired,
     cashTscs: PropTypes.array.isRequired,
     totalCashTscs: PropTypes.object.isRequired,
     typeFilter: PropTypes.string.isRequired,
@@ -46,12 +50,14 @@ TscsContainer.propTypes = {
     actions: PropTypes.object.isRequired,
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired,
-    collapse: PropTypes.object.isRequired
+    collapse: PropTypes.object.isRequired,
+    tscGrouping: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {
     return {
         holdings: getHoldingsWithValidTscs(state),
+        allTscs: getAllValidTransactions(state),
         typeFilter: state.tscs.filter.type,
         cashTscs: getValidCashTscs(state),
         totalCashTscs: getValidCashTscsTotal(state),
@@ -59,7 +65,8 @@ const mapStateToProps = state => {
         displayCurrency: getDisplayCurrency(state),
         startDate: state.portfolio.startDate,
         endDate: state.portfolio.endDate,
-        collapse: state.tscs.collapse
+        collapse: state.tscs.collapse,
+        tscGrouping: state.tscs.grouping
     };
 };
 

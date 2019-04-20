@@ -27,6 +27,7 @@ export class Account {
      */
     constructor(params) {
         this.holdings = [];
+        this.transactions = [];
         this.cash = DollarValue.TYPES.reduce((result, currency) => {
             result[currency] = new Cash({currency});
             return result;
@@ -65,8 +66,10 @@ export class Account {
                 }
                 holding.transactions.push(tsc);
             }
+            this.transactions.push(tsc);
         });
 
+        this.transactions.sort(compareDate);
         Object.values(this.cash).forEach(cash => {
             cash.calculate();
             cash.transactions.sort(compareDate);
@@ -90,11 +93,11 @@ class Base {
     constructor() {
         this.transactions = [];
     }
-    getValidTscs(startDate, endDate, hasValidTscs) {
-        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate, hasValidTscs));
+    getValidTscs(startDate, endDate, typeFilter) {
+        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate, typeFilter));
     }
-    hasValidTscs(startDate, endDate, hasValidTscs) {
-        return this.getValidTscs(startDate, endDate, hasValidTscs).length;
+    hasValidTscs(startDate, endDate, typeFilter) {
+        return this.getValidTscs(startDate, endDate, typeFilter).length;
     }
 }
 

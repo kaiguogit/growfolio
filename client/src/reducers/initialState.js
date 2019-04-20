@@ -14,6 +14,7 @@ export default {
         collapse: {
             cash: true
         },
+        grouping: true,
         filter: {
             type: ''
         },

@@ -6,7 +6,7 @@ import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
 
-const TscsTable = ({holdings, displayCurrency, typeFilter, startDate, endDate, cashTscs, totalCashTscs, collapse}) => {
+const TscsTable = ({holdings, allTscs, displayCurrency, typeFilter, startDate, endDate, cashTscs, totalCashTscs, collapse, tscGrouping}) => {
     const categoryTitle = holding => {
         const render = () => {
             return (
@@ -42,7 +42,7 @@ const TscsTable = ({holdings, displayCurrency, typeFilter, startDate, endDate, c
                     <th>Delete</th>
                 </tr>
             </thead>
-            {holdings.map(holding => {
+            {tscGrouping && holdings.map(holding => {
                 return (
                     <TableCategory
                         titleFn={categoryTitle(holding)}
@@ -60,6 +60,17 @@ const TscsTable = ({holdings, displayCurrency, typeFilter, startDate, endDate, c
                     </TableCategory>
                 );
             })}
+            {!tscGrouping && (
+                <tbody>
+                    {allTscs.map(tsc => {
+                        return (
+                            <TscsRow tsc={tsc} key={tsc._id}
+                                columns={TSCS_COLUMNS}
+                                displayCurrency={displayCurrency}/>
+                        );
+                    })}
+                </tbody>
+            )}
             {<TableCategory
                 titleFn="Cash"
                 columnsCount={columnsSize + 1}
@@ -95,13 +106,15 @@ const TscsTable = ({holdings, displayCurrency, typeFilter, startDate, endDate, c
 
 TscsTable.propTypes = {
     holdings: PropTypes.array.isRequired,
+    allTscs: PropTypes.array.isRequired,
     typeFilter: PropTypes.string.isRequired,
     cashTscs: PropTypes.array.isRequired,
     totalCashTscs: PropTypes.object.isRequired,
     displayCurrency: PropTypes.string.isRequired,
     startDate: PropTypes.object.isRequired,
     endDate: PropTypes.object.isRequired,
-    collapse: PropTypes.object.isRequired
+    collapse: PropTypes.object.isRequired,
+    tscGrouping: PropTypes.bool.isRequired
 };
 
 // PureComponent does shallow compare on props and state in shouldComponentUpdate().

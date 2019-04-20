@@ -115,6 +115,12 @@ export const getHoldingsWithValidTscs = createSelector(
     })
 );
 
+export const getAllValidTransactions = createSelector(
+    [getDisplayAccount, getAccountsMap, getStartDate, getEndDate, getTscTypeFilter],
+    makeSafe((account, accountsMap, startDate, endDate, typeFilter) =>
+        accountsMap[account].transactions.filter(t => t.isValid(startDate, endDate, typeFilter)))
+);
+
 /**
  * Selector function for 1 holding.
  * @param {object} pass the global state here

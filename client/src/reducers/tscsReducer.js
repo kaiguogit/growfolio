@@ -67,6 +67,11 @@ const tscsReducer = (state = initialState.tscs, action) => {
                     type: action.filter
                 }
             };
+        case types.SET_TSC_GROUPING:
+            return {
+                ...state,
+                grouping: action.grouping
+            };
         default:
             return state;
     }
