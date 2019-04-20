@@ -6,11 +6,10 @@ import { getHoldingsAfterZeroShareFilter } from '../../selectors';
 import PerformanceTableRow from './PerformanceTableRow.jsx';
 import PerformanceTableRowTotal from './PerformanceTableRowTotal.jsx';
 import SummaryBar from './SummaryBar.jsx';
-import {PERFORMANCE_COLUMNS} from './columns';
 
 class PerformanceTable extends React.Component {
     render() {
-        let { holdings} = this.props;
+        let {holdings, columns} = this.props;
 
         const isEmpty = holdings.length === 0;
         return (
@@ -20,7 +19,7 @@ class PerformanceTable extends React.Component {
               : <table className="table table-sticky-first-column table-responsive table-striped table-bordered table-sm table-compact">
                     <thead className="thead-default">
                         <tr>
-                            {PERFORMANCE_COLUMNS.map(column => {
+                            {columns.map(column => {
                                 return (
                                     <th className={column.className} key={column.selector}>
                                         {column.title}
@@ -30,11 +29,11 @@ class PerformanceTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <PerformanceTableRowTotal columns={PERFORMANCE_COLUMNS}/>
+                        <PerformanceTableRowTotal columns={columns}/>
                         {holdings.map(holding => {
                             return (
                                 <PerformanceTableRow key={holding.symbol} symbol={holding.symbol}
-                                    columns={PERFORMANCE_COLUMNS}/>
+                                    columns={columns}/>
                             );
                         })}
                     </tbody>
@@ -46,7 +45,8 @@ class PerformanceTable extends React.Component {
 }
 
 PerformanceTable.propTypes = {
-    holdings: PropTypes.array.isRequired
+    holdings: PropTypes.array.isRequired,
+    columns: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => {
