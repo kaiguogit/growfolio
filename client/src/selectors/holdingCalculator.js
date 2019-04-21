@@ -1,6 +1,6 @@
 import { divide } from '../utils';
 import {DollarValue, DollarValueMap} from './transaction';
-import {Holding, Account, Cash} from './holding';
+import {Holding, Account} from './holding';
 import ACCOUNTS from '../constants/accounts';
 
 const compareDate = (a, b) => {
@@ -40,10 +40,11 @@ export const generateAccountsMap = (tscs, exchangeRates) => {
     }, {});
 
     // Combine holdings of each account and same as "all" account.
-    accountMap.all = Object.keys(accountMap).reduce((result, accountName) => {
+    const allAccount = new Account();
+    Object.keys(accountMap).forEach(accountName => {
         let account = accountMap[accountName];
         const clone = holding => {
-            let combinedHolding = result.holdings.find(h => h.symbol === holding.symbol);
+            let combinedHolding = allAccount.holdings.find(h => h.symbol === holding.symbol);
             if (combinedHolding) {
                 Object.keys(Holding.HOLDING_PROPERTIES).forEach(key => {
                     combinedHolding[key].add(holding[key]);
@@ -52,33 +53,30 @@ export const generateAccountsMap = (tscs, exchangeRates) => {
                 combinedHolding.unfoundRate = combinedHolding.unfoundRate || holding.unfoundRate;
             } else {
                 combinedHolding = holding.clone();
-                result.holdings.push(combinedHolding);
+                allAccount.holdings.push(combinedHolding);
             }
         };
         const cloneCash = ([currency, cash]) => {
-            let combinedCash = result.cash[currency];
+            let combinedCash = allAccount.cash[currency];
             if (combinedCash) {
-                Object.keys(Cash.CASH_PROPERTIES).forEach(key => {
-                    combinedCash[key].add(cash[key]);
-                });
-                combinedCash.transactions = combinedCash.transactions.concat(cash.transactions);
-                combinedCash.unfoundRate = combinedCash.unfoundRate || cash.unfoundRate;
+                combinedCash.combine(cash);
             } else {
                 combinedCash = cash.clone();
-                result.cash[currency] = combinedCash;
+                allAccount.cash[currency] = combinedCash;
             }
         };
-        Array.prototype.push.apply(result.transactions, account.transactions);
+        Array.prototype.push.apply(allAccount.transactions, account.transactions);
         account.holdings.forEach(clone);
         Object.entries(account.cash).forEach(cloneCash);
-        return result;
-    }, new Account());
+    });
+    accountMap.all = allAccount;
     accountMap.all.transactions.sort(compareDate);
     accountMap.all.holdings.forEach(holding =>
         holding.transactions.sort(compareDate)
     );
     Object.values(accountMap.all.cash).forEach(cash => {
         cash.transactions.sort(compareDate);
+        cash.balance.calculate();
     });
     return accountMap;
 };

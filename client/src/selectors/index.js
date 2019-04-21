@@ -115,10 +115,10 @@ export const getHoldingsWithValidTscs = createSelector(
     })
 );
 
-export const getAllValidTransactions = createSelector(
+export const getAllTransactionsWithBalanceInBetween = createSelector(
     [getDisplayAccount, getAccountsMap, getStartDate, getEndDate, getTscTypeFilter],
     makeSafe((account, accountsMap, startDate, endDate, typeFilter) =>
-        accountsMap[account].transactions.filter(t => t.isValid(startDate, endDate, typeFilter)))
+        accountsMap[account].getAllTransactionsWithBalanceInBetween(startDate, endDate, typeFilter))
 );
 
 /**

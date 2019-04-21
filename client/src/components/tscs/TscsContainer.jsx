@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { getHoldingsWithValidTscs, getAllValidTransactions, getDisplayCurrency, getValidCashTscs, getValidCashTscsTotal } from '../../selectors';
+import { getHoldingsWithValidTscs, getAllTransactionsWithBalanceInBetween, getDisplayCurrency, getValidCashTscs, getValidCashTscsTotal } from '../../selectors';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/tscs';
 
@@ -57,7 +57,7 @@ TscsContainer.propTypes = {
 const mapStateToProps = state => {
     return {
         holdings: getHoldingsWithValidTscs(state),
-        allTscs: getAllValidTransactions(state),
+        allTscs: getAllTransactionsWithBalanceInBetween(state),
         typeFilter: state.tscs.filter.type,
         cashTscs: getValidCashTscs(state),
         totalCashTscs: getValidCashTscsTotal(state),

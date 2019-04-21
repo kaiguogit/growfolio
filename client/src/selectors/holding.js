@@ -1,5 +1,6 @@
 import {Transaction, DollarValue, DollarValueMap} from './transaction';
 import { round, divide } from '../utils';
+import moment from 'moment-timezone';
 
 const HOLDING_PROPERTIES = {
     shares: DollarValue,
@@ -12,18 +13,14 @@ const HOLDING_PROPERTIES = {
     dividendYearly: DollarValueMap
 };
 
-const CASH_PROPERTIES = {
-    total: DollarValue
-};
-
 const compareDate = (a, b) => {
     return new Date(a.date) - new Date(b.date);
 };
 
 export class Account {
     /**
-     * @param {array} data.tscs
-     * @param {number} data.exchangeRates
+     * @param {array} params.tscs
+     * @param {number} params.exchangeRates
      */
     constructor(params) {
         this.holdings = [];
@@ -70,13 +67,13 @@ export class Account {
         });
 
         this.transactions.sort(compareDate);
-        Object.values(this.cash).forEach(cash => {
-            cash.calculate();
-            cash.transactions.sort(compareDate);
-        });
         this.holdings.forEach(holding => {
             holding.transactions.sort(compareDate);
             holding.calculate(this.cash);
+        });
+        Object.values(this.cash).forEach(cash => {
+            cash.transactions.sort(compareDate);
+            cash.calculate();
         });
     }
 
@@ -87,7 +84,190 @@ export class Account {
         result.sort(compareDate);
         return result;
     }
+    getValidTransactions(startDate, endDate, typeFilter) {
+        return this.transactions.filter(tsc => tsc.isValid(startDate, endDate, typeFilter));
+    }
+    getAllTransactionsWithBalanceInBetween(startDate, endDate, typeFilter) {
+        const result = [].concat(this.getValidTransactions(startDate, endDate, typeFilter));
+        Object.values(this.cash).forEach(cash => {
+            Object.values(cash.balance.data).forEach(yearData => {
+                Object.values(yearData).forEach(balance => {
+                    if (balance.isValid(startDate, endDate)) {
+                        result.push(balance);
+                    }
+                });
+            });
+        });
+        return result.sort((a, b) => {
+            if (a instanceof Transaction && b instanceof Transaction) {
+                return compareDate(a, b);
+            }
+            if (a instanceof Balance && b instanceof Balance) {
+                if (a.year - b.year !== 0) {
+                    return a.year - b.year;
+                }
+                if (a.month - b.month !== 0) {
+                    return a.month - b.month;
+                }
+                return a.currency.localeCompare(b.currency);
+            }
+            if (a instanceof Balance && b instanceof Transaction) {
+                return -compareTscsAndBalance(b, a);
+            }
+            if (a instanceof Transaction && b instanceof Balance) {
+                return compareTscsAndBalance(a, b);
+            }
+        });
+        function compareTscsAndBalance(tsc, balance) {
+            const yearDiff= tsc.date.year() - balance.year;
+            if (yearDiff !== 0) {
+                return yearDiff;
+            }
+            const monthDiff = tsc.date.month() - balance.month;
+            if (monthDiff !== 0) {
+                return monthDiff;
+            }
+            // Balance is always after tsc with same month;
+            return -1;
+        }
+    }
 }
+
+/**
+* @param {string} params.currency
+*/
+export class Balance {
+    constructor(params) {
+        if (!params.currency) {
+            throw new Error('currency missing in params when instantiating Balance ');
+        }
+        this.year = Number(params.year);
+        this.month = Number(params.month);
+        this.currency = params.currency.toUpperCase();
+        this.change = new DollarValue();
+        this.opening = new DollarValue();
+        this.closing = new DollarValue();
+    }
+    isValid(startDate, endDate) {
+        const month = moment(`${String(this.year)}-${String(this.month + 1)}`, 'YYYY-M');
+        const validStart = startDate.isSame(month, 'month') || startDate.isBefore(month, 'month');
+        const validEnd = endDate.isSame(month, 'month') || endDate.isAfter(month, 'month');
+        return validStart && validEnd;
+    }
+
+    calculate(previousClosing) {
+        if (previousClosing) {
+            this.opening = previousClosing;
+        }
+        const c = this.currency;
+        this.closing[c] = this.opening[c] + this.change[c];
+    }
+}
+
+/**
+* @param {string} params.currency
+*/
+// Balance structure should be
+// data: {
+//     2016: {
+//         0: DollarValue,
+//         ...
+//         11: DollarValue
+//     }
+//     ...
+//     2019: {
+//         ...
+//     }
+// }
+class TotalBalance {
+    constructor(params) {
+        if (!params.currency) {
+            throw new Error('currency missing in params when instantiating TotalBalance ');
+        }
+        this.currency = params.currency.toUpperCase();
+        this.data = {};
+    }
+    initBalance(year, month) {
+        if (!this.data[year]) {
+            this.data[year] = {};
+        }
+        if (!this.data[year][month]) {
+            this.data[year][month] = new Balance({
+                currency: this.currency,
+                year,
+                month
+            });
+        }
+    }
+    plus(year, month, value) {
+        if (isNaN(value)) {
+            throw new Error('value is NaN');
+        }
+        const currency = this.currency;
+        this.initBalance(year, month);
+        this.data[year][month].change[currency] += value;
+    }
+    minus(year, month, value) {
+        if (isNaN(value)) {
+            throw new Error('value is NaN');
+        }
+        const currency = this.currency;
+        this.initBalance(year, month);
+        this.data[year][month].change[currency] -= value;
+    }
+    getSortedKeys(object) {
+        const entries = Object.keys(object);
+        return entries.sort((key1, key2) => {
+            return Number(key1) - Number(key2);
+        });
+    }
+    getSortedYear() {
+        return this.getSortedKeys(this.data);
+    }
+    getSortedMonth(yearData) {
+        return this.getSortedKeys(yearData);
+    }
+    // Calculate opening and closing for each month.
+    // Only do this when change for each month is already added
+    calculate() {
+        const years = this.getSortedYear();
+        years.reduce((lastYear, year) => {
+            const months = this.getSortedMonth(this.data[year]);
+            let lastYearMonths = [];
+            if (lastYear) {
+                lastYearMonths = this.getSortedMonth(this.data[lastYear]);
+            }
+            months.reduce((lastMonth, month) => {
+                const currentBalance = this.data[year][month];
+                let lastBalance = this.data[year][lastMonth];
+                if (!lastMonth && lastYear) {
+                    lastBalance = this.data[lastYear][lastYearMonths[lastYearMonths.length -1]];
+                }
+                currentBalance.calculate(lastBalance && lastBalance.closing);
+                return month;
+            }, null);
+            return year;
+        }, null);
+    }
+    combine(balance) {
+        if (this.currency !== balance.currency) {
+            throw new Error('currency has to be same. We got ',
+                this.currency, ' and ', balance.currency);
+        }
+        Object.entries(balance.data).forEach(([year, yearData]) => {
+            Object.entries(yearData).forEach(([month, monthValue]) => {
+                this.plus(year, month, monthValue.change[this.currency]);
+            });
+        });
+    }
+}
+
+const CASH_PROPERTIES = {
+    // TODO probably don't need DollarValue, just a number is good.
+    // Used it to make table cell happy for now.
+    total: DollarValue
+};
+
 
 class Base {
     constructor() {
@@ -103,35 +283,61 @@ class Base {
 
 export class Cash extends Base {
     /**
-     * @param {string} data.currency
+     * @param {string} params.currency
      */
-    constructor(data) {
+    constructor(params) {
         super();
-        this.currency = data.currency.toUpperCase();
+        this.currency = params.currency.toUpperCase();
         this.transactions = [];
-        Object.entries(CASH_PROPERTIES).forEach(([key, valueClass]) => {
-            this[key] = new valueClass();
-        });
+        this.total = new DollarValue();
+        this.balance = new TotalBalance({currency: this.currency});
     }
+    plus(tsc) {
+        const currency = this.currency;
+        const value = tsc.total[currency];
+        const year = tsc.date.year();
+        const month = tsc.date.month();
+        this.total[currency] += value;
+        this.balance.plus(year, month, value);
+    }
+    minus(tsc) {
+        const currency = this.currency;
+        const value = tsc.total[currency];
+        const year = tsc.date.year();
+        const month = tsc.date.month();
+        this.total[currency] -= value;
+        this.balance.minus(year, month, value);
+    }
+    // Add up cash transactions.
+    // Do holding calculation first to add cach balance.
     calculate() {
         this.transactions.forEach(tsc => {
-            let {type, total, unfoundRate, currency} = tsc;
+            let {type, unfoundRate, currency} = tsc;
             if (tsc.currency !== currency) {
                 return;
             }
             this.unfoundRate = this.unfoundRate || unfoundRate;
             if (type === 'deposit') {
-                this.total[currency] += total[currency];
+                this.plus(tsc);
             } else if (type === 'withdraw') {
-                this.total[currency] -= total[currency];
+                this.minus(tsc);
             }
         });
+        this.balance.calculate();
     }
     clone() {
         let cloned = new Cash(this);
         cloned.unfoundRate = this.unfoundRate;
         cloned.transactions = cloned.transactions.concat(this.transactions);
+        cloned.total = this.total.clone();
+        cloned.balance.combine(this.balance);
         return cloned;
+    }
+    combine(cash) {
+        this.total.add(cash.total);
+        this.balance.combine(cash.balance);
+        this.transactions = this.transactions.concat(cash.transactions);
+        this.unfoundRate = this.unfoundRate || cash.unfoundRate;
     }
 }
 
@@ -180,7 +386,7 @@ export class Holding extends Base {
                 if (type === 'buy') {
                     acbChange[currency] = total[currency];
                     if (cash && deductFromCash) {
-                        cash.total[currency] -= total[currency];
+                        cash.minus(tsc);
                     }
                     this.shares[currency] += shares;
                 } else if (type === 'sell') {
@@ -192,7 +398,7 @@ export class Holding extends Base {
                     this.capitalGainYearly.addValue(year, realizedGain[currency], currency);
                     this.shares[currency] -= shares;
                     if (cash && deductFromCash) {
-                        cash.total[currency] += total[currency];
+                        cash.plus(tsc);
                     }
                 } else if (type === 'dividend') {
                     // http://canadianmoneyforum.com/showthread.php/10747-quot-Notional-distribution-quot-question
@@ -207,7 +413,7 @@ export class Holding extends Base {
                     }
                     realizedGain[currency] = total[currency];
                     if (cash && deductFromCash) {
-                        cash.total[currency] += total[currency];
+                        cash.plus(tsc);
                     }
                     this.realizedGain[currency] += realizedGain[currency];
                     this.realizedGainYearly.addValue(year, realizedGain[currency], currency);

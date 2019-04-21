@@ -5,6 +5,10 @@ import { TSCS_COLUMNS, CASH_COLUMNS } from './columns';
 import TableCategory from './TableCategory.jsx';
 import TscActionButton from './TscActionButton.jsx';
 import TableCell from '../shared/table/TableCell.jsx';
+import { Transaction } from '../../selectors/transaction';
+import { Balance } from '../../selectors/holding';
+import moment from 'moment-timezone';
+import { currency } from '../../utils';
 
 const TscsTable = ({holdings, allTscs, displayCurrency, typeFilter, startDate, endDate, cashTscs, totalCashTscs, collapse, tscGrouping}) => {
     const categoryTitle = holding => {
@@ -25,6 +29,15 @@ const TscsTable = ({holdings, allTscs, displayCurrency, typeFilter, startDate, e
             );
         };
         return render;
+    };
+
+    const getKey = tsc => {
+        if (tsc instanceof Transaction) {
+            return tsc._id;
+        }
+        if (tsc instanceof Balance) {
+            return `cash-balance-${String(tsc.year)}-${String(tsc.month+1)}-${tsc.currency}`;
+        }
     };
 
     const columnsSize = Math.max(TSCS_COLUMNS.length, CASH_COLUMNS.length);
@@ -61,15 +74,24 @@ const TscsTable = ({holdings, allTscs, displayCurrency, typeFilter, startDate, e
                 );
             })}
             {!tscGrouping && (
-                <tbody>
-                    {allTscs.map(tsc => {
-                        return (
-                            <TscsRow tsc={tsc} key={tsc._id}
+                allTscs.map(tsc => {
+                    return (<tbody key={getKey(tsc)}>
+                        {tsc instanceof Transaction &&
+                            <TscsRow tsc={tsc}
                                 columns={TSCS_COLUMNS}
                                 displayCurrency={displayCurrency}/>
-                        );
-                    })}
-                </tbody>
+                        }
+                        {tsc instanceof Balance &&
+                            <tr className="table-category">
+                                <td colSpan={columnsSize + 1} className="toggle-label">
+                                    <span className="table-category-title">
+                                        Cash Balance: {moment(`${String(tsc.year)}-${String(tsc.month+1)}`, 'YYYY-M').format('MMMM YYYY')} {tsc.currency} Opening: {currency(2)(tsc.opening[tsc.currency])} Closing: {currency(2)(tsc.closing[tsc.currency])}
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>);
+                })
             )}
             {<TableCategory
                 titleFn="Cash"
