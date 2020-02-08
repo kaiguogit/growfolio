@@ -60,6 +60,8 @@ export class Account {
                         exch: tsc.exch,
                     });
                     this.holdings.push(holding);
+                } else {
+                    holding.currency = tsc.currency;
                 }
                 holding.transactions.push(tsc);
             }
