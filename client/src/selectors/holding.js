@@ -14,9 +14,33 @@ const HOLDING_PROPERTIES = {
 };
 
 const compareDate = (a, b) => {
-    return new Date(a.date) - new Date(b.date);
+    if (a.date.isBefore(b.date, 'day')) {
+        return -1;
+    }
+    if (a.date.isAfter(b.date, 'day')) {
+        return 1;
+    }
+    return 0;
 };
 
+const compareTransactions = (a, b) => {
+    const dateDiff = compareDate(a, b);
+    if (dateDiff) {
+        return dateDiff;
+    }
+    if (a.type === 'buy' && b.type === 'sell') {
+        return -1;
+    }
+    if (a.type === 'sell' && b.type === 'buy') {
+        return 1;
+    }
+    return 0;
+};
+
+const CURRENCY_MAP = {
+    'DLR': 'CAD',
+    'MSFT': 'USD'
+}
 export class Account {
     /**
      * @param {array} params.tscs
@@ -40,6 +64,7 @@ export class Account {
         }
         // TODO verify tscs by date. Such as whether there is enough shares to
         // sell
+        const lastTscMap = {};
         tscs.forEach(tsc => {
             // new object
             tsc = new Transaction(tsc, exchangeRates);
@@ -53,28 +78,31 @@ export class Account {
             } else {
                 let holding = this.holdings.find(x => x.symbol === tsc.symbol);
                 if (!holding) {
+                    let currency = tsc.currency;
+                    if (CURRENCY_MAP[tsc.symbol]) {
+                        currency = CURRENCY_MAP[tsc.symbol];
+                    }
                     holding = new Holding({
                         name: tsc.name,
                         symbol: tsc.symbol,
-                        currency: tsc.currency,
+                        currency,
                         exch: tsc.exch,
                     });
                     this.holdings.push(holding);
-                } else {
-                    holding.currency = tsc.currency;
+                    lastTscMap[tsc.symbol] = tsc;
                 }
                 holding.transactions.push(tsc);
             }
             this.transactions.push(tsc);
         });
 
-        this.transactions.sort(compareDate);
+        this.transactions.sort(compareTransactions);
         this.holdings.forEach(holding => {
-            holding.transactions.sort(compareDate);
+            holding.transactions.sort(compareTransactions);
             holding.calculate(this.cash);
         });
         Object.values(this.cash).forEach(cash => {
-            cash.transactions.sort(compareDate);
+            cash.transactions.sort(compareTransactions);
             cash.calculate();
         });
     }
@@ -83,7 +111,7 @@ export class Account {
         const result = Object.values(this.cash).reduce((acc, cash) => {
             return acc.concat(cash.getValidTscs(startDate, endDate));
         }, []);
-        result.sort(compareDate);
+        result.sort(compareTransactions);
         return result;
     }
     getValidTransactions(startDate, endDate, typeFilter) {
@@ -102,7 +130,7 @@ export class Account {
         });
         return result.sort((a, b) => {
             if (a instanceof Transaction && b instanceof Transaction) {
-                return compareDate(a, b);
+                return compareTransactions(a, b);
             }
             if (a instanceof Balance && b instanceof Balance) {
                 if (a.year - b.year !== 0) {
