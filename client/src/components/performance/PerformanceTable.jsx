@@ -12,11 +12,16 @@ class PerformanceTable extends React.Component {
         let {holdings, columns} = this.props;
 
         const isEmpty = holdings.length === 0;
+        const years = Array.from(holdings.reduce((acc, holding) => {
+            Object.keys(holding.capitalGainYearly).forEach(year => acc.add(year));
+            return acc;
+        }, new Set()));
         return (
             <div>
             <SummaryBar/>
             {isEmpty ? <h2>Empty.</h2>
-              : <table className="table table-sticky-first-column table-responsive table-striped table-bordered table-sm table-compact">
+              : years.map(year => {
+                  return (<table key={year} className="table table-sticky-first-column table-responsive table-striped table-bordered table-sm table-compact">
                     <thead className="thead-default">
                         <tr>
                             {columns.map(column => {
@@ -37,7 +42,8 @@ class PerformanceTable extends React.Component {
                             );
                         })}
                     </tbody>
-                </table>
+                </table>);
+                })
             }
             </div>
         );

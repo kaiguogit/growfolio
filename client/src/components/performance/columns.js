@@ -118,136 +118,50 @@ export const PERFORMANCE_COLUMNS = [
     }
 ];
 
-export const TAX_COLUMNS = [
-    {
-        selector: 'symbol',
-        title: 'Symbol',
-        formatFunction: coloredCell,
-        ref_selector: 'change'
-    },
-    {
-        selector: 'currency',
-        title: 'Currency',
-        className: 'hidden-sm-down'
-    },
-    {
-        selector: 'realizedGain2019',
-        valueFunction: entry => entry.realizedGainYearly.map['2019'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Realized Gain 2019',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'capitalGain2019',
-        valueFunction: entry => entry.capitalGainYearly.map['2019'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Capital Gain 2019',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'dividend2019',
-        valueFunction: entry => entry.dividendYearly.map['2019'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Dividend 2018',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'realizedGain2018',
-        valueFunction: entry => entry.realizedGainYearly.map['2018'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Realized Gain 2018',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'capitalGain2018',
-        valueFunction: entry => entry.capitalGainYearly.map['2018'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Capital Gain 2018',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'dividend2018',
-        valueFunction: entry => entry.dividendYearly.map['2018'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Dividend 2018',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'realizedGain2017',
-        valueFunction: entry => entry.realizedGainYearly.map['2017'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Realized Gain 2017',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'capitalGain2017',
-        valueFunction: entry => entry.capitalGainYearly.map['2017'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Capital Gain 2017',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'dividend2017',
-        valueFunction: entry => entry.dividendYearly.map['2017'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Dividend 2017',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'realizedGain2016',
-        valueFunction: entry => entry.realizedGainYearly.map['2016'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Realized Gain 2016',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'capitalGain2016',
-        valueFunction: entry => entry.capitalGainYearly.map['2016'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Capital Gain 2016',
-        className: 'hidden-sm-down',
-        supportTotal: true
-    },
-    {
-        selector: 'dividend2016',
-        valueFunction: entry => entry.dividendYearly.map['2016'],
-        formatFunction: coloredCell,
-        showOtherCurrency: true,
-        filter: currency(2),
-        title: 'Dividend 2016',
-        className: 'hidden-sm-down',
-        supportTotal: true
+export class TaxColumns {
+    constructor(year) {
+        this.columns = [
+            {
+                selector: 'symbol',
+                title: 'Symbol',
+                formatFunction: coloredCell,
+                ref_selector: 'change'
+            },
+            {
+                selector: 'currency',
+                title: 'Currency',
+                className: 'hidden-sm-down'
+            },
+            {
+                selector: `realizedGain${year}`,
+                valueFunction: entry => entry.realizedGainYearly.map[year],
+                formatFunction: coloredCell,
+                showOtherCurrency: true,
+                filter: currency(2),
+                title: `Realized Gain ${year}`,
+                className: 'hidden-sm-down',
+                supportTotal: true
+            },
+            {
+                selector: `capitalGain${year}`,
+                valueFunction: entry => entry.capitalGainYearly.map[year],
+                formatFunction: coloredCell,
+                showOtherCurrency: true,
+                filter: currency(2),
+                title: `Capital Gain ${year}`,
+                className: 'hidden-sm-down',
+                supportTotal: true
+            },
+            {
+                selector: `dividend${year}`,
+                valueFunction: entry => entry.dividendYearly.map[year],
+                formatFunction: coloredCell,
+                showOtherCurrency: true,
+                filter: currency(2),
+                title: `Dividend ${year}`,
+                className: 'hidden-sm-down',
+                supportTotal: true
+            }
+        ];
     }
-];
+}
