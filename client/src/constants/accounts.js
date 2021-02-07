@@ -8,7 +8,8 @@ const ACCOUNTS = [
     'kai-charles-schwab',
     'crystal-non-registered',
     'crystal-tfsa',
-    'crystal-rrsp'
+    'crystal-rrsp',
+    'crystal-spouse-rrsp'
 ];
 
 export default ACCOUNTS;
