@@ -71,6 +71,9 @@ export const generateAccountsMap = (tscs, exchangeRates) => {
     });
     accountMap.all = allAccount;
     accountMap.all.transactions.sort(compareDate);
+    accountMap.all.holdings.forEach(holding => {
+        holding.setAverage();
+    });
     accountMap.all.holdings.forEach(holding =>
         holding.transactions.sort(compareDate)
     );

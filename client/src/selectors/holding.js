@@ -499,6 +499,12 @@ export class Holding extends Base {
         cloned.transactions = cloned.transactions.concat(this.transactions);
         return cloned;
     }
+
+    setAverage() {
+        DollarValue.TYPES.forEach(currency => {
+            this.averageCost[currency] = round(divide(this.cost[currency], this.shares[currency]), 3);
+        });
+    }
 }
 
 Holding.HOLDING_PROPERTIES = HOLDING_PROPERTIES;
