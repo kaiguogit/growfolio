@@ -32,7 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "bootstrap": "4.0.0-alpha.6",
-    "highcharts": "5.0.6",
+    "highcharts": "9.0.0",
     "isolated-scroll": "0.1.0",
     "jquery": "3.1.1",
     "lodash": "4.17.5",
