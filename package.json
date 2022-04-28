@@ -22,7 +22,7 @@
     "test": "mocha --reporter spec"
   },
   "dependencies": {
-    "async": "^2.1.2",
+    "async": "^2.6.4",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.15.2",
     "chalk": "^1.1.3",
