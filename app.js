@@ -64,7 +64,9 @@ const isDev = app.get('env') === 'development';
  */
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI, {
-  dbName: 'growfolio'
+  dbName: process.env.MONGODB_NAME || 'growfolio',
+  user: process.env.MONGODB_USER,
+  pass: process.env.MONGODB_PASSWORD
 });
 mongoose.connection.on('error', () => {
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
