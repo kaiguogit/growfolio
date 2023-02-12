@@ -9,7 +9,8 @@ const ACCOUNTS = [
     'crystal-non-registered',
     'crystal-tfsa',
     'crystal-rrsp',
-    'crystal-spouse-rrsp'
+    'crystal-spouse-rrsp',
+    'crystal-resp'
 ];
 
 export default ACCOUNTS;

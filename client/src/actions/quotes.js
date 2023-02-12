@@ -39,19 +39,16 @@ const fetchQuotes = (download) => (dispatch, getState) => {
 
 const downloadQuote = (dispatch, getState) => {
     const holdings = getHoldingsAfterZeroShareFilter(getState());
-    return holdings.reduce((previous, holding) => {
-        let symbol = holding.isUSD() ? holding.symbol : 'TSX:' + holding.symbol;
-        return previous.then(() => {return fetchSingleQuote(symbol, dispatch);});
-    }, Promise.resolve()).then(() => {
+    const symbols = holdings.map(holding => {
+        return holding.symbol;
+    });
+    return callAPI(__MY_API__ + 'download-quotes?' + new URLSearchParams({
+        symbols: symbols.join(',')
+    })).then((quote) => {
+        dispatch(receiveQuotes(quote.data, quote.meta));
+    }).catch(log.error).then(() => {
         dispatch(receiveQuotes());
     });
-};
-
-const fetchSingleQuote = (symbol, dispatch) => {
-    dispatch(requestQuotes(symbol));
-    return callAPI(__MY_API__ + 'download-quotes?symbols=' + symbol).then((quote) => {
-        dispatch(receiveSingleQuote(quote.data, quote.meta));
-    }).catch(log.error);
 };
 
 export const createQuote = quote => (dispatch, getState) => {
@@ -64,8 +61,8 @@ export const createQuote = quote => (dispatch, getState) => {
         headers: getHeaders(),
         body: JSON.stringify(quote)
     }).then(response => response.json())
-    .then(() => fetchQuotes()(dispatch, getState))
-    .catch(log.error);
+        .then(() => fetchQuotes()(dispatch, getState))
+        .catch(log.error);
 };
 
 export const refreshQuotes = (download) => (dispatch) => {

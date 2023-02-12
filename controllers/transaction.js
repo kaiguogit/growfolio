@@ -82,6 +82,7 @@ const validateTransactionForm = (payload) => {
       payload.account !== 'kai-charles-schwab' &&
       payload.account !== 'crystal-tfsa' &&
       payload.account !== 'crystal-rrsp' &&
+      payload.account !== 'crystal-resp' &&
       payload.account !== 'crystal-spouse-rrsp' &&
       payload.account !== 'crystal-non-registered')) {
     isFormValid = false;

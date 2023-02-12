@@ -19,7 +19,10 @@
     "start": "node app.js",
     "debug": "node --inspect app.js",
     "debug:watch": "nodemon --ignore client/ --inspect app.js",
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec",
+    "build-docker-image": "docker build -t growfolio-server .",
+    "start-docker-container": "npm run destroy-docker-container && docker run --network growfolio-bridge --name growfolio-server --restart=always -d -p 8000:8000 growfolio-server",
+    "destroy-docker-container": "docker container kill growfolio-server && docker container rm growfolio-server"
   },
   "dependencies": {
     "async": "^2.1.2",

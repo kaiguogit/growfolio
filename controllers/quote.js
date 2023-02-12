@@ -4,9 +4,8 @@ const fakeDailyQuote = require('./fixtures/dailyQuote.json');
 const fakeIntradayQuote = require('./fixtures/intradayQuote.json');
 const merge = require('lodash/merge');
 const moment = require('moment-timezone');
-const {NEW_YORK_TIME_ZONE, isMarketOpened, lastWeekDay, yesterday, isAfterMarketClose} = require('../utils/time');
-
-const {dailyQuote: callDailyQuoteApi, intraDayQuote: callIntraDayQuoteApi} = require('./external-api/alpha-vantage');
+const { NEW_YORK_TIME_ZONE, isMarketOpened, lastWeekDay, yesterday, isAfterMarketClose } = require('../utils/time');
+const { downloadQuotes, saveQuotesFromAPI } = require('./external-api/questrade');
 
 /**
  * GET /historical-quotes
@@ -15,7 +14,7 @@ const Quote = require('../models/Quote.js');
 const QuoteMeta = require('../models/QuoteMeta.js');
 
 const handleError = (err) => {
-    console.log(err);
+    console.error(err);
 };
 
 const isString = value => (typeof value === 'string');
@@ -164,10 +163,10 @@ const getQuoteFromDb = (_user, searchSymbol, asFallback) => {
     let searchAll = !searchSymbol;
     let symbol;
     if (searchAll) {
-        params = {_user};
+        params = { _user };
     } else {
         symbol = removePrefix(searchSymbol);
-        params = {symbol, _user};
+        params = { symbol, _user };
     }
 
     const quotePromise = Quote.find(params).exec().then(quotes => {
@@ -201,79 +200,24 @@ const getQuoteFromDb = (_user, searchSymbol, asFallback) => {
             return result;
         },
         error => {
+            console.error(error);
             return Promise.reject(error);
         }
     );
 };
 
-const saveQuotesFromAPI = (isIntraday, _user) => (response) => {
-    const meta = response['Meta Data'];
-    isIntraday = !!isIntraday;
-    const dataKey = Object.keys(response).find(key => key.includes('Time Series'));
-    const quotes = response[dataKey];
-    const result = {
-        meta: {},
-        data: {},
-        from: {}
-    };
-    if (meta && quotes) {
-        const symbol = removePrefix(meta['2. Symbol']);
-        const lastRefreshed = meta['3. Last Refreshed'];
-        const data = result.data;
-        const promises = Object.keys(quotes).map((date) => {
-            return Quote.findOne({ date, symbol, _user }).exec().then(foundQuote => {
-                if (foundQuote) {
-                    data[symbol] = data[symbol] || {};
-                    data[symbol][date] = foundQuote;
-                } else {
-                    const newQuote = Object.assign({
-                        _user,
-                        isIntraday,
-                        symbol,
-                        date
-                    }, normalizeAPIResult(quotes[date]));
-                    return new Quote(newQuote).save().then(savedQuote => {
-                        data[symbol] = data[symbol] || {};
-                        data[symbol][date] = savedQuote;
-                    });
-                }
-            }, error => {
-                // TO-DO should I send db error back?
-                console.log(error);
-            });
-
-        });
-        const metaPromise = QuoteMeta.findOne({symbol, _user}).exec()
-        .then(foundMeta => {
-            let quoteMeta;
-            let refereshTimeKey = isIntraday ? 'lastRefreshedIntraday' : 'lastRefreshedDaily';
-            if (foundMeta) {
-                quoteMeta = foundMeta;
-                quoteMeta[refereshTimeKey] = isIntraday ? lastRefreshed : moment.tz(lastRefreshed, NEW_YORK_TIME_ZONE).format('YYYY-MM-DD');
-            } else {
-                quoteMeta = new QuoteMeta({
-                    _user,
-                    isIntraday,
-                    symbol,
-                    [refereshTimeKey]: lastRefreshed
-                });
-            }
-            return quoteMeta.save().then(savedMeta => result.meta[symbol] = savedMeta);
-        });
-        promises.push(metaPromise);
-        return Promise.all(promises).then(
-            () => {
-                result.from[symbol] = 'api';
-                return result;
-            },
-            error => {
-                return Promise.reject(error);
-            }
-        );
+const shouldCallApiMultiple = async (symbols, _user) => {
+    const shouldCallApiSymbols = [];
+    const others = [];
+    for (const symbol of symbols) {
+        if (await shouldCallApi(symbol, _user)) {
+            shouldCallApiSymbols.push(removePrefix(symbol));
+        } else {
+            others.push(symbol);
+        }
     }
-    return Promise.reject({message: 'api response is not valid'});
+    return { shouldCallApiSymbols, others };
 };
-
 /**
  * Should call api if:
  * Daily
@@ -286,9 +230,10 @@ const saveQuotesFromAPI = (isIntraday, _user) => (response) => {
  * @param {object} _user user id.
  * @return {promise}
  */
-const shouldCallApi = (symbol, isIntraday, _user) => {
+const shouldCallApi = (symbol, _user) => {
     symbol = removePrefix(symbol);
-    return QuoteMeta.findOne({symbol, _user}).exec().then(foundMeta => {
+    return QuoteMeta.findOne({ symbol, _user }).exec().then(foundMeta => {
+        const isIntraday = false;
         if (!foundMeta) {
             return true;
         }
@@ -326,26 +271,38 @@ const shouldCallApi = (symbol, isIntraday, _user) => {
  * @param {boolean} isIntraday 'intraday' or 'daily'
  * @param {object} userId
  */
-const downloadSingleQuote = (symbol, isIntraday, userId) => {
+const downloadAndSaveQuotes = async ({ symbols, userId }) => {
     // const fakeData = isIntraday ? fakeIntradayQuote : fakeDailyQuote;
     // return Promise.resolve(fakeData)
-    const callApi = isIntraday ? callIntraDayQuoteApi : callDailyQuoteApi;
-    return shouldCallApi(symbol, isIntraday, userId).then(necessary => {
-        if (necessary) {
-            return callApi(symbol).then(saveQuotesFromAPI(isIntraday, userId)).catch((e) => {
+    const { shouldCallApiSymbols: necessarySymbols, others } = await shouldCallApiMultiple(symbols, userId);
+    const promises = [];
+    if (necessarySymbols) {
+        try {
+            const response = await downloadQuotes({ symbols: necessarySymbols, _user: userId });
+            const savedResults = await saveQuotesFromAPI({ quotes: response, _user: userId });
+            promises.push(...savedResults);
+        } catch (e) {
+            console.error(e);
+            return Promise.all(necessarySymbols.map(symbol => {
                 const fallbackPromise = getQuoteFromDb(userId, symbol, true);
                 if (e) {
                     return fallbackPromise.then(result => {
+                        if (result.error) {
+                            console.error(result.error);
+                        }
                         result.error = result.error || {};
                         result.error[removePrefix(symbol)] = e.toString();
                         return result;
                     });
                 }
                 return fallbackPromise;
-            });
+            }));
         }
+    }
+    promises.push(...others.map(symbol => {
         return getQuoteFromDb(userId, symbol);
-    });
+    }));
+    return Promise.all(promises);
 };
 
 /**
@@ -354,73 +311,69 @@ const downloadSingleQuote = (symbol, isIntraday, userId) => {
  * @param {boolean} isIntraday 'intraday' or 'daily'
  * @param {object} userId
  */
-const downloadMultipleQuotes = (symbols, isIntraday, userId) => {
-    const promises = symbols.map(symbol => {
-        return downloadSingleQuote(symbol, isIntraday, userId);
-    });
-    return Promise.all(promises).then(resps => {
-        return resps.reduce((previous, current) => {
-            return merge(previous, current);
-        }, {});
-    });
+const downloadMultipleQuotes = async ({ symbols, userId }) => {
+    const respsPromise = downloadAndSaveQuotes({ symbols, userId });
+    const resps = await respsPromise;
+    return resps.reduce((previous, current) => {
+        return merge(previous, current);
+    }, {});
 };
 
 const downloadMultipleQuotesAllTypes = (symbols, userId) => {
-    // TODO move this intraday loop into downloadSingleQuote.
-    const promises = [true, false].map(isIntraday => {
-        return downloadMultipleQuotes(symbols, isIntraday, userId);
-    });
-    return Promise.all(promises).then(resps => {
-        return resps.reduce((result, quotes, index) => {
-            const isIntraday = !index;
-            if (quotes) {
-                ['meta', 'data'].forEach(key => {
-                    merge(result[key], quotes[key]);
-                });
-                const fromKey = isIntraday ? 'intradayFrom' : 'dailyFrom';
-                const errorKey = isIntraday ? 'intradayError' : 'dailyError';
-                merge(result[fromKey], quotes.from);
-                if (quotes.error) {
-                    merge(result[errorKey], quotes.error);
-                }
+    return downloadMultipleQuotes({ symbols, userId }).then(quotes => {
+        const isIntraday = false;
+        if (quotes) {
+            const fromKey = isIntraday ? 'intradayFrom' : 'dailyFrom';
+            const errorKey = isIntraday ? 'intradayError' : 'dailyError';
+            quotes[fromKey] = quotes.from;
+            if (quotes.error) {
+                quotes[errorKey] = quotes.error;
             }
-            return result;
-        }, {
-            meta: {},
-            data: {},
-            // TODO can be deleted, added here to see if logic works well.
-            dailyFrom: {},
-            intradayFrom: {},
-            dailyError: {},
-            intradayError: {}
-        });
+        }
+        return quotes;
+    }, {
+        meta: {},
+        data: {},
+        // TODO can be deleted, added here to see if logic works well.
+        dailyFrom: {},
+        intradayFrom: {},
+        dailyError: {},
+        intradayError: {}
     });
 };
 
+const EXCLUDE_SYMBOLS = ['TWTR'];
 /**
  * TODO should be POST!!!!
  * Get /api/download-quotes
  */
 exports.downloadQuotes = (req, res) => {
-    const symbols = req.query.symbols && req.query.symbols.split(',');
+    let symbols = req.query.symbols && req.query.symbols.split(',');
     if (!(symbols && symbols.length)) {
         return res.json(errorResponse('parameter symbols must be comma separated'));
     }
+    symbols = new Set(symbols);
+    EXCLUDE_SYMBOLS.forEach(s => {
+        symbols.delete(s);
+    });
+    symbols = Array.from(symbols);
     const userId = req.user._id;
     downloadMultipleQuotesAllTypes(symbols, userId)
-    .then((result) => {
-        res.json({success: true, result});
-    }).catch(error => {
-        res.json(errorResponse(error.message, null, {error}));
-    });
+        .then((result) => {
+            res.json({ success: true, result });
+        }).catch(error => {
+            console.error(error);
+            res.json(errorResponse(error.message, null, { error }));
+        });
 };
 
 exports.getQuotes = (req, res) => {
     const userId = req.user._id;
     getQuoteFromDb(userId)
-    .then((result) => {
-        res.json({success: true, result});
-    }).catch(error => {
-        res.json(errorResponse(error.message, null, {error}));
-    });
+        .then((result) => {
+            res.json({ success: true, result });
+        }).catch(error => {
+            console.error(error);
+            res.json(errorResponse(error.message, null, { error }));
+        });
 };

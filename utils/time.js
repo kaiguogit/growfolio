@@ -1,4 +1,5 @@
 const moment = require('moment-timezone');
+const moment1 = require('moment');
 const NEW_YORK_TIME_ZONE = 'America/New_York';
 
 const guardEmptyDate = (date) => {
@@ -30,14 +31,15 @@ const isWeekDay = date => {
  */
 const lastWeekDay = (date) => {
     date = guardEmptyDate(date);
-    let dow = date.tz(NEW_YORK_TIME_ZONE).day();
+    const day = date.tz(NEW_YORK_TIME_ZONE);
+    let dow = day.day();
     if (dow === 0) {
         //today is Sunday return last Friday
-        return moment.tz(NEW_YORK_TIME_ZONE).day(-2);
+        return day.day(-2);
     }
     if (dow === 6) {
         //today is Staturday return this Friday
-        return moment.tz(NEW_YORK_TIME_ZONE).day(5);
+        return day.day(5);
     }
     // today is weekday
     return date;
