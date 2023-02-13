@@ -111,6 +111,7 @@ class TscsForm extends React.Component {
                         <option value="crystal-tfsa">Crystal TFSA</option>
                         <option value="crystal-rrsp">Crystal RRSP</option>
                         <option value="crystal-resp">Crystal RESP</option>
+                        <option value="crystal-heloc">Crystal HELOC</option>
                         <option value="crystal-spouse-rrsp">Crystal Spouse RRSP</option>
                         <option value="crystal-non-registered">Crystal Non Registered</option>
                     </Select>
