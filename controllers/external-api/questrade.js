@@ -150,14 +150,17 @@ exports.saveQuotesFromAPI = async ({ quotes, _user }) => {
             const symbol = quote.symbol;
             let date;
             const matches = new RegExp('^(\\d{4}-\\d{2}-\\d{2})T(.*)').exec(quote.lastTradeTime);
+            console.log('last trade time', quote.lastTradeTime);
             let isIntraday = true;
             if (matches) {
                 date = matches[1];
                 const time = matches[2];
-                if (time === '00:00:00.000000-05:00') {
+                if (time === '00:00:00.000000-05:00' || '00:00:00.000000-04:00' ||
+                    [15,16,17,18,19,20].some(s => time.startsWith(`${s}:`))) {
                     isIntraday = false;
                 }
             }
+            console.log('is intra day', isIntraday);
             if (!date) {
                 throw new Error('date not valid');
             }

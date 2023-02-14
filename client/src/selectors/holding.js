@@ -40,7 +40,8 @@ const compareTransactions = (a, b) => {
 const CURRENCY_MAP = {
     'DLR': 'CAD',
     'MSFT': 'USD'
-}
+};
+
 export class Account {
     /**
      * @param {array} params.tscs
